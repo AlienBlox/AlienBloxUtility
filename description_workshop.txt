@@ -1,1 +1,3 @@
-This description will show up on the steam page, check out https://steamcommunity.com/comment/Guide/formattinghelp.
+The official home of AlienBlox's Utilities!
+ * Join the GitHub for this project at https://github.com/AlienBlox/AlienBloxUtility
+ * Join the GitHub for AlienBlox's Tools DLL at https://github.com/AlienBlox/AlienBloxTools

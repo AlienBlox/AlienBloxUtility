@@ -1,3 +1,8 @@
-displayName = AlienBlox&#39;s Utilities
+displayName = AlienBlox's Utilities
 author = Alienblox1234
 version = 0.1
+hideCode = false
+hideResources = false
+includeSource = true
+includePDB = true
+dllReferences = AlienBloxTools
