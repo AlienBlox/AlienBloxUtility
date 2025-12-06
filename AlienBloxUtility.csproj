@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<!-- Import tModLoader mod properties -->
 	<Import Project="..\tModLoader.targets" />
@@ -7,6 +7,14 @@
 	<PropertyGroup>
 		
 	</PropertyGroup>
+	<ItemGroup>
+	  <Reference Include="AlienBloxTools">
+	    <HintPath>lib\AlienBloxTools.dll</HintPath>
+	  </Reference>
+	  <Reference Include="ICSharpCode.Decompiler">
+	    <HintPath>lib\ICSharpCode.Decompiler.dll</HintPath>
+	  </Reference>
+	</ItemGroup>
 
 	<!-- References -->
 
