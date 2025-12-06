@@ -17,7 +17,7 @@ namespace AlienBloxUtility.Utilities.UIUtilities
             _UI.Height.Set(50f, 0f);
             _UI.Left.Set(-25f, 0f);
             _UI.Top.Set(-25f, 0f);
-            _UI.HAlign = 1f;  // Align to the right (1 = right edge of the screen)
+            _UI.HAlign = 0f;  // Align to the right (1 = right edge of the screen)
             _UI.VAlign = 1f;  // Align to the bottom (1 = bottom edge of the screen)
 
             var buttonText = new UIText("Test");
