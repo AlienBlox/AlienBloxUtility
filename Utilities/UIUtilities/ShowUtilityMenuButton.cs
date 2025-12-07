@@ -1,6 +1,9 @@
-﻿using AlienBloxUtility.Utilities.UIUtilities.UIElements;
+﻿using AlienBloxUtility.Utilities.DataStorage;
+using AlienBloxUtility.Utilities.UIUtilities.UIElements;
 using Microsoft.Xna.Framework.Graphics;
+using Terraria.Audio;
 using Terraria.GameContent.UI.Elements;
+using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.UI;
 
@@ -20,14 +23,15 @@ namespace AlienBloxUtility.Utilities.UIUtilities
             _UI.HAlign = 0f;  // Align to the right (1 = right edge of the screen)
             _UI.VAlign = 1f;  // Align to the bottom (1 = bottom edge of the screen)
 
-            var buttonText = new UIText("Test")
-            {
-                HAlign = 0.5f,  // Center the text horizontally
-                VAlign = 0.5f  // Center the text vertically
-            };
-            _UI.Append(buttonText);
+            _UI.OnLeftClick += ToggleDebugPanel;
 
             Append(_UI);
+        }
+
+        public void ToggleDebugPanel(UIMouseEvent evt, UIElement listeningElement)
+        {
+            SoundEngine.PlaySound(SoundID.MenuTick);
+            DebugUtilityList.DebugMenuEnabled = !DebugUtilityList.DebugMenuEnabled;
         }
     }
 }

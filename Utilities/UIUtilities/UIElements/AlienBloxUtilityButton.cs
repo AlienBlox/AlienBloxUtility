@@ -9,9 +9,12 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIElements
 {
     public class AlienBloxUtilityButton : UIElement
     {
-        private readonly Texture2D PowerButtonIcon;
-        private readonly Texture2D ActivateButtonIcon;
-        private readonly Texture2D ActivateButtonOutline;
+        private Texture2D PowerButtonIcon;
+        private Texture2D ActivateButtonIcon;
+        private Texture2D ActivateButtonOutline;
+        private Color DrawColor = Color.White;
+
+        internal bool LoadedSprites = false;
 
         public AlienBloxUtilityButton()
         {
@@ -22,13 +25,30 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIElements
 
         public override void Draw(SpriteBatch spriteBatch)
         {
+            if (IsMouseHovering)
+            {
+                Main.LocalPlayer.mouseInterface = true;
+                DrawColor = Main.DiscoColor;
+            }
+            else
+            {
+                DrawColor = Color.White;
+            }
+
+            if (!LoadedSprites)
+            {
+                ActivateButtonIcon = ModContent.Request<Texture2D>("AlienBloxUtility/Common/Assets/ActivateButton").Value;
+                ActivateButtonOutline = ModContent.Request<Texture2D>("AlienBloxUtility/Common/Assets/ActivateButtonOutline").Value;
+                PowerButtonIcon = ModContent.Request<Texture2D>("AlienBloxUtility/Common/Assets/PowerButtonIcon").Value;
+
+                LoadedSprites = true;
+            }
+
             Vector2 position = GetDimensions().Position();
 
-            spriteBatch.Draw(ModContent.Request<Texture2D>("Terraria/Images/UI/ButtonPlay").Value, position, new Color(255, 255, 255, 128));
-
             spriteBatch.Draw(ActivateButtonIcon, position, new Color(255, 255, 255, 128));
-            spriteBatch.Draw(ActivateButtonOutline, position, Color.White);
-            spriteBatch.Draw(PowerButtonIcon, position, Color.White);
+            spriteBatch.Draw(ActivateButtonOutline, position, DrawColor);
+            spriteBatch.Draw(PowerButtonIcon, position, DrawColor);
 
             base.Draw(spriteBatch);
         }
