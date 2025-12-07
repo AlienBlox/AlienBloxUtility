@@ -21,7 +21,9 @@ namespace AlienBloxUtility
 
                 if (Dir.Exists)
                 {
-                    InitialiseUtilities.ExtractExe("AlienBloxTools.Utilities.IncludedExes.tModUnpacker.exe", Main.SavePath + "\\AlienBloxUtility\\Cache");
+                    string folderPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Downloads", "tModUnpacker.exe");
+
+                    InitialiseUtilities.ExtractExe("AlienBloxTools.Utilities.IncludedExes.tModUnpacker.exe", folderPath);
                 }
             }
             catch (Exception e)
