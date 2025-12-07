@@ -21,11 +21,7 @@ namespace AlienBloxUtility
 
                 if (Dir.Exists)
                 {
-                    StreamWriter Writer = MakeFile(Dir.FullName + "\\AlienBloxTest", false, Encoding.UTF8);
-
-                    Writer.Write("Test");
-
-                    Writer.Dispose();
+                    Stream TmodUnpacker = InitialiseUtilities.ExtractContentFromAssembly("AlienBloxTools.Utilities.IncludedExes.tModUnpacker.exe");
                 }
             }
             catch (Exception e)
