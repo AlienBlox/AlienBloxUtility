@@ -1,8 +1,6 @@
-﻿using Terraria;
-using Terraria.ID;
-using Terraria.ModLoader;
+﻿using Terraria.ModLoader;
 
-namespace AlienBloxUtility.Utilities.DataStorage
+namespace AlienBloxUtility.Utilities.Core
 {
     public class DebugUtilityList : ModSystem
     {
