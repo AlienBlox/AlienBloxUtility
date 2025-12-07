@@ -6,6 +6,6 @@ namespace AlienBloxUtility.Utilities.DataStorage
 {
     public class DebugUtilityList : ModSystem
     {
-        public static bool DebugMenuEnabled {  get; set; }
+        public static bool DebugMenuEnabled { get; set; } = false;
     }
 }

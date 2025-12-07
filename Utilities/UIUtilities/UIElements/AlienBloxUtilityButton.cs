@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using AlienBloxUtility.Utilities.DataStorage;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.GameContent;
@@ -46,9 +47,18 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIElements
 
             Vector2 position = GetDimensions().Position();
 
-            spriteBatch.Draw(ActivateButtonIcon, position, new Color(255, 255, 255, 128));
-            spriteBatch.Draw(ActivateButtonOutline, position, DrawColor);
-            spriteBatch.Draw(PowerButtonIcon, position, DrawColor);
+            if (!IsMouseHovering && DebugUtilityList.DebugMenuEnabled)
+            {
+                spriteBatch.Draw(ActivateButtonIcon, position, new Color(255, 255, 255, 128));
+                spriteBatch.Draw(ActivateButtonOutline, position, new(0, 255, 0));
+                spriteBatch.Draw(PowerButtonIcon, position, new(0, 255, 0));
+            }
+            else
+            {
+                spriteBatch.Draw(ActivateButtonIcon, position, new Color(255, 255, 255, 128));
+                spriteBatch.Draw(ActivateButtonOutline, position, DrawColor);
+                spriteBatch.Draw(PowerButtonIcon, position, DrawColor);
+            }
 
             base.Draw(spriteBatch);
         }
