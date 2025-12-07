@@ -5,6 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using Terraria.ModLoader;
 using AlienBloxTools.Utilities;
+using System.IO;
+using Terraria;
 
 namespace AlienBloxUtility
 {
@@ -13,7 +15,19 @@ namespace AlienBloxUtility
 	{
         public override void Load()
         {
-            InitialiseUtilities.ExtractTMODUnpacker();
+            try
+            {
+                DirectoryInfo Dir = Directory.CreateDirectory(Main.SavePath + "\\AlienBloxUtility\\Cache");
+
+                if (Dir.Exists)
+                {
+                    InitialiseUtilities.ExtractExe("AlienBloxTools.Utilities.IncludedExes.tModUnpacker.exe", Main.SavePath + "\\AlienBloxUtility\\Cache");
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e.Message);
+            }
         }
 	}
 }
