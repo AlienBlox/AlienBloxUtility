@@ -8,9 +8,9 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIElements
 {
     public class AlienBloxUtilityUIBase : UIElement
     {
-        private Texture2D texture;
-        private int sliceWidth;
-        private int sliceHeight;
+        private readonly Texture2D texture;
+        private readonly int sliceWidth;
+        private readonly int sliceHeight;
 
         public AlienBloxUtilityUIBase(string texturePath = "AlienBloxUtility/Common/Assets/UIGrid")
         {
@@ -44,43 +44,58 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIElements
             float horizontalStretch = (width - 2 * sliceWidth) / sliceWidth;
             float verticalStretch = (height - 2 * sliceHeight) / sliceHeight;
 
-            // Draw the top-left corner
-            spriteBatch.Draw(texture, position, new Rectangle(0, 0, sliceWidth, sliceHeight), Color.White);
+            // Draw top-left corner (no stretching)
+            spriteBatch.Draw(texture, position, new Rectangle((int)position.X, (int)position.Y, sliceWidth, sliceHeight), Color.White);
 
-            // Draw the top edge (stretch horizontally)
-            spriteBatch.Draw(texture, new Vector2(position.X + sliceWidth, position.Y),
-                new Rectangle(sliceWidth, 0, sliceWidth, sliceHeight), Color.White, 0f, Vector2.Zero,
-                new Vector2(horizontalStretch, 1f), SpriteEffects.None, 0f);
+            // Draw top edge (stretch horizontally)
+            if (width > 2 * sliceWidth)  // Only stretch if the width is greater than the edge slices
+            {
+                spriteBatch.Draw(texture, new Vector2(position.X + sliceWidth, position.Y),
+                    new Rectangle(sliceWidth, 0, sliceWidth, sliceHeight), Color.White, 0f, Vector2.Zero,
+                    new Vector2(horizontalStretch, 1f), SpriteEffects.None, 0f);
+            }
 
-            // Draw the top-right corner
+            // Draw top-right corner (no stretching)
             spriteBatch.Draw(texture, new Vector2(position.X + width - sliceWidth, position.Y),
                 new Rectangle(2 * sliceWidth, 0, sliceWidth, sliceHeight), Color.White);
 
-            // Draw the left edge (stretch vertically)
-            spriteBatch.Draw(texture, new Vector2(position.X, position.Y + sliceHeight),
-                new Rectangle(0, sliceHeight, sliceWidth, sliceHeight), Color.White, 0f, Vector2.Zero,
-                new Vector2(1f, verticalStretch), SpriteEffects.None, 0f);
+            // Draw left edge (stretch vertically)
+            if (height > 2 * sliceHeight)  // Only stretch if the height is greater than the edge slices
+            {
+                spriteBatch.Draw(texture, new Vector2(position.X, position.Y + sliceHeight),
+                    new Rectangle(0, sliceHeight, sliceWidth, sliceHeight), Color.White, 0f, Vector2.Zero,
+                    new Vector2(1f, verticalStretch), SpriteEffects.None, 0f);
+            }
 
-            // Draw the center (stretch both horizontally and vertically)
-            spriteBatch.Draw(texture, new Vector2(position.X + sliceWidth, position.Y + sliceHeight),
-                new Rectangle(sliceWidth, sliceHeight, sliceWidth, sliceHeight), Color.White, 0f, Vector2.Zero,
-                new Vector2(horizontalStretch, verticalStretch), SpriteEffects.None, 0f);
+            // Draw center (stretch both horizontally and vertically)
+            if (width > 2 * sliceWidth && height > 2 * sliceHeight)
+            {
+                spriteBatch.Draw(texture, new Vector2(position.X + sliceWidth, position.Y + sliceHeight),
+                    new Rectangle(sliceWidth, sliceHeight, sliceWidth, sliceHeight), Color.White, 0f, Vector2.Zero,
+                    new Vector2(horizontalStretch, verticalStretch), SpriteEffects.None, 0f);
+            }
 
-            // Draw the right edge (stretch vertically)
-            spriteBatch.Draw(texture, new Vector2(position.X + width - sliceWidth, position.Y + sliceHeight),
-                new Rectangle(2 * sliceWidth, sliceHeight, sliceWidth, sliceHeight), Color.White, 0f, Vector2.Zero,
-                new Vector2(1f, verticalStretch), SpriteEffects.None, 0f);
+            // Draw right edge (stretch vertically)
+            if (height > 2 * sliceHeight)  // Only stretch if the height is greater than the edge slices
+            {
+                spriteBatch.Draw(texture, new Vector2(position.X + width - sliceWidth, position.Y + sliceHeight),
+                    new Rectangle(2 * sliceWidth, sliceHeight, sliceWidth, sliceHeight), Color.White, 0f, Vector2.Zero,
+                    new Vector2(1f, verticalStretch), SpriteEffects.None, 0f);
+            }
 
-            // Draw the bottom-left corner
+            // Draw bottom-left corner (no stretching)
             spriteBatch.Draw(texture, new Vector2(position.X, position.Y + height - sliceHeight),
                 new Rectangle(0, 2 * sliceHeight, sliceWidth, sliceHeight), Color.White);
 
-            // Draw the bottom edge (stretch horizontally)
-            spriteBatch.Draw(texture, new Vector2(position.X + sliceWidth, position.Y + height - sliceHeight),
-                new Rectangle(sliceWidth, 2 * sliceHeight, sliceWidth, sliceHeight), Color.White, 0f, Vector2.Zero,
-                new Vector2(horizontalStretch, 1f), SpriteEffects.None, 0f);
+            // Draw bottom edge (stretch horizontally)
+            if (width > 2 * sliceWidth)  // Only stretch if the width is greater than the edge slices
+            {
+                spriteBatch.Draw(texture, new Vector2(position.X + sliceWidth, position.Y + height - sliceHeight),
+                    new Rectangle(sliceWidth, 2 * sliceHeight, sliceWidth, sliceHeight), Color.White, 0f, Vector2.Zero,
+                    new Vector2(horizontalStretch, 1f), SpriteEffects.None, 0f);
+            }
 
-            // Draw the bottom-right corner
+            // Draw bottom-right corner (no stretching)
             spriteBatch.Draw(texture, new Vector2(position.X + width - sliceWidth, position.Y + height - sliceHeight),
                 new Rectangle(2 * sliceWidth, 2 * sliceHeight, sliceWidth, sliceHeight), Color.White);
 
