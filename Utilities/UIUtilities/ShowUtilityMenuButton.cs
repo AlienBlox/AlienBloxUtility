@@ -13,10 +13,10 @@ namespace AlienBloxUtility.Utilities.UIUtilities
         public override void OnInitialize()
         {
             _UI = new();
-            _UI.Width.Set(200f, 0f);
+            _UI.Width.Set(50f, 0f);
             _UI.Height.Set(50f, 0f);
-            _UI.Left.Set(-25f, 0f);
-            _UI.Top.Set(-25f, 0f);
+            _UI.Left.Set(-10f, 0f);
+            _UI.Top.Set(-10f, 0f);
             _UI.HAlign = 0f;  // Align to the right (1 = right edge of the screen)
             _UI.VAlign = 1f;  // Align to the bottom (1 = bottom edge of the screen)
 
