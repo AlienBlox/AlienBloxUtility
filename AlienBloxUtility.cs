@@ -22,11 +22,13 @@ namespace AlienBloxUtility
 
                 if (Dir.Exists && !File.Exists(Dir.FullName + "\\tModUnpacker.exe"))
                 {
-                    using (Stream inputStream = InitialiseUtilities.ExtractContentFromAssembly("AlienBloxTools.Utilities.IncludedExes.tModUnpacker.exe"))
-                    {
-                        using FileStream fileStream = new(Dir.FullName + "\\tModUnpacker.exe", FileMode.Create, FileAccess.Write);
-                        inputStream.CopyTo(fileStream);
-                    }
+                    Stream inputStream = InitialiseUtilities.ExtractContentFromAssembly("AlienBloxTools.Utilities.IncludedExes.tModUnpacker.exe");
+                    FileStream fileStream = new(Dir.FullName + "\\tModUnpacker.exe", FileMode.Create, FileAccess.Write);
+
+                    inputStream.CopyTo(fileStream);
+
+                    fileStream.Close();
+                    inputStream.Close();
                 }
             }
             catch (Exception e)
