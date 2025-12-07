@@ -24,17 +24,8 @@ namespace AlienBloxUtility
                 {
                     using (Stream inputStream = InitialiseUtilities.ExtractContentFromAssembly("AlienBloxTools.Utilities.IncludedExes.tModUnpacker.exe"))
                     {
-                        // Define the output file path
-                        string outputFilePath = Dir.FullName + "\\tModUnpacker.exe";
-
-                        // Open the FileStream to write to the file (will create or overwrite the file)
-                        using (FileStream outputStream = new FileStream(outputFilePath, FileMode.Create))
-                        {
-                            // Copy the contents of the inputStream to the outputStream (the file)
-                            inputStream.CopyTo(outputStream);
-                        }
-
-                        Console.WriteLine($"Stream has been copied to {outputFilePath}.");
+                        using FileStream fileStream = new(Dir.FullName + "\\tModUnpacker.exe", FileMode.Create, FileAccess.Write);
+                        inputStream.CopyTo(fileStream);
                     }
                 }
             }
