@@ -1,32 +1,54 @@
+using AlienBloxTools.Utilities;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Terraria.ModLoader;
-using AlienBloxTools.Utilities;
-using System.IO;
 using Terraria;
+using Terraria.IO;
+using Terraria.ModLoader;
 
 namespace AlienBloxUtility
 {
-	// Please read https://github.com/tModLoader/tModLoader/wiki/Basic-tModLoader-Modding-Guide#mod-skeleton-contents for more information about the various files in a mod.
-	public class AlienBloxUtility : Mod
-	{
+    // Please read https://github.com/tModLoader/tModLoader/wiki/Basic-tModLoader-Modding-Guide#mod-skeleton-contents for more information about the various files in a mod.
+    public class AlienBloxUtility : Mod
+    {
         public override void Load()
         {
             try
             {
                 DirectoryInfo Dir = Directory.CreateDirectory(Path.Combine(Main.SavePath, "AlienBloxUtility", "Cache"));
 
-                if (Dir.Exists)
+                if (Dir.Exists && !File.Exists(Dir.FullName + "\\tModUnpacker.exe"))
                 {
-                    Stream TmodUnpacker = InitialiseUtilities.ExtractContentFromAssembly("AlienBloxTools.Utilities.IncludedExes.tModUnpacker.exe");
+                    using (Stream inputStream = InitialiseUtilities.ExtractContentFromAssembly("AlienBloxTools.Utilities.IncludedExes.tModUnpacker.exe"))
+                    {
+                        // Define the output file path
+                        string outputFilePath = Dir.FullName + "\\tModUnpacker.exe";
+
+                        // Open the FileStream to write to the file (will create or overwrite the file)
+                        using (FileStream outputStream = new FileStream(outputFilePath, FileMode.Create))
+                        {
+                            // Copy the contents of the inputStream to the outputStream (the file)
+                            inputStream.CopyTo(outputStream);
+                        }
+
+                        Console.WriteLine($"Stream has been copied to {outputFilePath}.");
+                    }
                 }
             }
             catch (Exception e)
             {
                 Logger.Error(e.Message);
+            }
+        }
+
+        public override void Unload()
+        {
+            if (Directory.Exists(Path.Combine(Main.SavePath, "AlienBloxUtility", "Cache")))
+            {
+                ClearDirectory(Path.Combine(Main.SavePath, "AlienBloxUtility", "Cache"));
             }
         }
 
@@ -45,6 +67,39 @@ namespace AlienBloxUtility
             StreamWriter Writer = new(PathToMakeFile, append, Encoded);
 
             return Writer;
+        }
+
+        static void ClearDirectory(string directoryPath)
+        {
+            // Delete all files in the directory
+            string[] files = Directory.GetFiles(directoryPath);
+            foreach (var file in files)
+            {
+                try
+                {
+                    File.Delete(file);
+                    Console.WriteLine($"File deleted: {file}");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error deleting file {file}: {ex.Message}");
+                }
+            }
+
+            // Delete all subdirectories
+            string[] subdirectories = Directory.GetDirectories(directoryPath);
+            foreach (var subdirectory in subdirectories)
+            {
+                try
+                {
+                    Directory.Delete(subdirectory, true);  // true to delete subdirectories recursively
+                    Console.WriteLine($"Subdirectory deleted: {subdirectory}");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error deleting subdirectory {subdirectory}: {ex.Message}");
+                }
+            }
         }
     }
 }
