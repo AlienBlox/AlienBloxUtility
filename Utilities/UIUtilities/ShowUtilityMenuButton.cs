@@ -20,9 +20,11 @@ namespace AlienBloxUtility.Utilities.UIUtilities
             _UI.HAlign = 0f;  // Align to the right (1 = right edge of the screen)
             _UI.VAlign = 1f;  // Align to the bottom (1 = bottom edge of the screen)
 
-            var buttonText = new UIText("Test");
-            buttonText.HAlign = 0.5f;  // Center the text horizontally
-            buttonText.VAlign = 0.5f;  // Center the text vertically
+            var buttonText = new UIText("Test")
+            {
+                HAlign = 0.5f,  // Center the text horizontally
+                VAlign = 0.5f  // Center the text vertically
+            };
             _UI.Append(buttonText);
 
             Append(_UI);

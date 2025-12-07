@@ -4,12 +4,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Terraria.ModLoader;
+using AlienBloxTools.Utilities;
 
 namespace AlienBloxUtility
 {
 	// Please read https://github.com/tModLoader/tModLoader/wiki/Basic-tModLoader-Modding-Guide#mod-skeleton-contents for more information about the various files in a mod.
 	public class AlienBloxUtility : Mod
 	{
-
+        public override void Load()
+        {
+            InitialiseUtilities.ExtractTMODUnpacker();
+        }
 	}
 }
