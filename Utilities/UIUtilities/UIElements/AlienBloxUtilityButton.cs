@@ -1,5 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Terraria;
+using Terraria.GameContent;
 using Terraria.ModLoader;
 using Terraria.UI;
 
@@ -20,11 +22,13 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIElements
 
         public override void Draw(SpriteBatch spriteBatch)
         {
-            Vector2 Position = new(GetDimensions().X, GetDimensions().Y);
+            Vector2 position = GetDimensions().Position();
 
-            spriteBatch.Draw(ActivateButtonIcon, Position, new Color(255, 255, 255, 128));
-            spriteBatch.Draw(ActivateButtonOutline, Position, new Color(255, 255, 255, 128));
-            spriteBatch.Draw(PowerButtonIcon, Position, new Color(255, 255, 255, 128));
+            spriteBatch.Draw(ModContent.Request<Texture2D>("Terraria/Images/UI/ButtonPlay").Value, position, new Color(255, 255, 255, 128));
+
+            spriteBatch.Draw(ActivateButtonIcon, position, new Color(255, 255, 255, 128));
+            spriteBatch.Draw(ActivateButtonOutline, position, Color.White);
+            spriteBatch.Draw(PowerButtonIcon, position, Color.White);
 
             base.Draw(spriteBatch);
         }
