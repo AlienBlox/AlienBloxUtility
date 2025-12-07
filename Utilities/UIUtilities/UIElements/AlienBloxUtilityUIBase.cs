@@ -4,7 +4,7 @@ using Terraria;
 using Terraria.ModLoader;
 using Terraria.UI;
 
-namespace AlienBloxUtility.Utilities.Abstracts
+namespace AlienBloxUtility.Utilities.UIUtilities.UIElements
 {
     public class AlienBloxUtilityUIBase : UIElement
     {
@@ -31,56 +31,58 @@ namespace AlienBloxUtility.Utilities.Abstracts
 
         public override void Draw(SpriteBatch spriteBatch)
         {
+            spriteBatch.Draw(texture, new Vector2(Main.screenWidth / 2, Main.screenHeight / 2), Color.White);
+
             base.Draw(spriteBatch);
 
             // Ensure the texture is loaded
             if (texture == null)
                 return;
 
-            // Get the current position and size of the element
             var dimensions = GetDimensions();
             Vector2 position = dimensions.Position();
             float width = dimensions.Width;
             float height = dimensions.Height;
 
-            // Draw the top-left corner (fixed)
+            //Main.NewText($"Position: {position} Width: {width} Height: {height}");
+
             spriteBatch.Draw(texture, position, new Rectangle(0, 0, sliceWidth, sliceHeight), Color.White);
 
-            // Draw the top edge (stretched horizontally)
+            // Draw top edge (stretch horizontally)
             spriteBatch.Draw(texture, new Vector2(position.X + sliceWidth, position.Y),
-                new Rectangle(sliceWidth, 0, sliceWidth, sliceHeight), Color.White,
-                0f, Vector2.Zero, new Vector2((width - 2 * sliceWidth) / sliceWidth, 1f), SpriteEffects.None, 0f);
+                new Rectangle(sliceWidth, 0, sliceWidth, sliceHeight), Color.White, 0f, Vector2.Zero,
+                new Vector2((width - 2 * sliceWidth) / sliceWidth, 1f), SpriteEffects.None, 0f);
 
-            // Draw the top-right corner (fixed)
+            // Draw top-right corner
             spriteBatch.Draw(texture, new Vector2(position.X + width - sliceWidth, position.Y),
                 new Rectangle(2 * sliceWidth, 0, sliceWidth, sliceHeight), Color.White);
 
-            // Draw the left edge (stretched vertically)
+            // Draw left edge (stretch vertically)
             spriteBatch.Draw(texture, new Vector2(position.X, position.Y + sliceHeight),
-                new Rectangle(0, sliceHeight, sliceWidth, sliceHeight), Color.White,
-                0f, Vector2.Zero, new Vector2(1f, (height - 2 * sliceHeight) / sliceHeight), SpriteEffects.None, 0f);
+                new Rectangle(0, sliceHeight, sliceWidth, sliceHeight), Color.White, 0f, Vector2.Zero,
+                new Vector2(1f, (height - 2 * sliceHeight) / sliceHeight), SpriteEffects.None, 0f);
 
-            // Draw the center (stretched to fit)
+            // Draw center (stretch both horizontally and vertically)
             spriteBatch.Draw(texture, new Vector2(position.X + sliceWidth, position.Y + sliceHeight),
-                new Rectangle(sliceWidth, sliceHeight, sliceWidth, sliceHeight), Color.White,
-                0f, Vector2.Zero, new Vector2((width - 2 * sliceWidth) / sliceWidth, (height - 2 * sliceHeight) / sliceHeight),
+                new Rectangle(sliceWidth, sliceHeight, sliceWidth, sliceHeight), Color.White, 0f, Vector2.Zero,
+                new Vector2((width - 2 * sliceWidth) / sliceWidth, (height - 2 * sliceHeight) / sliceHeight),
                 SpriteEffects.None, 0f);
 
-            // Draw the right edge (stretched vertically)
+            // Draw right edge (stretch vertically)
             spriteBatch.Draw(texture, new Vector2(position.X + width - sliceWidth, position.Y + sliceHeight),
-                new Rectangle(2 * sliceWidth, sliceHeight, sliceWidth, sliceHeight), Color.White,
-                0f, Vector2.Zero, new Vector2(1f, (height - 2 * sliceHeight) / sliceHeight), SpriteEffects.None, 0f);
+                new Rectangle(2 * sliceWidth, sliceHeight, sliceWidth, sliceHeight), Color.White, 0f, Vector2.Zero,
+                new Vector2(1f, (height - 2 * sliceHeight) / sliceHeight), SpriteEffects.None, 0f);
 
-            // Draw the bottom-left corner (fixed)
+            // Draw bottom-left corner
             spriteBatch.Draw(texture, new Vector2(position.X, position.Y + height - sliceHeight),
                 new Rectangle(0, 2 * sliceHeight, sliceWidth, sliceHeight), Color.White);
 
-            // Draw the bottom edge (stretched horizontally)
+            // Draw bottom edge (stretch horizontally)
             spriteBatch.Draw(texture, new Vector2(position.X + sliceWidth, position.Y + height - sliceHeight),
-                new Rectangle(sliceWidth, 2 * sliceHeight, sliceWidth, sliceHeight), Color.White,
-                0f, Vector2.Zero, new Vector2((width - 2 * sliceWidth) / sliceWidth, 1f), SpriteEffects.None, 0f);
+                new Rectangle(sliceWidth, 2 * sliceHeight, sliceWidth, sliceHeight), Color.White, 0f, Vector2.Zero,
+                new Vector2((width - 2 * sliceWidth) / sliceWidth, 1f), SpriteEffects.None, 0f);
 
-            // Draw the bottom-right corner (fixed)
+            // Draw bottom-right corner
             spriteBatch.Draw(texture, new Vector2(position.X + width - sliceWidth, position.Y + height - sliceHeight),
                 new Rectangle(2 * sliceWidth, 2 * sliceHeight, sliceWidth, sliceHeight), Color.White);
         }
