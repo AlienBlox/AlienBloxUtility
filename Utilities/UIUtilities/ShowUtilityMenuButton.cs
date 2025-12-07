@@ -8,7 +8,7 @@ namespace AlienBloxUtility.Utilities.UIUtilities
 {
     public class ShowUtilityMenuButton : UIState
     {
-        private AlienBloxUtilityUIBase _UI;
+        private AlienBloxUtilityButton _UI;
 
         public override void OnInitialize()
         {
