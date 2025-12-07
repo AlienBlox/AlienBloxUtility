@@ -8,11 +8,11 @@ namespace AlienBloxUtility.Utilities.UIUtilities
 {
     public class ShowUtilityMenuButton : UIState
     {
-        private TemplateUI _UI;
+        private AlienBloxUtilityUIBase _UI;
 
         public override void OnInitialize()
         {
-            _UI = new TemplateUI(ModContent.Request<Texture2D>("AlienBloxUtility/Common/Assets/UIGrid").Value);
+            _UI = new();
             _UI.Width.Set(200f, 0f);
             _UI.Height.Set(50f, 0f);
             _UI.Left.Set(-25f, 0f);
