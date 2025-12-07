@@ -20,34 +20,33 @@ namespace AlienBloxUtility.Utilities.UIUtilities
         /// <param name="color"></param>
         public static void DrawNineSlice(this UIState uiState, SpriteBatch spriteBatch, Texture2D texture, float x, float y, float width, float height, Color color)
         {
-            // The texture is expected to be a 3x3 grid (total 9 slices)
-            int sliceWidth = texture.Width / 3;   // Slice width (assuming 3x3 grid)
-            int sliceHeight = texture.Height / 3;  // Slice height (assuming 3x3 grid)
+            int sliceWidth = texture.Width / 3;   // Assuming 3x3 texture layout
+            int sliceHeight = texture.Height / 3;  // Assuming 3x3 texture layout
 
-            // Draw corners (top-left, top-right, bottom-left, bottom-right)
-            spriteBatch.Draw(texture, new Rectangle((int)x, (int)y, sliceWidth, sliceHeight), new Rectangle(0, 0, sliceWidth, sliceHeight), color); // top-left
-            spriteBatch.Draw(texture, new Rectangle((int)(x + width - sliceWidth), (int)y, sliceWidth, sliceHeight), new Rectangle(2 * sliceWidth, 0, sliceWidth, sliceHeight), color); // top-right
-            spriteBatch.Draw(texture, new Rectangle((int)x, (int)(y + height - sliceHeight), sliceWidth, sliceHeight), new Rectangle(0, 2 * sliceHeight, sliceWidth, sliceHeight), color); // bottom-left
-            spriteBatch.Draw(texture, new Rectangle((int)(x + width - sliceWidth), (int)(y + height - sliceHeight), sliceWidth, sliceHeight), new Rectangle(2 * sliceWidth, 2 * sliceHeight, sliceWidth, sliceHeight), color); // bottom-right
+            // Corner positions (top-left, top-right, bottom-left, bottom-right)
+            spriteBatch.Draw(texture, new Rectangle((int)x, (int)y, sliceWidth, sliceHeight), new Rectangle(0, 0, sliceWidth, sliceHeight), color); // Top-left
+            spriteBatch.Draw(texture, new Rectangle((int)(x + width - sliceWidth), (int)y, sliceWidth, sliceHeight), new Rectangle(2 * sliceWidth, 0, sliceWidth, sliceHeight), color); // Top-right
+            spriteBatch.Draw(texture, new Rectangle((int)x, (int)(y + height - sliceHeight), sliceWidth, sliceHeight), new Rectangle(0, 2 * sliceHeight, sliceWidth, sliceHeight), color); // Bottom-left
+            spriteBatch.Draw(texture, new Rectangle((int)(x + width - sliceWidth), (int)(y + height - sliceHeight), sliceWidth, sliceHeight), new Rectangle(2 * sliceWidth, 2 * sliceHeight, sliceWidth, sliceHeight), color); // Bottom-right
 
-            // Draw top and bottom edges (horizontal stretching)
+            // Top and bottom edges (horizontal stretching)
             if (width > 2 * sliceWidth)
             {
-                spriteBatch.Draw(texture, new Rectangle((int)(x + sliceWidth), (int)y, (int)(width - 2 * sliceWidth), sliceHeight), new Rectangle(sliceWidth, 0, sliceWidth, sliceHeight), color); // top
-                spriteBatch.Draw(texture, new Rectangle((int)(x + sliceWidth), (int)(y + height - sliceHeight), (int)(width - 2 * sliceWidth), sliceHeight), new Rectangle(sliceWidth, 2 * sliceHeight, sliceWidth, sliceHeight), color); // bottom
+                spriteBatch.Draw(texture, new Rectangle((int)(x + sliceWidth), (int)y, (int)(width - 2 * sliceWidth), sliceHeight), new Rectangle(sliceWidth, 0, sliceWidth, sliceHeight), color); // Top edge
+                spriteBatch.Draw(texture, new Rectangle((int)(x + sliceWidth), (int)(y + height - sliceHeight), (int)(width - 2 * sliceWidth), sliceHeight), new Rectangle(sliceWidth, 2 * sliceHeight, sliceWidth, sliceHeight), color); // Bottom edge
             }
 
-            // Draw left and right edges (vertical stretching)
+            // Left and right edges (vertical stretching)
             if (height > 2 * sliceHeight)
             {
-                spriteBatch.Draw(texture, new Rectangle((int)x, (int)(y + sliceHeight), sliceWidth, (int)(height - 2 * sliceHeight)), new Rectangle(0, sliceHeight, sliceWidth, sliceHeight), color); // left
-                spriteBatch.Draw(texture, new Rectangle((int)(x + width - sliceWidth), (int)(y + sliceHeight), sliceWidth, (int)(height - 2 * sliceHeight)), new Rectangle(2 * sliceWidth, sliceHeight, sliceWidth, sliceHeight), color); // right
+                spriteBatch.Draw(texture, new Rectangle((int)x, (int)(y + sliceHeight), sliceWidth, (int)(height - 2 * sliceHeight)), new Rectangle(0, sliceHeight, sliceWidth, sliceHeight), color); // Left edge
+                spriteBatch.Draw(texture, new Rectangle((int)(x + width - sliceWidth), (int)(y + sliceHeight), sliceWidth, (int)(height - 2 * sliceHeight)), new Rectangle(2 * sliceWidth, sliceHeight, sliceWidth, sliceHeight), color); // Right edge
             }
 
-            // Draw the center (the part that stretches in both directions)
+            // Center (the part that stretches in both directions)
             if (width > 2 * sliceWidth && height > 2 * sliceHeight)
             {
-                spriteBatch.Draw(texture, new Rectangle((int)(x + sliceWidth), (int)(y + sliceHeight), (int)(width - 2 * sliceWidth), (int)(height - 2 * sliceHeight)), new Rectangle(sliceWidth, sliceHeight, sliceWidth, sliceHeight), color); // center
+                spriteBatch.Draw(texture, new Rectangle((int)(x + sliceWidth), (int)(y + sliceHeight), (int)(width - 2 * sliceWidth), (int)(height - 2 * sliceHeight)), new Rectangle(sliceWidth, sliceHeight, sliceWidth, sliceHeight), color); // Center
             }
         }
 
