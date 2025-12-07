@@ -7,7 +7,7 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.UI;
 
-namespace AlienBloxUtility.Utilities.UIUtilities
+namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
 {
     public class ShowUtilityMenuButton : UIState
     {
@@ -28,7 +28,7 @@ namespace AlienBloxUtility.Utilities.UIUtilities
             Append(_UI);
         }
 
-        public void ToggleDebugPanel(UIMouseEvent evt, UIElement listeningElement)
+        public static void ToggleDebugPanel(UIMouseEvent evt, UIElement listeningElement)
         {
             SoundEngine.PlaySound(SoundID.MenuTick);
             DebugUtilityList.DebugMenuEnabled = !DebugUtilityList.DebugMenuEnabled;
