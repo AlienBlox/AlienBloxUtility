@@ -14,8 +14,12 @@ namespace AlienBloxUtility
     // Please read https://github.com/tModLoader/tModLoader/wiki/Basic-tModLoader-Modding-Guide#mod-skeleton-contents for more information about the various files in a mod.
     public class AlienBloxUtility : Mod
     {
+        public static AlienBloxUtility Instance;
+
         public override void Load()
         {
+            Instance = this;
+
             try
             {
                 DirectoryInfo Dir = Directory.CreateDirectory(Path.Combine(Main.SavePath, "AlienBloxUtility", "Cache"));
@@ -39,6 +43,8 @@ namespace AlienBloxUtility
 
         public override void Unload()
         {
+            Instance = null;
+
             if (Directory.Exists(Path.Combine(Main.SavePath, "AlienBloxUtility", "Cache")))
             {
                 ClearDirectory(Path.Combine(Main.SavePath, "AlienBloxUtility", "Cache"));
