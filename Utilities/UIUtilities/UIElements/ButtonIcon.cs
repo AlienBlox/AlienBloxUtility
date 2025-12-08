@@ -1,6 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 using Terraria;
+using Terraria.Audio;
 using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.Localization;
@@ -72,7 +74,14 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIElements
 
             if (IsMouseHovering || Toggle)
             {
-                spriteBatch.Draw(_texturePrimary, CenterCalculation - new Vector2(_texturePrimary.Width / 2, _texturePrimary.Height / 2), Color.White);
+                Color DrawColor = Color.White;
+
+                if (Toggle)
+                {
+                    DrawColor = new(255, 255, 255, 128);
+                }
+
+                spriteBatch.Draw(_texturePrimary, CenterCalculation - new Vector2(_texturePrimary.Width / 2, _texturePrimary.Height / 2), DrawColor);
             }
 
             if (IsMouseHovering)
@@ -83,6 +92,16 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIElements
             }
 
             spriteBatch.Draw(_textureSecondary, CenterCalculation - new Vector2(_textureSecondary.Width / 2, _textureSecondary.Height / 2), Color.White);
+        }
+
+        public void OnHover(UIMouseEvent Event, UIElement ListeningElement)
+        {
+            SoundEngine.PlaySound(SoundID.MenuTick);
+        }
+
+        public void OnToggle(UIMouseEvent Event, UIElement ListeningElement)
+        {
+            Toggle = !Toggle;
         }
     }
 }

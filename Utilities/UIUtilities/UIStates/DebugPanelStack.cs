@@ -49,6 +49,9 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
                 button.Left.Set(i * (buttonWidth + spacing), 0f); // Space buttons horizontally
                 button.Top.Set(0, 0f); // Keep the buttons aligned at the top
 
+                button.OnMouseOver += button.OnHover;
+                button.OnLeftClick += button.OnToggle;
+
                 // Add click event for the button
                 int index = i; // Capture index for the click event
 
