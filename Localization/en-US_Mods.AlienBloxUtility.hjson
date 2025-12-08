@@ -7,4 +7,13 @@ Buttons: {
 	ExtrasButton: Toggle Extra Utilities Selector Menu
 }
 
+Messages: {
+	PacketSpy: {
+		NotOnMP: Not on multiplayer, Packet Spy disabled
+		MsgBegin: ===PACKET SPY BEGIN===
+		PacketDataReceived: Packet Data Received: MessageType: {0}, Size: {1} Bytes, Time Received: {2} (Unix Time)
+		MsgEnd: ===PACKET SPY END===
+	}
+}
+
 ToggleUtilityBar: Toggle Utility Bar

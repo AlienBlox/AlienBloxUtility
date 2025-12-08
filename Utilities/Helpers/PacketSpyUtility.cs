@@ -2,6 +2,7 @@
 using System;
 using System.IO;
 using Terraria;
+using Terraria.Localization;
 using Terraria.ModLoader;
 
 namespace AlienBloxUtility.Utilities.Helpers
@@ -9,6 +10,8 @@ namespace AlienBloxUtility.Utilities.Helpers
     public class PacketSpyUtility : ModSystem
     {
         public static event Action<byte, long, BinaryReader> OnPacketReceive;
+
+        public static int UnixTime => (int)DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
 
         public override void Load()
         {
@@ -22,10 +25,12 @@ namespace AlienBloxUtility.Utilities.Helpers
 
         public static void RunPacketSpy(byte MessageType, long size, BinaryReader reader)
         {
-            if (DebugUtilityList.PacketSpyEnabled)
+            if (!DebugUtilityList.PacketSpyEnabled)
             {
-                
+                return;
             }
+
+            Main.NewText(Language.GetText("Mods.AlienBloxUtility.Messages.PacketSpy.PacketDataReceived").Format(MessageType, size, UnixTime));
 
             OnPacketReceive?.Invoke(MessageType, size, reader);
         }

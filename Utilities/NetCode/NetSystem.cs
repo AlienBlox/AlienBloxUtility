@@ -10,7 +10,7 @@ namespace AlienBloxUtility.Utilities.NetCode
     {
         public override bool HijackGetData(ref byte messageType, ref BinaryReader reader, int playerNumber)
         {
-            if (Main.netMode == NetmodeID.MultiplayerClient && playerNumber == Main.myPlayer)
+            if (Main.netMode == NetmodeID.MultiplayerClient)
             {
                 PacketSpyUtility.RunPacketSpy(messageType, reader.BaseStream.Length, reader);
             }

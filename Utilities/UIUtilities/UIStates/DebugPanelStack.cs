@@ -7,6 +7,7 @@ using System.Linq;
 using Terraria;
 using Terraria.GameContent.UI.Elements;
 using Terraria.ID;
+using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.UI;
 
@@ -67,6 +68,12 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
 
         public override void Update(GameTime gameTime)
         {
+            if (DebugUtilityList.PacketSpyEnabled && Main.netMode != NetmodeID.MultiplayerClient)
+            {
+                DebugUtilityList.PacketSpyEnabled = false;
+                _buttons[3].Toggle = false;
+            }
+
             if (!SetData)
             {
                 _buttons[0].SetStats(ItemID.GravediggerShovel, "Mods.AlienBloxUtility.Buttons.ConsoleButton", Color.Green);
@@ -94,34 +101,52 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
             base.Update(gameTime);
         }
 
-        public static void ToggleConsole(UIMouseEvent Evt, UIElement Element)
+        public void ToggleConsole(UIMouseEvent Evt, UIElement Element)
         {
-            DebugUtilityList.ConsoleWindowEnabled = !DebugUtilityList.ConsoleWindowEnabled;
+            DebugUtilityList.ConsoleWindowEnabled = _buttons[0].Toggle;
         }
 
-        public static void ToggleStatsButton(UIMouseEvent Evt, UIElement Element)
+        public void ToggleStatsButton(UIMouseEvent Evt, UIElement Element)
         {
-            DebugUtilityList.StatsMenuEnabled = !DebugUtilityList.StatsMenuEnabled;
+            DebugUtilityList.StatsMenuEnabled = _buttons[1].Toggle;
         }
 
-        public static void ToggleDecompilerButton(UIMouseEvent Evt, UIElement Element)
+        public void ToggleDecompilerButton(UIMouseEvent Evt, UIElement Element)
         {
-            DebugUtilityList.DecompilerMenuEnabled = !DebugUtilityList.DecompilerMenuEnabled;
+            DebugUtilityList.DecompilerMenuEnabled = _buttons[2].Toggle;
         }
 
-        public static void TogglePacketSpyButton(UIMouseEvent Evt, UIElement Element)
+        public void TogglePacketSpyButton(UIMouseEvent Evt, UIElement Element)
         {
-            DebugUtilityList.PacketSpyEnabled = !DebugUtilityList.PacketSpyEnabled;
+            if (Main.netMode != NetmodeID.MultiplayerClient)
+            {
+                _buttons[3].Toggle = false;
+                DebugUtilityList.PacketSpyEnabled = false;
+                Main.NewText(Language.GetTextValue("Mods.AlienBloxUtility.Messages.PacketSpy.NotOnMP"));
+
+                return;
+            }
+
+            DebugUtilityList.PacketSpyEnabled = _buttons[3].Toggle;
+
+            if (DebugUtilityList.PacketSpyEnabled)
+            {
+                Main.NewText(Language.GetTextValue("Mods.AlienBloxUtility.Messages.PacketSpy.MsgBegin"));
+            }
+            else
+            {
+                Main.NewText(Language.GetTextValue("Mods.AlienBloxUtility.Messages.PacketSpy.MsgEnd"));
+            }
         }
 
-        public static void ToggleSystemStatsButton(UIMouseEvent Evt, UIElement Element)
+        public void ToggleSystemStatsButton(UIMouseEvent Evt, UIElement Element)
         {
-            DebugUtilityList.MilkerEnabled = !DebugUtilityList.MilkerEnabled;
+            DebugUtilityList.MilkerEnabled = _buttons[4].Toggle;
         }
 
-        public static void ToggleExtrasMenuButton(UIMouseEvent Evt, UIElement Element)
+        public void ToggleExtrasMenuButton(UIMouseEvent Evt, UIElement Element)
         {
-            DebugUtilityList.ExtrasMenuEnabled = !DebugUtilityList.ExtrasMenuEnabled;
+            DebugUtilityList.ExtrasMenuEnabled = _buttons[5].Toggle;
         }
     }
 }
