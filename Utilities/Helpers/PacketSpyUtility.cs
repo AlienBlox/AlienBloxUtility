@@ -1,4 +1,5 @@
 ﻿using AlienBloxUtility.Utilities.Core;
+using AlienBloxUtility.Utilities.NetCode;
 using System;
 using System.IO;
 using Terraria;
@@ -14,16 +15,14 @@ namespace AlienBloxUtility.Utilities.Helpers
 
         public static int UnixTime => (int)DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
 
-        public static int PacketDetectorCounter = 0;
-
         public override void Load()
         {
-            OnPacketReceive += RunPacketSpy;
+            NetSystem.OnPacketReceived += RunPacketSpy;
         }
 
         public override void Unload()
         {
-            OnPacketReceive -= RunPacketSpy;
+            NetSystem.OnPacketReceived -= RunPacketSpy;
         }
 
         public static void RunPacketSpy(byte MessageType, long size, BinaryReader reader)
@@ -33,14 +32,9 @@ namespace AlienBloxUtility.Utilities.Helpers
                 return;
             }
 
-            if (PacketDetectorCounter++ >= 100)
-            {
-                Main.NewText(Language.GetText("Mods.AlienBloxUtility.Messages.PacketSpy.PacketDataReceived").Format(MessageType, size, UnixTime));
-                AlienBloxUtility.Instance.Logger.Info(Language.GetText("Mods.AlienBloxUtility.Messages.PacketSpy.PacketDataReceived").Format(MessageType, size, UnixTime));
-                OnPacketReceive?.Invoke(MessageType, size, reader);
-
-                PacketDetectorCounter = 0;
-            }
+            Main.NewText(Language.GetText("Mods.AlienBloxUtility.Messages.PacketSpy.PacketDataReceived").Format(MessageType, size, UnixTime));
+            AlienBloxUtility.Instance.Logger.Info(Language.GetText("Mods.AlienBloxUtility.Messages.PacketSpy.PacketDataReceived").Format(MessageType, size, UnixTime));
+            OnPacketReceive?.Invoke(MessageType, size, reader);
         }
     }
 }
