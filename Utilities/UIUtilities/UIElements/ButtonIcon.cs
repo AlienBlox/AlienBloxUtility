@@ -79,7 +79,7 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIElements
 
             if (IsMouseHovering || Toggle)
             {
-                Color DrawColor = Color.White;
+                Color DrawColor = SelectorColor;
 
                 if (Toggle && !IsMouseHovering)
                 {
