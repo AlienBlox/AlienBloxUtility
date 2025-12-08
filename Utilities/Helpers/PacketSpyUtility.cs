@@ -15,16 +15,6 @@ namespace AlienBloxUtility.Utilities.Helpers
 
         public static int UnixTime => (int)DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
 
-        public override void Load()
-        {
-            NetSystem.OnPacketReceived += RunPacketSpy;
-        }
-
-        public override void Unload()
-        {
-            NetSystem.OnPacketReceived -= RunPacketSpy;
-        }
-
         public static void RunPacketSpy(byte MessageType, long size, BinaryReader reader)
         {
             if (!DebugUtilityList.PacketSpyEnabled)
