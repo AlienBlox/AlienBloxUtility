@@ -20,8 +20,9 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIElements
         private int ItemID = -1;
         private string _textureLocation;
         private bool _Loaded = false;
+        private Color SelectorColor;
 
-        public ButtonIcon(string Key, int itemID)
+        public ButtonIcon(string Key, int itemID, Color selectorColor)
         {
             ItemID = itemID;
             Localization = Language.GetOrRegister(Key);
@@ -34,15 +35,19 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIElements
             }
 
             _textureSecondary = TextureAssets.Item[itemID].Value;
+
+            SelectorColor = selectorColor;
         }
 
-        public ButtonIcon(string Key, string texture)
+        public ButtonIcon(string Key, string texture, Color selectorColor)
         {
             Localization = Language.GetOrRegister(Key);
             _textureLocation = texture;
 
             _texturePrimary = ModContent.Request<Texture2D>("AlienBloxUtility/Common/Assets/OrbSelector").Value;
             _textureSecondary = ModContent.Request<Texture2D>(texture).Value;
+
+            SelectorColor = selectorColor;
         }
 
         public override void Draw(SpriteBatch spriteBatch)
@@ -76,9 +81,9 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIElements
             {
                 Color DrawColor = Color.White;
 
-                if (Toggle)
+                if (Toggle && !IsMouseHovering)
                 {
-                    DrawColor = new(255, 255, 255, 128);
+                    DrawColor = new(SelectorColor.R, SelectorColor.G, SelectorColor.B, 128);
                 }
 
                 spriteBatch.Draw(_texturePrimary, CenterCalculation - new Vector2(_texturePrimary.Width / 2, _texturePrimary.Height / 2), DrawColor);
@@ -91,7 +96,7 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIElements
                 Main.LocalPlayer.cursorItemIconText = Localization.Value;
             }
 
-            spriteBatch.Draw(_textureSecondary, CenterCalculation - new Vector2(_textureSecondary.Width / 2, _textureSecondary.Height / 2), Color.White);
+            spriteBatch.Draw(_textureSecondary, CenterCalculation - new Vector2(_textureSecondary.Width / 2, _textureSecondary.Height / 2), SelectorColor);
         }
 
         public void OnHover(UIMouseEvent Event, UIElement ListeningElement)

@@ -25,12 +25,12 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
             _myPanel.HAlign = .5f;
             _myPanel.VAlign = 0.05f;
 
-            _buttons = CreateButtonRow(_myPanel, 5, 50, 50, 10, "Mods.AlienBloxUtility.Buttons.ConsoleButton", ItemID.IronPickaxe);
+            _buttons = CreateButtonRow(_myPanel, 5, 50, 50, 10, "Mods.AlienBloxUtility.Buttons.ConsoleButton", ItemID.IronPickaxe, Color.White);
 
             Append(_myPanel);
         }
 
-        private List<ButtonIcon> CreateButtonRow(UIElement parent, int buttonCount, int buttonWidth, int buttonHeight, int spacing, string key, int itemID)
+        private List<ButtonIcon> CreateButtonRow(UIElement parent, int buttonCount, int buttonWidth, int buttonHeight, int spacing, string key, int itemID, Color selectorColor)
         {
             List<ButtonIcon> buttonList = new List<ButtonIcon>();
 
@@ -43,7 +43,7 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
             for (int i = 0; i < buttonCount; i++)
             {
                 // Create a new button
-                ButtonIcon button = new(key, itemID);
+                ButtonIcon button = new(key, itemID, selectorColor);
                 button.Width.Set(buttonWidth, 0f);
                 button.Height.Set(buttonHeight, 0f);
                 button.Left.Set(i * (buttonWidth + spacing), 0f); // Space buttons horizontally
