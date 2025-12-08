@@ -82,7 +82,7 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIElements
                 Main.LocalPlayer.cursorItemIconText = Localization.Value;
             }
 
-            spriteBatch.Draw(_textureSecondary, CenterCalculation + new Vector2(_texturePrimary.Width / 2, _texturePrimary.Height / 2), Color.White);
+            spriteBatch.Draw(_textureSecondary, CenterCalculation - new Vector2(_textureSecondary.Width / 2, _textureSecondary.Height / 2), Color.White);
         }
     }
 }
