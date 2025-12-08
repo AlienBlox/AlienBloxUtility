@@ -28,7 +28,7 @@ namespace AlienBloxUtility.Utilities.Helpers
 
         public static void RunPacketSpy(byte MessageType, long size, BinaryReader reader)
         {
-            if (!DebugUtilityList.PacketSpyEnabled || !Main.LocalPlayer.AlienBloxUtility().CanReceivePacketSpyMessage)
+            if (!DebugUtilityList.PacketSpyEnabled)
             {
                 return;
             }
@@ -41,8 +41,6 @@ namespace AlienBloxUtility.Utilities.Helpers
 
                 PacketDetectorCounter = 0;
             }
-
-            Main.LocalPlayer.AlienBloxUtility().CanReceivePacketSpyMessage = false;
         }
     }
 }

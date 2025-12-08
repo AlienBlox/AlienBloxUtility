@@ -7,9 +7,6 @@ namespace AlienBloxUtility.Utilities.Core
     public class UtilityPlayer : ModPlayer
     {
         public bool ItemUsage = true;
-        public bool CanReceivePacketSpyMessage = true;
-
-        public int PacketTimer = 0;
 
         public override void ResetEffects()
         {
@@ -37,19 +34,6 @@ namespace AlienBloxUtility.Utilities.Core
             }
             
             return base.CanUseItem(item);
-        }
-
-        public override void PostUpdate()
-        {
-            if (!CanReceivePacketSpyMessage)
-            {
-                if (PacketTimer++ >= 60)
-                {
-                    CanReceivePacketSpyMessage = true;
-
-                    PacketTimer = 0;
-                }
-            }
         }
     }
 }
