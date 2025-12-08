@@ -1,6 +1,10 @@
 Buttons: {
 	ConsoleButton: AlienBlox's Utility Interactive Console
-	ExtrasButton: Extras
+	StatsButton: Toggle Stats Bar
+	DecompilerButton: Toggle Decompiler
+	PacketSpyButton: Toggle Packet Spy Utility
+	MilkerButton: Toggle Debug Stats Menu
+	ExtrasButton: Toggle Extra Utilities Selector Menu
 }
 
 ToggleUtilityBar: Toggle Utility Bar

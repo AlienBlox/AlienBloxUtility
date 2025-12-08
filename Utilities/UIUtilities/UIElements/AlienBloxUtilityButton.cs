@@ -66,5 +66,10 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIElements
 
             base.Draw(spriteBatch);
         }
+
+        public void HoverOver(MouseEvent mouseEvent, UIElement Element)
+        {
+            Main.LocalPlayer.AlienBloxUtility().ItemUsage = false;
+        }
     }
 }

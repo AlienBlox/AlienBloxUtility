@@ -17,9 +17,10 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIElements
         public LocalizedText Localization { get; private set; }
         private Texture2D _texturePrimary;
         private Texture2D _textureSecondary;
-        private int ItemID = -1;
-        private string _textureLocation;
+        private readonly int ItemID = -1;
+        private readonly string _textureLocation;
         private bool _Loaded = false;
+        private bool _Locked = false;
         private Color SelectorColor;
 
         public ButtonIcon(string Key, int itemID, Color selectorColor)
@@ -96,7 +97,24 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIElements
                 Main.LocalPlayer.cursorItemIconText = Localization.Value;
             }
 
-            spriteBatch.Draw(_textureSecondary, CenterCalculation - new Vector2(_textureSecondary.Width / 2, _textureSecondary.Height / 2), SelectorColor);
+            spriteBatch.Draw(_textureSecondary, CenterCalculation - new Vector2(_textureSecondary.Width / 2, _textureSecondary.Height / 2), Color.White);
+        }
+
+        public override void Update(GameTime gameTime)
+        {
+            if (IsMouseHovering)
+            {
+                Main.LocalPlayer.AlienBloxUtility().ItemUsage = false;
+            }
+
+            base.Update(gameTime);
+        }
+
+        public override void MouseOut(UIMouseEvent evt)
+        {
+            Main.LocalPlayer.AlienBloxUtility().ItemUsage = true;
+
+            base.MouseOut(evt);
         }
 
         public void OnHover(UIMouseEvent Event, UIElement ListeningElement)
@@ -107,6 +125,51 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIElements
         public void OnToggle(UIMouseEvent Event, UIElement ListeningElement)
         {
             Toggle = !Toggle;
+        }
+
+        /// <summary>
+        /// Sets the stats for this button
+        /// </summary>
+        /// <param name="textureSecondary"></param>
+        /// <param name="localizationKey"></param>
+        /// <param name="buttonColor"></param>
+        public void SetStats(string textureSecondary, string localizationKey, Color buttonColor)
+        {
+            if (_Locked)
+            {
+                return;
+            }
+
+            SelectorColor = buttonColor;
+            Localization = Language.GetText(localizationKey);
+            _textureSecondary = ModContent.Request<Texture2D>(textureSecondary).Value;
+
+            _Locked = true;
+        }
+
+        /// <summary>
+        /// Sets the stats for this button
+        /// </summary>
+        /// <param name="item"></param>
+        /// <param name="localizationKey"></param>
+        /// <param name="buttonColor"></param>
+        public void SetStats(int item, string localizationKey, Color buttonColor)
+        {
+            if (_Locked)
+            {
+                return;
+            }
+
+            if (ModContent.GetModItem(item) == null)
+            {
+                Main.instance.LoadItem(item);
+            }
+
+            SelectorColor = buttonColor;
+            Localization = Language.GetText(localizationKey);
+            _textureSecondary = TextureAssets.Item[item].Value;
+
+            _Locked = true;
         }
     }
 }

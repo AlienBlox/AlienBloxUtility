@@ -1,8 +1,10 @@
-﻿using AlienBloxUtility.Utilities.UIUtilities.UIElements;
+﻿using AlienBloxUtility.Utilities.Core;
+using AlienBloxUtility.Utilities.UIUtilities.UIElements;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 using System.Linq;
+using Terraria;
 using Terraria.GameContent.UI.Elements;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -16,16 +18,13 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
 
         private List<ButtonIcon> _buttons;
 
+        private bool SetData = false;
+
         public override void OnInitialize()
         {
             _myPanel = new UIElement();
-            _myPanel.Width.Set(50 * 5f * 2, 0f); // Set width
-            _myPanel.Height.Set(50f, 0f); // Set height
-            _myPanel.Left.Set(_myPanel.Width.Pixels / 4, 0);
-            _myPanel.HAlign = .5f;
-            _myPanel.VAlign = 0.05f;
 
-            _buttons = CreateButtonRow(_myPanel, 5, 50, 50, 10, "Mods.AlienBloxUtility.Buttons.ConsoleButton", ItemID.IronPickaxe, Color.White);
+            _buttons = CreateButtonRow(_myPanel, 6, 50, 50, 10, "Mods.AlienBloxUtility.Buttons.ConsoleButton", ItemID.IronPickaxe, Color.White);
 
             Append(_myPanel);
         }
@@ -68,7 +67,61 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
 
         public override void Update(GameTime gameTime)
         {
+            if (!SetData)
+            {
+                _buttons[0].SetStats(ItemID.GravediggerShovel, "Mods.AlienBloxUtility.Buttons.ConsoleButton", Color.Green);
+                _buttons[0].OnLeftClick += ToggleConsole;
+
+                _buttons[1].SetStats(ItemID.Zenith, "Mods.AlienBloxUtility.Buttons.StatsButton", Color.Purple);
+                _buttons[1].OnLeftClick += ToggleStatsButton;
+
+                _buttons[2].SetStats(ItemID.DirtBlock, "Mods.AlienBloxUtility.Buttons.DecompilerButton", Color.Brown);
+                _buttons[2].OnLeftClick += ToggleDecompilerButton;
+
+                _buttons[3].SetStats(ItemID.PaperAirplaneA, "Mods.AlienBloxUtility.Buttons.PacketSpyButton", Color.MintCream);
+                _buttons[3].OnLeftClick += TogglePacketSpyButton;
+
+                _buttons[4].SetStats(ItemID.FlaskofNanites, "Mods.AlienBloxUtility.Buttons.MilkerButton", Color.LightBlue);
+                _buttons[4].OnLeftClick += ToggleStatsButton;
+
+                _buttons[5].SetStats(ItemID.AngelStatue, "Mods.AlienBloxUtility.Buttons.ExtrasButton", Color.DarkSlateGray);
+                _buttons[5].OnLeftClick += ToggleExtrasMenuButton;
+
+                SetData = true;
+            }
+            
+
             base.Update(gameTime);
+        }
+
+        public static void ToggleConsole(UIMouseEvent Evt, UIElement Element)
+        {
+            DebugUtilityList.ConsoleWindowEnabled = !DebugUtilityList.ConsoleWindowEnabled;
+        }
+
+        public static void ToggleStatsButton(UIMouseEvent Evt, UIElement Element)
+        {
+            DebugUtilityList.StatsMenuEnabled = !DebugUtilityList.StatsMenuEnabled;
+        }
+
+        public static void ToggleDecompilerButton(UIMouseEvent Evt, UIElement Element)
+        {
+            DebugUtilityList.DecompilerMenuEnabled = !DebugUtilityList.DecompilerMenuEnabled;
+        }
+
+        public static void TogglePacketSpyButton(UIMouseEvent Evt, UIElement Element)
+        {
+            DebugUtilityList.PacketSpyEnabled = !DebugUtilityList.PacketSpyEnabled;
+        }
+
+        public static void ToggleSystemStatsButton(UIMouseEvent Evt, UIElement Element)
+        {
+            DebugUtilityList.MilkerEnabled = !DebugUtilityList.MilkerEnabled;
+        }
+
+        public static void ToggleExtrasMenuButton(UIMouseEvent Evt, UIElement Element)
+        {
+            DebugUtilityList.ExtrasMenuEnabled = !DebugUtilityList.ExtrasMenuEnabled;
         }
     }
 }
