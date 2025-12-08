@@ -1,4 +1,6 @@
 Buttons: {
-	ConsoleButton: AlienBlox Utility Console
+	ConsoleButton: AlienBlox's Utility Interactive Console
 	ExtrasButton: Extras
 }
+
+ToggleUtilityBar: Toggle Utility Bar

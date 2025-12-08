@@ -1,7 +1,11 @@
 ﻿using AlienBloxUtility.Utilities.UIUtilities.UIElements;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using System.Collections.Generic;
 using System.Linq;
 using Terraria.GameContent.UI.Elements;
+using Terraria.ID;
+using Terraria.ModLoader;
 using Terraria.UI;
 
 namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
@@ -9,51 +13,52 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
     public class DebugPanelStack : UIState
     {
         private UIElement _myPanel;
-        private ButtonIcon _consoleButton;
-        private ButtonIcon _extrasButton;
+
+        private List<ButtonIcon> _buttons;
 
         public override void OnInitialize()
         {
             _myPanel = new UIElement();
-            _myPanel.Width.Set(200f * 2, 0f); // Set width
-            _myPanel.Height.Set(40f, 0f); // Set height
+            _myPanel.Width.Set(50 * 5f * 2, 0f); // Set width
+            _myPanel.Height.Set(50f, 0f); // Set height
+            _myPanel.Left.Set(_myPanel.Width.Pixels / 4, 0);
             _myPanel.HAlign = .5f;
             _myPanel.VAlign = 0.05f;
 
-            _consoleButton = CreateChild("Mods.AlienBloxUtility.Buttons.ConsoleButton");
-            _extrasButton = CreateChild("Mods.AlienBloxUtility.Buttons.ExtrasButton");
-            _myPanel.Append(_consoleButton);
-            _myPanel.Append(_extrasButton);
+            _buttons = CreateButtonRow(_myPanel, 5, 50, 50, 0, "Mods.AlienBloxUtility.Buttons.ConsoleButton", ItemID.IronPickaxe);
 
             Append(_myPanel);
         }
 
-        private ButtonIcon CreateChild(string LocalizationKey)
+        private List<ButtonIcon> CreateButtonRow(UIElement parent, int buttonCount, int buttonWidth, int buttonHeight, int spacing, string key, int itemID)
         {
-            ButtonIcon child = new ButtonIcon(LocalizationKey);
-            child.Height.Set(40f, 0f); // Set a fixed height for the children
-            child.Width.Set(0f, 1f); // Allow the text to auto-size based on its content
+            List<ButtonIcon> buttonList = new List<ButtonIcon>();
 
-            // Calculate the positioning for each child element
-            int childCount = _myPanel.Children.Count();
-            float spacing = 10f; // Space between children
+            //parent.Width.Set(buttonWidth * buttonCount + (spacing * buttonCount), 0f);
+            //parent.Height.Set(buttonHeight, 0f);
+            //parent.Left.Set(_myPanel.Width.Pixels / 4, 0);
 
-            // Calculate total width used by children and the remaining space
-            float totalChildrenWidth = childCount * child.Width.Pixels;
-            float totalSpacing = (childCount - 1) * spacing;
-            float remainingWidth = _myPanel.Width.Pixels - totalChildrenWidth - totalSpacing;
+            for (int i = 0; i < buttonCount; i++)
+            {
+                // Create a new button
+                ButtonIcon button = new(key, itemID);
+                button.Width.Set(buttonWidth, 0f);
+                button.Height.Set(buttonHeight, 0f);
+                button.Left.Set(i * (buttonWidth + spacing), 0f); // Space buttons horizontally
+                button.Top.Set(0, 0f); // Keep the buttons aligned at the top
 
-            // Calculate the starting position for the first child (centered)
-            float startX = spacing + (remainingWidth / (childCount + 1));
+                // Add click event for the button
+                int index = i; // Capture index for the click event
 
-            // Set the Left position based on the calculated start position
-            child.Left.Set(startX + (child.Width.Pixels + spacing) * (childCount - 1), 0f);
-            child.Top.Set(25f, 0f); // Set the Y position to center it vertically within the parent
+                // Add the button to the parent panel
+                parent.Append(button);
 
-            // Add the child to the parent panel
-            _myPanel.Append(child);
+                // Add the button to the list to return later
+                buttonList.Add(button);
+            }
 
-            return child;         
+            // Return the list of created buttons
+            return buttonList;
         }
 
         public override void Update(GameTime gameTime)

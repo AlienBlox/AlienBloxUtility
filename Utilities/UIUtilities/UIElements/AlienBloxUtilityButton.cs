@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
+using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.UI;
 
@@ -27,6 +28,10 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIElements
         {
             if (IsMouseHovering)
             {
+                Main.LocalPlayer.cursorItemIconEnabled = true;
+                Main.LocalPlayer.cursorItemIconID = -1;
+                Main.LocalPlayer.cursorItemIconText = Language.GetTextValue("Mods.AlienBloxUtility.ToggleUtilityBar");
+
                 Main.LocalPlayer.mouseInterface = true;
                 DrawColor = Main.DiscoColor;
             }

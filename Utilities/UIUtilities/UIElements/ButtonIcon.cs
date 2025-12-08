@@ -1,8 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System.Linq;
 using Terraria;
-using Terraria.GameContent.UI.Elements;
+using Terraria.GameContent;
+using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.UI;
@@ -11,67 +11,78 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIElements
 {
     public class ButtonIcon : UIElement
     {
-        public LocalizedText Title;
+        public bool Toggle = false;
+        public LocalizedText Localization { get; private set; }
+        private Texture2D _texturePrimary;
+        private Texture2D _textureSecondary;
+        private int ItemID = -1;
+        private string _textureLocation;
+        private bool _Loaded = false;
 
-        private Texture2D ButtonBar;
-        private Texture2D ButtonOutline;
-
-        public bool ButtonClick;
-        Color ButtonColor = Color.White;
-        
-        private UIText TitleBar;
-
-        public ButtonIcon(string LocalizationKey)
+        public ButtonIcon(string Key, int itemID)
         {
-            Title = Language.GetOrRegister(LocalizationKey);
-        }
+            ItemID = itemID;
+            Localization = Language.GetOrRegister(Key);
 
-        public override void OnInitialize()
-        {
-            if (Title != null)
+            _texturePrimary = ModContent.Request<Texture2D>("AlienBloxUtility/Common/Assets/OrbSelector").Value;
+
+            if (ModContent.GetModItem(itemID) == null)
             {
-                TitleBar = new(Title);
+                Main.instance.LoadItem(itemID);
             }
 
-            Width.Set(0, Parent.Children.Count());
-            Height.Set(0, 100);
-            VAlign = 0.5f;
-            HAlign = 1 / Parent.Children.Count();
+            _textureSecondary = TextureAssets.Item[itemID].Value;
+        }
 
-            Append(TitleBar);
+        public ButtonIcon(string Key, string texture)
+        {
+            Localization = Language.GetOrRegister(Key);
+            _textureLocation = texture;
+
+            _texturePrimary = ModContent.Request<Texture2D>("AlienBloxUtility/Common/Assets/OrbSelector").Value;
+            _textureSecondary = ModContent.Request<Texture2D>(texture).Value;
         }
 
         public override void Draw(SpriteBatch spriteBatch)
         {
             Vector2 Position = GetDimensions().Position();
+            Vector2 Dimensions = GetDimensions().Size();
+            Vector2 CenterCalculation = Position + Dimensions / 2;
+
+            if (!_Loaded)
+            {
+                _texturePrimary = ModContent.Request<Texture2D>("AlienBloxUtility/Common/Assets/OrbSelector").Value;
+
+                if (ItemID != -1)
+                {
+                    if (ModContent.GetModItem(ItemID) == null)
+                    {
+                        Main.instance.LoadItem(ItemID);
+                    }
+
+                    _textureSecondary = TextureAssets.Item[ItemID].Value;
+                }
+                else
+                {
+                    _textureSecondary = ModContent.Request<Texture2D>(_textureLocation).Value;
+                }
+
+                _Loaded = true;
+            }
+
+            if (IsMouseHovering || Toggle)
+            {
+                spriteBatch.Draw(_texturePrimary, CenterCalculation - new Vector2(_texturePrimary.Width / 2, _texturePrimary.Height / 2), Color.White);
+            }
 
             if (IsMouseHovering)
             {
-                ButtonColor = Main.DiscoColor;
-            }
-            else
-            {
-                ButtonColor = Color.Black;
+                Main.LocalPlayer.cursorItemIconEnabled = true;
+                Main.LocalPlayer.cursorItemIconID = -1;
+                Main.LocalPlayer.cursorItemIconText = Localization.Value;
             }
 
-            if (ButtonBar == null || ButtonOutline == null)
-            {
-                ButtonBar = ModContent.Request<Texture2D>("AlienBloxUtility/Common/Assets/ButtonIcon").Value;
-                ButtonOutline = ModContent.Request<Texture2D>("AlienBloxUtility/Common/Assets/ButtonOutline").Value;
-            }
-
-            spriteBatch.Draw(ButtonBar, Position, new Color(255, 255, 255, 128));
-
-            if (!IsMouseHovering && ButtonClick)
-            {
-                spriteBatch.Draw(ButtonOutline, Position, new Color(0, 255, 0));
-            }
-            else
-            {
-                spriteBatch.Draw(ButtonOutline, Position, ButtonColor);
-            }
-
-            base.Draw(spriteBatch);
+            spriteBatch.Draw(_textureSecondary, CenterCalculation + new Vector2(_texturePrimary.Width / 2, _texturePrimary.Height / 2), Color.White);
         }
     }
 }
