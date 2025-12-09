@@ -16,13 +16,25 @@ namespace AlienBloxUtility
     {
         public static AlienBloxUtility Instance;
 
+        public static string ModDumpLocation { get; private set; }
+
+        public static string CacheLocation { get; private set; }
+
+        public static string DecompLocation { get; private set; }
+
         public override void Load()
         {
             Instance = this;
 
             try
             {
+                DirectoryInfo ModDump = Directory.CreateDirectory(Path.Combine(Main.SavePath, "AlienBloxUtility", "ModDump"));
+                DirectoryInfo ModDecomp = Directory.CreateDirectory(Path.Combine(Main.SavePath, "AlienBloxUtility", "ModDecompiledLocation"));
                 DirectoryInfo Dir = Directory.CreateDirectory(Path.Combine(Main.SavePath, "AlienBloxUtility", "Cache"));
+
+                ModDumpLocation = ModDump.FullName;
+                DecompLocation = ModDecomp.FullName;
+                CacheLocation = Dir.FullName;
 
                 if (Dir.Exists && !File.Exists(Dir.FullName + "\\tModUnpacker.exe"))
                 {

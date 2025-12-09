@@ -1,5 +1,7 @@
 ﻿using AlienBloxUtility.Utilities.Core;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using Terraria;
 using Terraria.GameInput;
 using Terraria.Localization;
@@ -10,6 +12,23 @@ namespace AlienBloxUtility
 {
     public static class AlienBloxUtilitySpecials
     {
+        /// <summary>
+        /// Removes any characters from the input string that are invalid for file names.
+        /// </summary>
+        /// <param name="input">The input string to sanitize.</param>
+        /// <returns>A safe string that can be used as a file name.</returns>
+        public static string SanitizeFileName(this string input)
+        {
+            if (string.IsNullOrEmpty(input))
+                return string.Empty;
+
+            var invalidChars = Path.GetInvalidFileNameChars();
+            var sanitized = new string(input.Where(ch => !invalidChars.Contains(ch)).ToArray());
+
+            // Optionally, trim whitespace
+            return sanitized.Trim();
+        }
+
         public static UtilityPlayer AlienBloxUtility(this Player player)
         {
             return player.GetModPlayer<UtilityPlayer>();
