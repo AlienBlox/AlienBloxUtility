@@ -17,7 +17,7 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIElements
         public LocalizedText Localization { get; private set; }
         private Texture2D _texturePrimary;
         private Texture2D _textureSecondary;
-        private readonly int ItemID = -1;
+        private int ItemID = -1;
         private readonly string _textureLocation;
         private bool _Loaded = false;
         private bool _Locked = false;
@@ -145,6 +145,7 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIElements
 
             SelectorColor = buttonColor;
             Localization = Language.GetText(localizationKey);
+            ItemID = item;
             _textureSecondary = TextureAssets.Item[item].Value;
 
             _Locked = true;
