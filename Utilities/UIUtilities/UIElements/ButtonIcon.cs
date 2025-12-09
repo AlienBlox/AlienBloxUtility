@@ -90,31 +90,9 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIElements
                 spriteBatch.Draw(_texturePrimary, CenterCalculation - new Vector2(_texturePrimary.Width / 2, _texturePrimary.Height / 2), DrawColor);
             }
 
-            if (IsMouseHovering)
-            {
-                Main.LocalPlayer.cursorItemIconEnabled = true;
-                Main.LocalPlayer.cursorItemIconID = -1;
-                Main.LocalPlayer.cursorItemIconText = Localization.Value;
-            }
-
             spriteBatch.Draw(_textureSecondary, CenterCalculation - new Vector2(_textureSecondary.Width / 2, _textureSecondary.Height / 2), Color.White);
-        }
 
-        public override void Update(GameTime gameTime)
-        {
-            if (IsMouseHovering)
-            {
-                Main.LocalPlayer.AlienBloxUtility().ItemUsage = false;
-            }
-
-            base.Update(gameTime);
-        }
-
-        public override void MouseOut(UIMouseEvent evt)
-        {
-            Main.LocalPlayer.AlienBloxUtility().ItemUsage = true;
-
-            base.MouseOut(evt);
+            this.SetUIBase(Localization.Value);
         }
 
         public void OnHover(UIMouseEvent Event, UIElement ListeningElement)

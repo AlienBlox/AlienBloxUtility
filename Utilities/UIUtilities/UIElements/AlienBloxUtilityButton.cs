@@ -24,15 +24,16 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIElements
             PowerButtonIcon = ModContent.Request<Texture2D>("AlienBloxUtility/Common/Assets/PowerButtonIcon").Value;
         }
 
+        protected override void DrawSelf(SpriteBatch spriteBatch)
+        {
+            this.SetUIBase(Language.GetTextValue("Mods.AlienBloxUtility.ToggleUtilityBar"));
+            base.DrawSelf(spriteBatch);
+        }
+
         public override void Draw(SpriteBatch spriteBatch)
         {
             if (IsMouseHovering)
             {
-                Main.LocalPlayer.cursorItemIconEnabled = true;
-                Main.LocalPlayer.cursorItemIconID = -1;
-                Main.LocalPlayer.cursorItemIconText = Language.GetTextValue("Mods.AlienBloxUtility.ToggleUtilityBar");
-
-                Main.LocalPlayer.mouseInterface = true;
                 DrawColor = Main.DiscoColor;
             }
             else
@@ -65,11 +66,6 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIElements
             }
 
             base.Draw(spriteBatch);
-        }
-
-        public void HoverOver(MouseEvent mouseEvent, UIElement Element)
-        {
-            Main.LocalPlayer.AlienBloxUtility().ItemUsage = false;
         }
     }
 }
