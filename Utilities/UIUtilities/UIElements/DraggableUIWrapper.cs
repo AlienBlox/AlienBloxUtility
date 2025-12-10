@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using Terraria;
 using Terraria.GameContent.UI.Elements;
+using Terraria.Localization;
 using Terraria.UI;
 
 namespace AlienBloxUtility.Utilities.UIUtilities.UIElements
@@ -11,6 +12,10 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIElements
         private bool _dragging = false;
         private Vector2 _dragOffset;
 
+        public CloseButton Close;
+
+        public UIText Text;
+
         public Vector2 sizeOffset = new Vector2(400, 200);
 
         public Color BackgroundColorOverride;
@@ -19,19 +24,35 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIElements
         private float _sizeXScale;
         private float _sizeYScale;
 
+        private string Title;
+
+        private LocalizedText Locale;
+
         public Vector2 SizeScale {  get; private set; }
 
-        public DraggableUIWrapper(Vector2 offsetSize, Vector2 scaleSize, Color backgroundC, Color borderC)
+        public DraggableUIWrapper(Vector2 offsetSize, Vector2 scaleSize, Color backgroundC, Color borderC, string title = "Placeholder", bool Localizated = false)
         {
             BorderColorOverride = borderC;
             BackgroundColorOverride = backgroundC;
 
+            if (Localizated)
+            {
+                Locale = Language.GetText(title);
+            }
+
+            Title = title;
             sizeOffset = offsetSize;
             SetScalePercentage(scaleSize.X, scaleSize.Y);
         }
 
         public override void OnInitialize()
         {
+            Text = new(Title);
+            Text.Width.Set(0, 100);
+            Text.Height.Set(25, 0);
+
+            Close = new CloseButton();
+
             Left.Set(Main.screenWidth / 2, 0f);  // Initial X
             Top.Set(Main.screenHeight / 2, 0f);   // Initial Y
             Width.Set(sizeOffset.X, _sizeXScale);
@@ -41,11 +62,16 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIElements
 
             OnLeftMouseUp += MouseUp;
             OnLeftMouseDown += MouseDown;
+
+            Append(Text);
+            Append(Close);
         }
 
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
+
+            Text.SetText(Locale?.Value);
 
             Width.Set(sizeOffset.X, _sizeXScale);
             Height.Set(sizeOffset.Y, _sizeYScale);

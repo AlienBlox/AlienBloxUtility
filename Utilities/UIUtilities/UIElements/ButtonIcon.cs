@@ -18,7 +18,7 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIElements
         private Texture2D _texturePrimary;
         private Texture2D _textureSecondary;
         private int ItemID = -1;
-        private readonly string _textureLocation;
+        private string _textureLocation;
         private bool _Loaded = false;
         private bool _Locked = false;
         private Color SelectorColor;
@@ -125,6 +125,14 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIElements
             _Locked = true;
         }
 
+        public void FixButtonIcons(Texture2D texture)
+        {
+            if (Main.netMode == NetmodeID.MultiplayerClient)
+            {
+                _textureSecondary = texture;
+            }
+        }
+
         /// <summary>
         /// Sets the stats for this button
         /// </summary>
@@ -147,6 +155,7 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIElements
             Localization = Language.GetText(localizationKey);
             ItemID = item;
             _textureSecondary = TextureAssets.Item[item].Value;
+            _textureLocation = TextureAssets.Item[item].Name;
 
             _Locked = true;
         }

@@ -5,7 +5,10 @@ Buttons: {
 	PacketSpyButton: Toggle Packet Spy Utility
 	MilkerButton: Toggle Debug Stats Menu
 	ExtrasButton: Toggle Extra Utilities Selector Menu
+	CloseButton: Close Menu
 }
+
+UI.DecompUI: Decompiler
 
 Messages: {
 	PacketSpy: {
