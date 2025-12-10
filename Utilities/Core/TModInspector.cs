@@ -33,10 +33,20 @@ namespace AlienBloxUtility.Utilities.Core
         }
 
         /// <summary>
+        /// Decompiles a tModLoader mod with thread safety
+        /// </summary>
+        /// <param name="ModName">The mod to decompile</param>
+        public static void DecompileModThreadSafe(string ModName = "AlienBloxUtility")
+        {
+            MessWithMod(ModName);
+            Task.Run(async () => TModInspector.DecompileAssembly(ModName));
+        }
+
+        /// <summary>
         /// Decompiles an assembly of the selected mod
         /// </summary>
         /// <param name="ModName">The mod name to try to find</param>
-        public static void DecompileAssembly(string ModName)
+        public static async Task DecompileAssembly(string ModName)
         {
             if (!Directory.Exists(AlienBloxUtility.ModDumpLocation + $"\\{ModName}") || !ModFileData.TryGetValue(ModName, out var ModContents))
             {
@@ -130,7 +140,7 @@ namespace AlienBloxUtility.Utilities.Core
 
                 if (Environment.OSVersion.Platform == PlatformID.Win32NT && File.Exists($"{AlienBloxUtility.CacheLocation}\\tModUnpacker.exe"))
                 {
-                    TmodExtractorUtility.ExtractTmodFile($"{AlienBloxUtility.DecompLocation}\\{ModName}.tmod", $"{AlienBloxUtility.CacheLocation}\\tModUnpacker.exe");
+                    await AlienBloxUtility.ExtractTmodFile($"{AlienBloxUtility.DecompLocation}\\{ModName}", $"{AlienBloxUtility.CacheLocation}\\tModUnpacker.exe");
                 }
 
                 Directory.Delete(tempDir, true);

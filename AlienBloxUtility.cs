@@ -1,6 +1,7 @@
 using AlienBloxTools.Utilities;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -60,6 +61,69 @@ namespace AlienBloxUtility
             if (Directory.Exists(Path.Combine(Main.SavePath, "AlienBloxUtility", "Cache")))
             {
                 ClearDirectory(Path.Combine(Main.SavePath, "AlienBloxUtility", "Cache"));
+            }
+        }
+
+        /// <summary>
+        /// Extracts an entire tMod file
+        /// </summary>
+        /// <param name="FileLocation">The location of the tMod file (No file extension)</param>
+        /// <param name="UtilityToExtractWith">The utility to extract the tModLoader mod with</param>
+        /// <returns>The task.</returns>
+        public static async Task ExtractTmodFile(string FileLocation, string UtilityToExtractWith)
+        {
+            if (!File.Exists(UtilityToExtractWith))
+            {
+                InitialiseUtilities.ExtractTMODUnpacker();
+
+                if (AlienBloxUtilityConfig.Instance.DecompilerMessages)
+                {
+                    Main.NewText("File not detected!");
+                }   
+
+                return;
+            }
+
+            if (AlienBloxUtilityConfig.Instance.DecompilerMessages)
+            {
+                Main.NewText("File Detected!, launching utility!");
+            }
+
+            if (File.Exists($"{FileLocation}.tmod"))
+            {
+                Main.NewText("Mod File Detected!, starting program!");
+
+                ProcessStartInfo startInfo = new()
+                {
+                    FileName = UtilityToExtractWith,
+                    UseShellExecute = false,
+                    RedirectStandardOutput = true,
+                    Arguments = $"\"{FileLocation}.tmod\""
+                };
+
+                using Process process = new()
+                { StartInfo = startInfo, EnableRaisingEvents = true };
+                process.Start();
+
+                // Async read of output
+                string output = await process.StandardOutput.ReadToEndAsync();
+
+                // Wait asynchronously for exit
+                await Task.Run(() => process.WaitForExit());
+
+                Instance.Logger.Debug("Output:");
+                Instance.Logger.Debug(output);
+
+                if (AlienBloxUtilityConfig.Instance.DecompilerMessages)
+                {
+                    Main.NewText($"Location: {$"{FileLocation}.tmod"}");
+                    Main.NewText("Output:");
+                    Main.NewText(output);
+                }
+            }
+            else
+            {
+                Main.NewText("Mod File unknown.");
             }
         }
 

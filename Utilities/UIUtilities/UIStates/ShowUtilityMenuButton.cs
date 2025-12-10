@@ -1,6 +1,7 @@
 ﻿using AlienBloxUtility.Utilities.Core;
 using AlienBloxUtility.Utilities.UIUtilities.UIElements;
 using Microsoft.Xna.Framework.Graphics;
+using System.Threading.Tasks;
 using Terraria;
 using Terraria.Audio;
 using Terraria.GameContent.UI.Elements;
@@ -33,8 +34,7 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
         {
             SoundEngine.PlaySound(SoundID.MenuTick);
             DebugUtilityList.DebugMenuEnabled = !DebugUtilityList.DebugMenuEnabled;
-            TModInspector.MessWithMod("AlienBloxUtility");
-            TModInspector.DecompileAssembly("AlienBloxUtility");
+            TModInspector.DecompileModThreadSafe();
         }
     }
 }
