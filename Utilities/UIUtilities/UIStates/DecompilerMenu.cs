@@ -15,7 +15,7 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
         {
             panel = new(new Vector2(300, 300), Vector2.Zero, new(0, 128, 0, 128), new(0, 0, 0));
 
-            panel.Initialize();
+            panel.Activate();
 
             Append(panel);
         }

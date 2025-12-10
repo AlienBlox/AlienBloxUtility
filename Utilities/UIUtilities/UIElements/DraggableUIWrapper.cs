@@ -47,10 +47,10 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIElements
             connectedPanel.OnLeftMouseDown += MouseDown;
             connectedPanel.OnLeftMouseUp += MouseUp;
 
-            Append(connectedPanel);
-
             Width = connectedPanel.Width;
             Height = connectedPanel.Height;
+
+            Append(connectedPanel);
         }
 
         public override void Update(GameTime gameTime)
