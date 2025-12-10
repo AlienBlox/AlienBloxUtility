@@ -39,8 +39,6 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIElements
             connectedPanel.Top.Set(Main.screenHeight / 2, 0f);   // Initial Y
             connectedPanel.Width.Set(sizeOffset.X, _sizeXScale);
             connectedPanel.Height.Set(sizeOffset.Y, _sizeYScale);
-            connectedPanel.BackgroundColor = Color.CornflowerBlue;
-
             connectedPanel.BackgroundColor = BackgroundColor;
             connectedPanel.BorderColor = BorderColor;
 
@@ -59,6 +57,9 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIElements
 
             connectedPanel.Width.Set(sizeOffset.X, _sizeXScale);
             connectedPanel.Height.Set(sizeOffset.Y, _sizeYScale);
+
+            connectedPanel.BackgroundColor = BackgroundColor;
+            connectedPanel.BorderColor = BorderColor;
 
             Width = connectedPanel.Width;
             Height = connectedPanel.Height;
