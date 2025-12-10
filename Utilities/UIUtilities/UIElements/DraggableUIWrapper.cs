@@ -48,6 +48,9 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIElements
             connectedPanel.OnLeftMouseUp += MouseUp;
 
             Append(connectedPanel);
+
+            Width = connectedPanel.Width;
+            Height = connectedPanel.Height;
         }
 
         public override void Update(GameTime gameTime)
@@ -57,11 +60,17 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIElements
             connectedPanel.Width.Set(sizeOffset.X, _sizeXScale);
             connectedPanel.Height.Set(sizeOffset.Y, _sizeYScale);
 
+            Width = connectedPanel.Width;
+            Height = connectedPanel.Height;
+
             if (_dragging)
             {
                 // Update panel position while dragging
                 connectedPanel.Left.Set(Main.MouseScreen.X - _dragOffset.X, 0f);
                 connectedPanel.Top.Set(Main.MouseScreen.Y - _dragOffset.Y, 0f);
+
+                Left = connectedPanel.Left;
+                Top = connectedPanel.Top;
             }
         }
 
