@@ -1,0 +1,67 @@
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using Terraria;
+using Terraria.GameContent.UI.Elements;
+using Terraria.UI;
+
+namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
+{
+    public class DecompilerMenu : UIState
+    {
+        public UIPanel panel;
+        private bool dragging = false;
+        private Vector2 dragOffset;
+
+        public override void OnInitialize()
+        {
+            panel = new UIPanel();
+            panel.SetPadding(0);
+            panel.Left.Set(400f, 0f);  // Initial X
+            panel.Top.Set(200f, 0f);   // Initial Y
+            panel.Width.Set(200f, 0f);
+            panel.Height.Set(100f, 0f);
+            panel.BackgroundColor = Color.CornflowerBlue;
+
+            panel.OnLeftMouseDown += MouseDown;
+            panel.OnLeftMouseUp += MouseUp;
+
+            Append(panel);
+        }
+
+        public override void Update(GameTime gameTime)
+        {
+            base.Update(gameTime);
+
+            if (dragging)
+            {
+                // Update panel position while dragging
+                panel.Left.Set(Main.MouseScreen.X - dragOffset.X, 0f);
+                panel.Top.Set(Main.MouseScreen.Y - dragOffset.Y, 0f);
+            }
+        }
+
+        public override void Draw(SpriteBatch spriteBatch)
+        {
+            base.Draw(spriteBatch);
+        }
+
+        public override void OnActivate()
+        {
+            base.OnActivate();
+        }
+
+        public void MouseDown(UIMouseEvent evt, UIElement Element)
+        {
+            if (panel.ContainsPoint(evt.MousePosition))
+            {
+                dragging = true;
+                dragOffset = evt.MousePosition - new Vector2(panel.Left.Pixels, panel.Top.Pixels);
+            }
+        }
+
+        public void MouseUp(UIMouseEvent evt, UIElement Element)
+        {
+            dragging = false;
+        }
+    }
+}
