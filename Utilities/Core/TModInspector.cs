@@ -1,13 +1,14 @@
-﻿using ICSharpCode.Decompiler;
+﻿using AlienBloxUtility.Utilities.Helpers;
+using ICSharpCode.Decompiler;
 using ICSharpCode.Decompiler.CSharp;
 using ICSharpCode.Decompiler.Metadata;
-using Mono.Cecil.Cil;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Threading.Tasks;
-using System.Xml.Linq;
+using Terraria;
+using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.ModLoader.Core;
 
@@ -17,7 +18,7 @@ namespace AlienBloxUtility.Utilities.Core
     {
         public static Dictionary<string, (TmodFile, Assembly)> ModFileData;
 
-        public static Assembly[] LoadedAssemblies = AppDomain.CurrentDomain.GetAssemblies();
+        public static Assembly[] LoadedAssemblies => AppDomain.CurrentDomain.GetAssemblies();
 
         public override void PostSetupContent()
         {
@@ -35,13 +36,19 @@ namespace AlienBloxUtility.Utilities.Core
         /// <param name="ModName">The mod name to try to find</param>
         public static void DecompileAssembly(string ModName)
         {
-            if (!Directory.Exists(AlienBloxUtility.ModDumpLocation + $"\\{ModName}") || !File.Exists(AlienBloxUtility.ModDumpLocation + $"\\{ModName}\\{ModName}.dll") || !ModFileData.TryGetValue(ModName, out var ModContents))
+            if (!Directory.Exists(AlienBloxUtility.ModDumpLocation + $"\\{ModName}") || !ModFileData.TryGetValue(ModName, out var ModContents))
             {
                 return;
             }
 
             try
             {
+                if (AlienBloxUtilityConfig.Instance.DecompilerMessages)
+                {
+                    Main.NewText(Language.GetTextValue("Mods.AlienBloxUtility.Decompiler.DecompilerStart"));
+                    AlienBloxUtility.Instance.Logger.Info(Language.GetTextValue("Mods.AlienBloxUtility.Decompiler.DecompilerStart"));
+                }
+
                 byte[] dllBytes = ModContents.Item1.GetModAssembly();
                 byte[] pdbBytes = ModContents.Item1.GetModPdb();
 
@@ -98,10 +105,21 @@ namespace AlienBloxUtility.Utilities.Core
                     string filePath = Path.Combine(fullDir, type.Name.SanitizeFileName() + ".cs");
                     File.WriteAllText(filePath, code);
 
-                    Console.WriteLine($"Exported {type.FullName.SanitizeFileName()} to {filePath}");
+                    if (AlienBloxUtilityConfig.Instance.DecompilerMessages)
+                    {
+                        string Content = Language.GetText("Mods.AlienBloxUtility.Decompiler.DecompilerFile").Format(type.Name.SanitizeFileName() + ".cs", PacketSpyUtility.UnixTime);
+
+                        Main.NewText(Content);
+                        AlienBloxUtility.Instance.Logger.Info(Content);
+                    }
                 }
 
-                Console.WriteLine("Decompilation complete!");
+                if (AlienBloxUtilityConfig.Instance.DecompilerMessages)
+                {
+                    Main.NewText(Language.GetTextValue("Mods.AlienBloxUtility.Decompiler.DecompilerEnd"));
+                    AlienBloxUtility.Instance.Logger.Info(Language.GetTextValue("Mods.AlienBloxUtility.Decompiler.DecompilerEnd"));
+                }
+
                 Directory.Delete(tempDir, true);
             }
             catch (Exception ex)

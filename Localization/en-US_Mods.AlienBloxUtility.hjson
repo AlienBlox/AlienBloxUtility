@@ -14,6 +14,17 @@ Messages: {
 		PacketDataReceived: Packet Data Received: MessageType: {0}, Size: {1} Bytes, Time Received: {2} (Unix Time)
 		MsgEnd: ===PACKET SPY END===
 	}
+
+	Decompiler: {
+		DecompilerStart: ===DECOMPILER BEGIN===
+		DecompilerFile:	File Decompiled: File Name: {0}, At: {1}
+		DecompilerEnd: ===DECOMPILER END===
+	}
 }
 
 ToggleUtilityBar: Toggle Utility Bar
+
+Configs: {
+	AlienBloxUtilityConfig.DisplayName: AlienBlox's Utility Config
+	AlienBloxUtilityServerConfig.DisplayName: AlienBlox's Utility Server Config
+}
