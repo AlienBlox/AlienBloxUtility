@@ -92,12 +92,16 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIElements
             {
                 _dragging = true;
                 _dragOffset = evt.MousePosition - new Vector2(connectedPanel.Left.Pixels, connectedPanel.Top.Pixels);
+
+                Main.NewText("weee");
             }
         }
 
         public void MouseUp(UIMouseEvent evt, UIElement Element)
         {
             _dragging = false;
+
+            Main.NewText("weee");
         }
 
         public void SetScalePercentage(float x, float y)
