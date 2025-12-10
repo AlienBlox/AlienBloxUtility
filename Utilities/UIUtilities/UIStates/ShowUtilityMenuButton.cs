@@ -34,7 +34,6 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
         {
             SoundEngine.PlaySound(SoundID.MenuTick);
             DebugUtilityList.DebugMenuEnabled = !DebugUtilityList.DebugMenuEnabled;
-            TModInspector.DecompileModThreadSafe();
         }
     }
 }
