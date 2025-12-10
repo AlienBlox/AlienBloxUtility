@@ -64,6 +64,19 @@ namespace AlienBloxUtility
             }
         }
 
+        public static void WriteDebugMsg(string msg)
+        {
+            if (!AlienBloxUtilityConfig.Instance.GeneralDebugMessages)
+            {
+                return;
+            }
+
+            Console.WriteLine(msg);
+            Main.NewText(msg);
+            
+            Instance.Logger.Debug(msg);
+        }
+
         /// <summary>
         /// Extracts an entire tMod file
         /// </summary>

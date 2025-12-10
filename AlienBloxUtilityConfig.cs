@@ -16,6 +16,9 @@ namespace AlienBloxUtility
         [BackgroundColor(25, 50, 25)]
         public bool DecompilerMessages;
 
+        [BackgroundColor(25, 50, 25)]
+        public bool GeneralDebugMessages;
+
         public override void OnLoaded()
         {
             Instance = this;

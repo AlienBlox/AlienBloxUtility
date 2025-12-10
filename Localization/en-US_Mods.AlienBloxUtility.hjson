@@ -33,6 +33,11 @@ Configs: {
 			Label: Decompiler Messages
 			Tooltip: Should the decompilation of a mod also generate a message trail in the chat
 		}
+
+		GeneralDebugMessages: {
+			Label: General Debug Messages
+			Tooltip: ""
+		}
 	}
 
 	AlienBloxUtilityServerConfig.DisplayName: AlienBlox's Utility Server Config

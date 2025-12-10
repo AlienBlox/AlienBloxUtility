@@ -6,16 +6,15 @@ using Terraria.UI;
 
 namespace AlienBloxUtility.Utilities.UIUtilities.UIElements
 {
-    public class DraggableUIWrapper : UIElement
+    public class DraggableUIWrapper : UIPanel
     {
-        public UIPanel connectedPanel;
         private bool _dragging = false;
         private Vector2 _dragOffset;
 
         public Vector2 sizeOffset = new Vector2(400, 200);
 
-        public Color BackgroundColor;
-        public Color BorderColor;
+        public Color BackgroundColorOverride;
+        public Color BorderColorOverride;
 
         private float _sizeXScale;
         private float _sizeYScale;
@@ -24,8 +23,8 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIElements
 
         public DraggableUIWrapper(Vector2 offsetSize, Vector2 scaleSize, Color backgroundC, Color borderC)
         {
-            BorderColor = borderC;
-            BackgroundColor = backgroundC;
+            BorderColorOverride = borderC;
+            BackgroundColorOverride = backgroundC;
 
             sizeOffset = offsetSize;
             SetScalePercentage(scaleSize.X, scaleSize.Y);
@@ -33,45 +32,32 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIElements
 
         public override void OnInitialize()
         {
-            connectedPanel = new();
-            connectedPanel.SetPadding(0);
-            connectedPanel.Left.Set(Main.screenWidth / 2, 0f);  // Initial X
-            connectedPanel.Top.Set(Main.screenHeight / 2, 0f);   // Initial Y
-            connectedPanel.Width.Set(sizeOffset.X, _sizeXScale);
-            connectedPanel.Height.Set(sizeOffset.Y, _sizeYScale);
-            connectedPanel.BackgroundColor = BackgroundColor;
-            connectedPanel.BorderColor = BorderColor;
+            Left.Set(Main.screenWidth / 2, 0f);  // Initial X
+            Top.Set(Main.screenHeight / 2, 0f);   // Initial Y
+            Width.Set(sizeOffset.X, _sizeXScale);
+            Height.Set(sizeOffset.Y, _sizeYScale);
+            BackgroundColor = BackgroundColorOverride;
+            BorderColor = BorderColorOverride;
 
-            connectedPanel.OnLeftMouseDown += MouseDown;
-            connectedPanel.OnLeftMouseUp += MouseUp;
-
-            Width = connectedPanel.Width;
-            Height = connectedPanel.Height;
-
-            Append(connectedPanel);
+            OnLeftMouseUp += MouseUp;
+            OnLeftMouseDown += MouseDown;
         }
 
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
 
-            connectedPanel.Width.Set(sizeOffset.X, _sizeXScale);
-            connectedPanel.Height.Set(sizeOffset.Y, _sizeYScale);
+            Width.Set(sizeOffset.X, _sizeXScale);
+            Height.Set(sizeOffset.Y, _sizeYScale);
 
-            connectedPanel.BackgroundColor = BackgroundColor;
-            connectedPanel.BorderColor = BorderColor;
-
-            Width = connectedPanel.Width;
-            Height = connectedPanel.Height;
+            BackgroundColor = BackgroundColorOverride;
+            BorderColor = BorderColorOverride;
 
             if (_dragging)
             {
                 // Update panel position while dragging
-                connectedPanel.Left.Set(Main.MouseScreen.X - _dragOffset.X, 0f);
-                connectedPanel.Top.Set(Main.MouseScreen.Y - _dragOffset.Y, 0f);
-
-                Left = connectedPanel.Left;
-                Top = connectedPanel.Top;
+                Left.Set(Main.MouseScreen.X - _dragOffset.X, 0f);
+                Top.Set(Main.MouseScreen.Y - _dragOffset.Y, 0f);
             }
         }
 
@@ -89,10 +75,10 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIElements
 
         public void MouseDown(UIMouseEvent evt, UIElement Element)
         {
-            if (connectedPanel.ContainsPoint(evt.MousePosition))
+            if (ContainsPoint(evt.MousePosition))
             {
                 _dragging = true;
-                _dragOffset = evt.MousePosition - new Vector2(connectedPanel.Left.Pixels, connectedPanel.Top.Pixels);
+                _dragOffset = evt.MousePosition - new Vector2(Left.Pixels, Top.Pixels);
             }
         }
 
