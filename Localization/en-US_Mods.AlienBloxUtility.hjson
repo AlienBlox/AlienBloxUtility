@@ -17,7 +17,7 @@ Messages: {
 
 	Decompiler: {
 		DecompilerStart: ===DECOMPILER BEGIN===
-		DecompilerFile:	File Decompiled: File Name: {0}, At: {1}
+		DecompilerFile: File Decompiled: File Name: {0}, At: {1}
 		DecompilerEnd: ===DECOMPILER END===
 	}
 }
@@ -25,6 +25,15 @@ Messages: {
 ToggleUtilityBar: Toggle Utility Bar
 
 Configs: {
-	AlienBloxUtilityConfig.DisplayName: AlienBlox's Utility Config
+	AlienBloxUtilityConfig: {
+		DisplayName: AlienBlox's Utility Config
+		Headers.Debugger: Debugger Configs
+
+		DecompilerMessages: {
+			Label: Decompiler Messages
+			Tooltip: Should the decompilation of a mod also generate a message trail in the chat
+		}
+	}
+
 	AlienBloxUtilityServerConfig.DisplayName: AlienBlox's Utility Server Config
 }

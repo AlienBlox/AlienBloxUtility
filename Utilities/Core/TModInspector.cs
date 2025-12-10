@@ -1,4 +1,5 @@
-﻿using AlienBloxUtility.Utilities.Helpers;
+﻿using AlienBloxTools.Utilities;
+using AlienBloxUtility.Utilities.Helpers;
 using ICSharpCode.Decompiler;
 using ICSharpCode.Decompiler.CSharp;
 using ICSharpCode.Decompiler.Metadata;
@@ -8,6 +9,7 @@ using System.IO;
 using System.Reflection;
 using System.Threading.Tasks;
 using Terraria;
+using Terraria.IO;
 using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.ModLoader.Core;
@@ -45,8 +47,8 @@ namespace AlienBloxUtility.Utilities.Core
             {
                 if (AlienBloxUtilityConfig.Instance.DecompilerMessages)
                 {
-                    Main.NewText(Language.GetTextValue("Mods.AlienBloxUtility.Decompiler.DecompilerStart"));
-                    AlienBloxUtility.Instance.Logger.Info(Language.GetTextValue("Mods.AlienBloxUtility.Decompiler.DecompilerStart"));
+                    Main.NewText(Language.GetTextValue("Mods.AlienBloxUtility.Messages.Decompiler.DecompilerStart"));
+                    AlienBloxUtility.Instance.Logger.Info(Language.GetTextValue("Mods.AlienBloxUtility.Messages.Decompiler.DecompilerStart"));
                 }
 
                 byte[] dllBytes = ModContents.Item1.GetModAssembly();
@@ -107,7 +109,7 @@ namespace AlienBloxUtility.Utilities.Core
 
                     if (AlienBloxUtilityConfig.Instance.DecompilerMessages)
                     {
-                        string Content = Language.GetText("Mods.AlienBloxUtility.Decompiler.DecompilerFile").Format(type.Name.SanitizeFileName() + ".cs", PacketSpyUtility.UnixTime);
+                        string Content = Language.GetText("Mods.AlienBloxUtility.Messages.Decompiler.DecompilerFile").Format(type.Name.SanitizeFileName() + ".cs", PacketSpyUtility.UnixTime);
 
                         Main.NewText(Content);
                         AlienBloxUtility.Instance.Logger.Info(Content);
@@ -116,8 +118,19 @@ namespace AlienBloxUtility.Utilities.Core
 
                 if (AlienBloxUtilityConfig.Instance.DecompilerMessages)
                 {
-                    Main.NewText(Language.GetTextValue("Mods.AlienBloxUtility.Decompiler.DecompilerEnd"));
-                    AlienBloxUtility.Instance.Logger.Info(Language.GetTextValue("Mods.AlienBloxUtility.Decompiler.DecompilerEnd"));
+                    Main.NewText(Language.GetTextValue("Mods.AlienBloxUtility.Messages.Decompiler.DecompilerEnd"));
+                    AlienBloxUtility.Instance.Logger.Info(Language.GetTextValue("Mods.AlienBloxUtility.Messages.Decompiler.DecompilerEnd"));
+                }
+
+                string DecompModPath = $"{AlienBloxUtility.DecompLocation}\\{ModName}\\";
+
+                File.WriteAllBytes(DecompModPath + $"{ModName}.dll", ModContents.Item1.GetModAssembly());
+                File.WriteAllBytes(DecompModPath + $"{ModName}.pdb", ModContents.Item1.GetModPdb());
+                File.WriteAllBytes($"{AlienBloxUtility.DecompLocation}\\{ModName}.tmod", File.ReadAllBytes(ModContents.Item1.path));
+
+                if (Environment.OSVersion.Platform == PlatformID.Win32NT && File.Exists($"{AlienBloxUtility.CacheLocation}\\tModUnpacker.exe"))
+                {
+                    TmodExtractorUtility.ExtractTmodFile($"{AlienBloxUtility.DecompLocation}\\{ModName}.tmod", $"{AlienBloxUtility.CacheLocation}\\tModUnpacker.exe");
                 }
 
                 Directory.Delete(tempDir, true);
