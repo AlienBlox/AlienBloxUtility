@@ -11,26 +11,87 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
 {
     public class DecompilerMenu : UIState
     {
+        public UIText[] TextExamples;
+
         public DraggableUIWrapper panel;
+
+        public UIPanel backingPanel;
+
+        public UIList modList;
+
+        public UIScrollbar scrollBar;
 
         private bool Fixer = false;
 
         public override void OnInitialize()
         {
+            TextExamples = new UIText[120];
+
+            for (int i = 0; i < TextExamples.Length; i++)
+            {
+                TextExamples[i] = new($"Test-{i}");
+            }
+
+            try
+            {
+                foreach (var example in TextExamples)
+                {
+                    example.Height.Set(20, 0);
+                    example.Width.Set(200, 0);
+                }
+
+            }
+            catch
+            {
+
+            }
+            
             panel = new(new Vector2(300, 500), Vector2.Zero, new(0, 128, 0, 128), new(0, 0, 0), Language.GetText("Mods.AlienBloxUtility.UI.DecompUI").Value, true);
+            scrollBar = new UIScrollbar();
 
+            backingPanel = new UIPanel();
+            backingPanel.Width.Set(0, .9f);
+            backingPanel.Height.Set(0, .9f);
 
+            backingPanel.VAlign = 0.6f;
+            backingPanel.HAlign = 0.5f;
+            backingPanel.BackgroundColor = new(0, 128, 0);
+
+            modList = [];
+
+            modList.HAlign = 0.5f;
+            modList.VAlign = 0.5f;
+
+            modList.Width.Set(0, 1);
+            modList.Height.Set(0, 1);
+
+            modList.SetScrollbar(scrollBar);
+            modList.Append(scrollBar);
+
+            panel.SetPadding(5);
+
+            backingPanel.Append(modList);
+
+            panel.Append(backingPanel);
+
+            if (TextExamples != null)
+            {
+                modList.AddRange(TextExamples);
+            }
+
+            modList.Recalculate();
+            modList.RecalculateChildren();
 
             Append(panel);
         }
 
-        public void OnClick(UIMouseEvent evt, UIElement element)
+        public static void OnClick(UIMouseEvent evt, UIElement element)
         {
             DebugUtilityList.DecompilerMenuEnabled = false;
 
             ModContent.GetInstance<DebugPanelStackRender>().Element.buttons[2].Toggle = false;
         }
-
+        
         public override void Update(GameTime gameTime)
         {
             if (!Fixer)
