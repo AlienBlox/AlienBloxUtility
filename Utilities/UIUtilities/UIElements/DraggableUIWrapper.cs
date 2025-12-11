@@ -26,14 +26,18 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIElements
 
         private string Title;
 
+        private readonly bool effectsForUIChild;
+
         public LocalizedText Locale { get; private set; }
 
         public Vector2 SizeScale { get; private set; }
 
-        public DraggableUIWrapper(Vector2 offsetSize, Vector2 scaleSize, Color backgroundC, Color borderC, string title = "Placeholder", bool Localizated = false)
+        public DraggableUIWrapper(Vector2 offsetSize, Vector2 scaleSize, Color backgroundC, Color borderC, string title = "Placeholder", bool Localizated = false, bool ApplyEffects = true)
         {
             BorderColorOverride = borderC;
             BackgroundColorOverride = backgroundC;
+
+            effectsForUIChild = ApplyEffects;
 
             if (Localizated)
             {
@@ -89,7 +93,7 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIElements
 
         public override void Draw(SpriteBatch spriteBatch)
         {
-            this.SetUIBase(string.Empty, true);
+            this.SetUIBase(string.Empty, effectsForUIChild);
 
             base.Draw(spriteBatch);
         }

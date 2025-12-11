@@ -11,6 +11,7 @@ Buttons: {
 UI: {
 	DecompUI: Decompiler
 	Conhost: Console Menu
+	ConTypeLine: Command Input...
 }
 
 Messages: {
