@@ -23,6 +23,8 @@ namespace AlienBloxUtility
 
         public static string DecompLocation { get; private set; }
 
+        public static string LogLocation { get; private set; }
+
         public override void Load()
         {
             Instance = this;
@@ -32,10 +34,12 @@ namespace AlienBloxUtility
                 DirectoryInfo ModDump = Directory.CreateDirectory(Path.Combine(Main.SavePath, "AlienBloxUtility", "ModDump"));
                 DirectoryInfo ModDecomp = Directory.CreateDirectory(Path.Combine(Main.SavePath, "AlienBloxUtility", "ModDecompiledLocation"));
                 DirectoryInfo Dir = Directory.CreateDirectory(Path.Combine(Main.SavePath, "AlienBloxUtility", "Cache"));
+                DirectoryInfo Log = Directory.CreateDirectory(Path.Combine(Main.SavePath, "AlienBloxUtility", "Logs"));
 
                 ModDumpLocation = ModDump.FullName;
                 DecompLocation = ModDecomp.FullName;
                 CacheLocation = Dir.FullName;
+                LogLocation = Log.FullName;
 
                 if (Dir.Exists && !File.Exists(Dir.FullName + "\\tModUnpacker.exe"))
                 {
@@ -58,7 +62,7 @@ namespace AlienBloxUtility
         {
             Instance = null;
 
-            if (Directory.Exists(Path.Combine(Main.SavePath, "AlienBloxUtility", "Cache")))
+            if (Directory.Exists(Path.Combine(Main.SavePath, "AlienBloxUtility", "Cache")) && AlienBloxUtilityServerConfig.Instance.ClearCache)
             {
                 ClearDirectory(Path.Combine(Main.SavePath, "AlienBloxUtility", "Cache"));
             }

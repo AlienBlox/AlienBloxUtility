@@ -16,6 +16,7 @@ namespace AlienBloxUtility
         [BackgroundColor(25, 50, 25)]
         public bool DecompilerMessages;
 
+        [DefaultValue(false)]
         [BackgroundColor(25, 50, 25)]
         public bool GeneralDebugMessages;
 
@@ -31,6 +32,11 @@ namespace AlienBloxUtility
         public override ConfigScope Mode => ConfigScope.ServerSide;
 
         public static AlienBloxUtilityServerConfig Instance;
+
+        [Header("Debugger")]
+        [DefaultValue(false)]
+        [BackgroundColor(25, 50, 25)]
+        public bool ClearCache;
 
         public override void OnLoaded()
         {

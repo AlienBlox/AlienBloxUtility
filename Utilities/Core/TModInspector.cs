@@ -271,7 +271,7 @@ namespace AlienBloxUtility.Utilities.Core
                 Mods.Add(new(M.Name));
             }
 
-            return Mods.ToArray();
+            return [.. Mods];
         }
     }
 }
