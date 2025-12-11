@@ -2,6 +2,7 @@
 using AlienBloxUtility.Utilities.UIUtilities.UIElements;
 using AlienBloxUtility.Utilities.UIUtilities.UIRenderers;
 using Microsoft.Xna.Framework;
+using Terraria.GameContent.UI.Elements;
 using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.UI;
@@ -17,6 +18,8 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
         public override void OnInitialize()
         {
             panel = new(new Vector2(300, 500), Vector2.Zero, new(0, 128, 0, 128), new(0, 0, 0), Language.GetText("Mods.AlienBloxUtility.UI.DecompUI").Value, true);
+
+
 
             Append(panel);
         }
