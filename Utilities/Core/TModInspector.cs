@@ -1,5 +1,6 @@
 ﻿using AlienBloxTools.Utilities;
 using AlienBloxUtility.Utilities.Helpers;
+using AlienBloxUtility.Utilities.UIUtilities.UIElements;
 using ICSharpCode.Decompiler;
 using ICSharpCode.Decompiler.CSharp;
 using ICSharpCode.Decompiler.Metadata;
@@ -255,6 +256,22 @@ namespace AlienBloxUtility.Utilities.Core
             {
                 AlienBloxUtility.Instance.Logger.Error($"Can't set mod named '{ModName}':" + ex.Message);
             }
+        }
+
+        /// <summary>
+        /// Returns a list of mods to be decompiled at the decompiler
+        /// </summary>
+        /// <returns>The thing for every mod</returns>
+        public static DecompilerModListDisplay[] GetAllMods()
+        {
+            List<DecompilerModListDisplay> Mods = [];
+
+            foreach (Mod M in ModLoader.Mods)
+            {
+                Mods.Add(new(M.Name));
+            }
+
+            return Mods.ToArray();
         }
     }
 }

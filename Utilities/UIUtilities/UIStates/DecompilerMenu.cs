@@ -11,6 +11,7 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
 {
     public class DecompilerMenu : UIState
     {
+        public DecompilerModListDisplay[] modListDecomp;
 
         public DraggableUIWrapper panel;
 
@@ -43,6 +44,8 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
             modList.Width.Set(0, 1);
             modList.Height.Set(0, 1);
 
+            scrollBar.VAlign = 0.5f;
+
             modList.SetScrollbar(scrollBar);
             modList.Append(scrollBar);
 
@@ -66,6 +69,8 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
         {
             if (!Fixer)
             {
+                modListDecomp = TModInspector.GetAllMods();
+                modList.AddRange(modListDecomp);
                 panel.Close.OnLeftClick += OnClick;
 
                 Fixer = true;
