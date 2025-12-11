@@ -27,7 +27,7 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
             MainPanel = new();
             SidePanel = new();
             CommandPanel = new();
-            CommandBox = new(Language.GetText("Mods.AlienBloxUtility.UI.ConTypeLine").Value);
+            CommandBox = new("");
 
             Conhost.SetPadding(15);
 
@@ -41,7 +41,7 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
             CommandBox.Height.Set(-5, .05f);
             CommandBox.BackgroundColor = new(0, 128, 0, 128);
             CommandBox.VAlign = 1;
-            CommandBox.SetText(Language.GetText("Mods.AlienBloxUtility.UI.ConTypeLine").Value);
+            CommandBox.IgnoresMouseInteraction = false;
 
             MainPanel.BackgroundColor = new(0, 128, 0);
             SidePanel.BackgroundColor = new(0, 175, 0);
