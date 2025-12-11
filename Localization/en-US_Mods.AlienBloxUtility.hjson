@@ -1,4 +1,4 @@
-﻿Buttons: {
+Buttons: {
 	ConsoleButton: AlienBlox's Utility Interactive Console
 	StatsButton: Toggle Stats Bar
 	DecompilerButton: Toggle Decompiler
@@ -8,7 +8,10 @@
 	CloseButton: Close Menu
 }
 
-UI.DecompUI: Decompiler
+UI: {
+	DecompUI: Decompiler
+	Conhost: Console Menu
+}
 
 Messages: {
 	PacketSpy: {
@@ -43,5 +46,13 @@ Configs: {
 		}
 	}
 
-	AlienBloxUtilityServerConfig.DisplayName: AlienBlox's Utility Server Config
+	AlienBloxUtilityServerConfig: {
+		DisplayName: AlienBlox's Utility Server Config
+		Headers.Debugger: Debugger Header
+
+		ClearCache: {
+			Label: Clear Cache
+			Tooltip: ""
+		}
+	}
 }

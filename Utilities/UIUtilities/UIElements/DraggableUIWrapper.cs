@@ -26,9 +26,9 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIElements
 
         private string Title;
 
-        private LocalizedText Locale;
+        public LocalizedText Locale { get; private set; }
 
-        public Vector2 SizeScale {  get; private set; }
+        public Vector2 SizeScale { get; private set; }
 
         public DraggableUIWrapper(Vector2 offsetSize, Vector2 scaleSize, Color backgroundC, Color borderC, string title = "Placeholder", bool Localizated = false)
         {
