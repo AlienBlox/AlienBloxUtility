@@ -11,7 +11,6 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
 {
     public class DecompilerMenu : UIState
     {
-        public UIText[] TextExamples;
 
         public DraggableUIWrapper panel;
 
@@ -25,27 +24,6 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
 
         public override void OnInitialize()
         {
-            TextExamples = new UIText[120];
-
-            for (int i = 0; i < TextExamples.Length; i++)
-            {
-                TextExamples[i] = new($"Test-{i}");
-            }
-
-            try
-            {
-                foreach (var example in TextExamples)
-                {
-                    example.Height.Set(20, 0);
-                    example.Width.Set(200, 0);
-                }
-
-            }
-            catch
-            {
-
-            }
-            
             panel = new(new Vector2(300, 500), Vector2.Zero, new(0, 128, 0, 128), new(0, 0, 0), Language.GetText("Mods.AlienBloxUtility.UI.DecompUI").Value, true);
             scrollBar = new UIScrollbar();
 
@@ -73,14 +51,6 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
             backingPanel.Append(modList);
 
             panel.Append(backingPanel);
-
-            if (TextExamples != null)
-            {
-                modList.AddRange(TextExamples);
-            }
-
-            modList.Recalculate();
-            modList.RecalculateChildren();
 
             Append(panel);
         }
