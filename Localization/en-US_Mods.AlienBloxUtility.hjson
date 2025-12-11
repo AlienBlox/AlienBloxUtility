@@ -13,6 +13,11 @@ UI: {
 	Conhost: Console Menu
 	ConTypeLine: Command Input...
 	PerfBar: Working RAM Usage: {0} MB | Private RAM Usage: {1} MB | CPU: {2}% | GC: {3} MB
+
+	StatsBar: {
+		PrimaryStats: Melee Damage Modifier: {0}% | Magic Damage Modifier: {1}% | Ranged Damage Modifier: {2}% | Summon Damage Modifier: {3}% | Generic Damage Modifier: {4}%
+		SecondaryStats: Luck: {0} Pts | PVP Deaths: {1} | PVE Deaths: {2}
+	}
 }
 
 Messages: {
