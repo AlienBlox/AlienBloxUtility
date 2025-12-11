@@ -27,9 +27,9 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIRenderers
         {
             if (DebugUtilityList.DecompilerMenuEnabled)
             {
-                if (_element.CurrentState == null)
+                if (_element?.CurrentState == null)
                 {
-                    _element.SetState(Element);
+                    _element?.SetState(Element);
                 }
 
                 _element?.Update(gameTime);

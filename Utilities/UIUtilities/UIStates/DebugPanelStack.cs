@@ -90,7 +90,7 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
                 buttons[3].OnLeftClick += TogglePacketSpyButton;
 
                 buttons[4].SetStats(ItemID.FlaskofNanites, "Mods.AlienBloxUtility.Buttons.MilkerButton", Color.LightBlue);
-                buttons[4].OnLeftClick += ToggleStatsButton;
+                buttons[4].OnLeftClick += ToggleSystemStatsButton;
 
                 buttons[5].SetStats(ItemID.AngelStatue, "Mods.AlienBloxUtility.Buttons.ExtrasButton", Color.DarkSlateGray);
                 buttons[5].OnLeftClick += ToggleExtrasMenuButton;

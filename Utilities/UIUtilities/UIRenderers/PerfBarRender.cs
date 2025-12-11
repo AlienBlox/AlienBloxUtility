@@ -9,9 +9,9 @@ using Terraria.UI;
 namespace AlienBloxUtility.Utilities.UIUtilities.UIRenderers
 {
     [Autoload(Side = ModSide.Client)]
-    public class ConHostRender : ModSystem
+    public class PerfBarRender : ModSystem
     {
-        internal ConHostSystem Element;
+        internal PerfBar Element;
 
         private UserInterface _element;
 
@@ -25,7 +25,7 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIRenderers
 
         public override void UpdateUI(GameTime gameTime)
         {
-            if (DebugUtilityList.ConsoleWindowEnabled)
+            if (DebugUtilityList.MilkerEnabled)
             {
                 if (_element?.CurrentState == null)
                 {
@@ -38,6 +38,8 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIRenderers
             {
                 _element?.SetState(null);
             }
+
+            Element?.Update(gameTime);
         }
 
         public override void ModifyInterfaceLayers(List<GameInterfaceLayer> layers)
@@ -46,7 +48,7 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIRenderers
             if (mouseTextIndex != -1)
             {
                 layers.Insert(mouseTextIndex, new LegacyGameInterfaceLayer(
-                    "AlienBloxUtility: Console Host System",
+                    "AlienBloxUtility: Performance Bar",
                     delegate
                     {
                         _element.Draw(Main.spriteBatch, new GameTime());
