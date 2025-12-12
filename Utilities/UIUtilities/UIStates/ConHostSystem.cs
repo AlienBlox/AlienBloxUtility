@@ -2,10 +2,11 @@
 using AlienBloxUtility.Utilities.UIUtilities.UIElements;
 using AlienBloxUtility.Utilities.UIUtilities.UIRenderers;
 using Microsoft.Xna.Framework;
+using Terraria;
 using Terraria.GameContent.UI.Elements;
+using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
-using Terraria.ModLoader.UI;
 using Terraria.UI;
 
 namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
@@ -18,6 +19,8 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
 
         public UIPanel MainPanel, SidePanel, CommandPanel, ClearConsole, ExportConsole;
 
+        public SpriteButton SendCommand;
+
         public UIScrollbar PanelScroll, ConSysScroll;
         public UIList BackingList, BackingConSysUI;
 
@@ -27,6 +30,7 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
 
         public override void OnInitialize()
         {
+            SendCommand = new($"Terraria/Images/Item_{ItemID.PaperAirplaneA}", Language.GetText("Mods.AlienBloxUtility.UI.SendCmd"));
             ConSysScroll = new();
             PanelScroll = new();
 
@@ -64,6 +68,10 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
 
             Conhost = new(new(650, 450), Vector2.Zero, new(0, 128, 0, 128), new(0, 0, 0), Language.GetText("Mods.AlienBloxUtility.UI.Conhost").Value, true, false);
 
+            BackingConSysUI.VAlign = 0;
+            BackingConSysUI.HAlign = .5f;
+            BackingConSysUI.Height.Set(0, .95f);
+            BackingConSysUI.Width.Set(0, 1f);
             BackingConSysUI.SetScrollbar(ConSysScroll);
             BackingConSysUI.Append(ConSysScroll);
 
@@ -79,16 +87,23 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
 
             Conhost.SetPadding(15);
 
+            CommandPanel.VAlign = .5f;
+            CommandPanel.HAlign = 0f;
             CommandPanel.Width.Set(0, .75f);
-            CommandPanel.Height.Set(-10, .9f);
+            CommandPanel.Height.Set(-10, 1f);
             CommandPanel.BackgroundColor = new(0, 0, 0);
             CommandPanel.BorderColor = new(255, 255, 255);
 
+            SendCommand.Width.Set(0, .1f);
+            SendCommand.Height.Set(0, 1f);
+            SendCommand.VAlign = SendCommand.HAlign = 1f;
+
             CommandBox.SetTextMaxLength(100);
-            CommandBox.Width.Set(0, .75f);
+            CommandBox.Width.Set(0, 1f);
             CommandBox.Height.Set(0, .05f);
             CommandBox.BackgroundColor = new(0, 128, 0, 128);
             CommandBox.VAlign = 1;
+            CommandBox.HAlign = 0;
             CommandBox.IgnoresMouseInteraction = false;
 
             MainPanel.BackgroundColor = new(0, 128, 0);
@@ -110,8 +125,10 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
 
             Conhost.Append(MainPanel);
             MainPanel.Append(SidePanel);
-            MainPanel.Append(CommandBox);
+            
             MainPanel.Append(CommandPanel);
+            CommandPanel.Append(CommandBox);
+            CommandBox.Append(SendCommand);
             CommandPanel.Append(BackingConSysUI);
 
             BackingList.AddRange([ClearConsole, ExportConsole]);

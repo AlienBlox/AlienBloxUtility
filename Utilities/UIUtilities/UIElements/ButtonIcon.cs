@@ -146,9 +146,16 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIElements
                 return;
             }
 
-            if (ModContent.GetModItem(item) == null)
+            try
             {
-                Main.instance.LoadItem(item);
+                if (ModContent.GetModItem(item) == null)
+                {
+                    Main.instance.LoadItem(item);
+                }
+            }
+            catch
+            {
+                _textureSecondary = ModContent.Request<Texture2D>("AlienBloxUtility/Common/Assets/Placeholder").Value;
             }
 
             SelectorColor = buttonColor;
