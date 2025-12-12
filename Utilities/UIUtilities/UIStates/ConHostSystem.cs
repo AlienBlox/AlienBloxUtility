@@ -14,38 +14,58 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
     {
         public DraggableUIWrapper Conhost;
 
-        public UIButton<string> ClearConsole, ExportConsole;
-
         public UIText ClearConsoleText, ExportConsoleText;
 
-        public UIPanel MainPanel, SidePanel, CommandPanel;
+        public UIPanel MainPanel, SidePanel, CommandPanel, ClearConsole, ExportConsole;
 
-        public UIScrollbar PanelScroll;
-        public UIList BackingList;
+        public UIScrollbar PanelScroll, ConSysScroll;
+        public UIList BackingList, BackingConSysUI;
 
-        public UITextBox CommandBox;
+        public UITextBoxImproved CommandBox;
 
         public bool Fix;
 
         public override void OnInitialize()
         {
+            ConSysScroll = new();
             PanelScroll = new();
+
+            BackingConSysUI = [];
             BackingList = [];
 
-            ClearConsole = new(Language.GetText("Mods.AlienBloxUtility.UI.ClearConsole").Value);
-            ExportConsole = new(Language.GetText("Mods.AlienBloxUtility.UI.SaveLogs").Value);
+            ClearConsole = new();
+            ExportConsole = new();
 
-            ClearConsoleText = new(Language.GetText("Mods.AlienBloxUtility.UI.ClearConsole"));
-            ExportConsoleText = new(Language.GetText("Mods.AlienBloxUtility.UI.SaveLogs").Value);
+            ConSysScroll.HAlign = 1f;
+            ConSysScroll.VAlign = .5f;
+            ConSysScroll.Height.Set(0, 1);
+
+            ClearConsole.Width.Set(0, 1f);
+            //ClearConsole.Height.Set(0, .25f);
+            ClearConsole.Height.Set(30, 0);
+            ExportConsole.Width.Set(0, 1f);
+            //ExportConsole.Height.Set(0, .25f);
+            ExportConsole.Height.Set(30, 0);
+
+            ClearConsoleText = new(Language.GetText("Mods.AlienBloxUtility.UI.ClearConsole"), .7f);
+            ExportConsoleText = new(Language.GetText("Mods.AlienBloxUtility.UI.SaveLogs"), .7f);
 
             ExportConsoleText.Width.Set(0, 1);
-            ExportConsoleText.Height.Set(0, .05f);
-            ClearConsoleText.IgnoresMouseInteraction = ExportConsoleText.IgnoresMouseInteraction = true;
+            ExportConsoleText.Height.Set(0, 1f);
 
-            ClearConsoleText.Width = ExportConsoleText.Width;
-            ClearConsoleText.Height = ExportConsoleText.Height;
+            ClearConsoleText.IgnoresMouseInteraction = ExportConsoleText.IgnoresMouseInteraction = true;
+            ClearConsoleText.Width.Percent = ExportConsoleText.Width.Percent;
+            ClearConsoleText.Height.Percent = ExportConsoleText.Height.Percent;
+            ClearConsoleText.VAlign = ExportConsoleText.VAlign = .5f;
+            ClearConsoleText.HAlign = ExportConsoleText.HAlign = .5f;
+
+            PanelScroll.HAlign = 1;
+            PanelScroll.VAlign = .5f;
 
             Conhost = new(new(650, 450), Vector2.Zero, new(0, 128, 0, 128), new(0, 0, 0), Language.GetText("Mods.AlienBloxUtility.UI.Conhost").Value, true, false);
+
+            BackingConSysUI.SetScrollbar(ConSysScroll);
+            BackingConSysUI.Append(ConSysScroll);
 
             BackingList.Width.Percent = BackingList.Height.Percent = 1f;
             BackingList.SetScrollbar(PanelScroll);
@@ -60,13 +80,13 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
             Conhost.SetPadding(15);
 
             CommandPanel.Width.Set(0, .75f);
-            CommandPanel.Height.Set(0, .9f);
+            CommandPanel.Height.Set(-10, .9f);
             CommandPanel.BackgroundColor = new(0, 0, 0);
             CommandPanel.BorderColor = new(255, 255, 255);
 
-            CommandBox.SetTextMaxLength(40);
+            CommandBox.SetTextMaxLength(100);
             CommandBox.Width.Set(0, .75f);
-            CommandBox.Height.Set(-5, .05f);
+            CommandBox.Height.Set(0, .05f);
             CommandBox.BackgroundColor = new(0, 128, 0, 128);
             CommandBox.VAlign = 1;
             CommandBox.IgnoresMouseInteraction = false;
@@ -86,18 +106,18 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
 
             MainPanel.SetPadding(5);
 
-            ClearConsole.Append(ClearConsoleText);
-            ExportConsole.Append(ExportConsoleText);
-
-            BackingList.Add(ClearConsole);
-            BackingList.Add(ExportConsole);
-
             SidePanel.Append(BackingList);
 
             Conhost.Append(MainPanel);
             MainPanel.Append(SidePanel);
             MainPanel.Append(CommandBox);
             MainPanel.Append(CommandPanel);
+            CommandPanel.Append(BackingConSysUI);
+
+            BackingList.AddRange([ClearConsole, ExportConsole]);
+
+            ClearConsole.Append(ClearConsoleText);
+            ExportConsole.Append(ExportConsoleText);
 
             Append(Conhost);
         }
@@ -106,8 +126,8 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
         {
             if (!Fix)
             {
-                ClearConsole.SetText(Language.GetText("Mods.AlienBloxUtility.UI.ClearConsole").Value);
-                ExportConsole.SetText(Language.GetText("Mods.AlienBloxUtility.UI.SaveLogs").Value);
+                ClearConsoleText.SetText(Language.GetText("Mods.AlienBloxUtility.UI.ClearConsole"));
+                ExportConsoleText.SetText(Language.GetText("Mods.AlienBloxUtility.UI.SaveLogs"));
                 Conhost.Close.OnLeftClick += LeftClick;
 
                 Fix = true;

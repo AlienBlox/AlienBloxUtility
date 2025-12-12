@@ -55,6 +55,9 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
 
             panel.Append(backingPanel);
 
+            modListDecomp = TModInspector.GetAllMods();
+            modList.AddRange(modListDecomp);
+
             Append(panel);
         }
 
@@ -69,8 +72,6 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
         {
             if (!Fixer)
             {
-                modListDecomp = TModInspector.GetAllMods();
-                modList.AddRange(modListDecomp);
                 panel.Close.OnLeftClick += OnClick;
 
                 Fixer = true;
