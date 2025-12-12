@@ -39,7 +39,8 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
             ExportConsoleText = new(Language.GetText("Mods.AlienBloxUtility.UI.SaveLogs").Value);
 
             ExportConsoleText.Width.Set(0, 1);
-            ExportConsoleText.Height.Set(30, 0);
+            ExportConsoleText.Height.Set(0, .05f);
+            ClearConsoleText.IgnoresMouseInteraction = ExportConsoleText.IgnoresMouseInteraction = true;
 
             ClearConsoleText.Width = ExportConsoleText.Width;
             ClearConsoleText.Height = ExportConsoleText.Height;
@@ -90,8 +91,6 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
 
             BackingList.Add(ClearConsole);
             BackingList.Add(ExportConsole);
-
-            BackingList.RecalculateChildren();
 
             SidePanel.Append(BackingList);
 
