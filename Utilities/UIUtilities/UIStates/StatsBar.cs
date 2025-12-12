@@ -46,11 +46,11 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
             Player Plr = Main.LocalPlayer;
 
             StatDisplay.SetText(Language.GetText("Mods.AlienBloxUtility.UI.StatsBar.PrimaryStats").Format(
-                Plr.GetDamage(Terraria.ModLoader.DamageClass.Melee).Flat,
-                Plr.GetDamage(Terraria.ModLoader.DamageClass.Magic).Flat,
-                Plr.GetDamage(Terraria.ModLoader.DamageClass.Ranged).Flat,
-                Plr.GetDamage(Terraria.ModLoader.DamageClass.Summon).Flat,
-                Plr.GetDamage(Terraria.ModLoader.DamageClass.Generic).Flat
+                Plr.GetDamage(Terraria.ModLoader.DamageClass.Melee).Additive,
+                Plr.GetDamage(Terraria.ModLoader.DamageClass.Magic).Additive,
+                Plr.GetDamage(Terraria.ModLoader.DamageClass.Ranged).Additive,
+                Plr.GetDamage(Terraria.ModLoader.DamageClass.Summon).Additive,
+                Plr.GetDamage(Terraria.ModLoader.DamageClass.Generic).Additive
             ));
 
             StatDisplaySecondary.SetText(Language.GetText("Mods.AlienBloxUtility.UI.StatsBar.SecondaryStats").Format(
