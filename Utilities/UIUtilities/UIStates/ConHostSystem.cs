@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework;
 using Terraria.GameContent.UI.Elements;
 using Terraria.Localization;
 using Terraria.ModLoader;
+using Terraria.ModLoader.UI;
 using Terraria.UI;
 
 namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
@@ -13,16 +14,42 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
     {
         public DraggableUIWrapper Conhost;
 
-        public UIPanel MainPanel;
-        public UIPanel SidePanel;
-        public UIPanel CommandPanel;
+        public UIButton<string> ClearConsole, ExportConsole;
+
+        public UIText ClearConsoleText, ExportConsoleText;
+
+        public UIPanel MainPanel, SidePanel, CommandPanel;
+
+        public UIScrollbar PanelScroll;
+        public UIList BackingList;
+
         public UITextBox CommandBox;
 
         public bool Fix;
 
         public override void OnInitialize()
         {
+            PanelScroll = new();
+            BackingList = [];
+
+            ClearConsole = new(Language.GetText("Mods.AlienBloxUtility.UI.ClearConsole").Value);
+            ExportConsole = new(Language.GetText("Mods.AlienBloxUtility.UI.SaveLogs").Value);
+
+            ClearConsoleText = new(Language.GetText("Mods.AlienBloxUtility.UI.ClearConsole"));
+            ExportConsoleText = new(Language.GetText("Mods.AlienBloxUtility.UI.SaveLogs").Value);
+
+            ExportConsoleText.Width.Set(0, 1);
+            ExportConsoleText.Height.Set(30, 0);
+
+            ClearConsoleText.Width = ExportConsoleText.Width;
+            ClearConsoleText.Height = ExportConsoleText.Height;
+
             Conhost = new(new(650, 450), Vector2.Zero, new(0, 128, 0, 128), new(0, 0, 0), Language.GetText("Mods.AlienBloxUtility.UI.Conhost").Value, true, false);
+
+            BackingList.Width.Percent = BackingList.Height.Percent = 1f;
+            BackingList.SetScrollbar(PanelScroll);
+            BackingList.Append(PanelScroll);
+            BackingList.VAlign = .5f;
 
             MainPanel = new();
             SidePanel = new();
@@ -58,6 +85,16 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
 
             MainPanel.SetPadding(5);
 
+            ClearConsole.Append(ClearConsoleText);
+            ExportConsole.Append(ExportConsoleText);
+
+            BackingList.Add(ClearConsole);
+            BackingList.Add(ExportConsole);
+
+            BackingList.RecalculateChildren();
+
+            SidePanel.Append(BackingList);
+
             Conhost.Append(MainPanel);
             MainPanel.Append(SidePanel);
             MainPanel.Append(CommandBox);
@@ -70,6 +107,8 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
         {
             if (!Fix)
             {
+                ClearConsole.SetText(Language.GetText("Mods.AlienBloxUtility.UI.ClearConsole").Value);
+                ExportConsole.SetText(Language.GetText("Mods.AlienBloxUtility.UI.SaveLogs").Value);
                 Conhost.Close.OnLeftClick += LeftClick;
 
                 Fix = true;
