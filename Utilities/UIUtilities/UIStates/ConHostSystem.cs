@@ -102,7 +102,7 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
             MainPanel = new();
             SidePanel = new();
             CommandPanel = new();
-            CommandBox = new("");
+            CommandBox = new("Run Command...");
 
             Conhost.SetPadding(15);
 
@@ -116,6 +116,9 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
             SendCommand.Width.Set(0, .1f);
             SendCommand.Height.Set(0, 1f);
             SendCommand.VAlign = SendCommand.HAlign = 1f;
+            //SendCommand.OnMouseOver += LockCommandBox;
+            //SendCommand.OnMouseOut += UnlockCommandBox;
+            SendCommand.OnLeftClick += RunCommand;
 
             CommandBox.SetTextMaxLength(100);
             CommandBox.Width.Set(0, 1f);
@@ -211,6 +214,21 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
             }
 
             Task.Run(async () => File.WriteAllTextAsync($"{AlienBloxUtility.LogLocation}\\Logs-{Guid.NewGuid()}.txt", BackingString.ToArray().MakeString()));
+        }
+
+        public void RunCommand(UIMouseEvent evt, UIElement element)
+        {
+            CommandBox.SetText(string.Empty);
+        }
+
+        public void LockCommandBox(UIMouseEvent evt, UIElement element)
+        {
+            CommandBox.IgnoresMouseInteraction = true;
+        }
+
+        public void UnlockCommandBox(UIMouseEvent evt, UIElement element)
+        {
+            CommandBox.IgnoresMouseInteraction = false;
         }
 
         public static void LeftClick(UIMouseEvent evt, UIElement element)
