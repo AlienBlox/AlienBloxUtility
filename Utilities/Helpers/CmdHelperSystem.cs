@@ -16,7 +16,7 @@ namespace AlienBloxUtility.Utilities.Helpers
 
             public virtual void OnLoad()
             {
-
+                
             }
 
             public virtual void OnUnload()
