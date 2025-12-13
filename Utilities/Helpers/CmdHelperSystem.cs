@@ -13,7 +13,7 @@ namespace AlienBloxUtility.Utilities.Helpers
         {
             public int CommandID;
 
-            public string CommandName { get; set; }
+            public virtual string CommandName { get; set; }
 
             public virtual void OnLoad()
             {
@@ -32,8 +32,6 @@ namespace AlienBloxUtility.Utilities.Helpers
 
             public bool TryParse(string content, ConHostSystem ConHost)
             {
-                Main.NewText("Command input started");
-
                 // Split input by spaces
                 string[] parts = content.Split(' ');
 
@@ -76,7 +74,7 @@ namespace AlienBloxUtility.Utilities.Helpers
 
         public override void Load()
         {
-            CmdHelpers = [];
+            CmdHelpers ??= [];
         }
 
         public override void Unload()
@@ -117,11 +115,28 @@ namespace AlienBloxUtility.Utilities.Helpers
             {
                 if (helper.TryParse(content, conHost))
                 {
+                    conHost.AddConsoleText("Command ran.");
+
                     return;
                 }
             }
 
-            conHost.AddConsoleText("Command failed!");
+            //conHost.AddConsoleText("Command failed!");
+        }
+
+        public static string[] GetCmdNames()
+        {
+            List<string> names = [];
+
+            if (CmdHelpers != null)
+            {
+                foreach (CommandHelper cmd in CmdHelpers)
+                {
+                    names.Add(cmd.CommandName);
+                }
+            }
+
+            return names.ToArray();
         }
     }
 }

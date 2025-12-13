@@ -92,6 +92,7 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
             BackingConSysUI.HAlign = .5f;
             BackingConSysUI.Height.Set(0, .95f);
             BackingConSysUI.Width.Set(0, 1f);
+            BackingConSysUI.ManualSortMethod = (e) => { };
             BackingConSysUI.SetScrollbar(ConSysScroll);
             BackingConSysUI.Append(ConSysScroll);
 

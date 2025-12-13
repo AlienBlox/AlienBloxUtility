@@ -6,10 +6,7 @@ namespace AlienBloxUtility.Utilities.Commands
 {
     public class TestCommand : CmdHelperSystem.CommandHelper
     {
-        public override void OnLoad()
-        {
-            CommandName = "Test";
-        }
+        public override string CommandName => "test";
 
         public override void LaunchCommand(ConHostSystem Conhost, params string[] Params)
         {
