@@ -3,7 +3,6 @@ using AlienBloxUtility.Utilities.UIUtilities.UIStates;
 using System;
 using System.Collections.Generic;
 using Terraria.ModLoader;
-using Microsoft.CodeAnalysis.Scripting;
 
 namespace AlienBloxUtility.Utilities.Helpers
 {
