@@ -2,7 +2,6 @@
 using AlienBloxUtility.Utilities.UIUtilities.UIStates;
 using System;
 using System.Collections.Generic;
-using Terraria;
 using Terraria.ModLoader;
 
 namespace AlienBloxUtility.Utilities.Helpers
