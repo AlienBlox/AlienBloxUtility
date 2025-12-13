@@ -5,4 +5,5 @@ hideCode = false
 hideResources = false
 includeSource = true
 includePDB = true
-dllReferences = AlienBloxTools, ICSharpCode.Decompiler, Microsoft.CodeAnalysis.CSharp.Scripting, Microsoft.CodeAnalysis.Scripting
+dllReferences = AlienBloxTools, ICSharpCode.Decompiler
+buildIgnore = FutureAdditions/*
