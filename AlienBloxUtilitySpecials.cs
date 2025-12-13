@@ -4,14 +4,29 @@ using System.IO;
 using System.Linq;
 using Terraria;
 using Terraria.GameInput;
-using Terraria.Localization;
 using Terraria.UI;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace AlienBloxUtility
 {
     public static class AlienBloxUtilitySpecials
     {
+        /// <summary>
+        /// Turns a string array into a text for writing files with.
+        /// </summary>
+        /// <param name="sArray">The array to query</param>
+        /// <returns>The entire string</returns>
+        public static string MakeString(this string[] sArray)
+        {
+            string EntireString = string.Empty;
+
+            foreach (string s in sArray)
+            {
+                EntireString += s + "\n";
+            }
+
+            return EntireString;
+        }
+
         /// <summary>
         /// Removes any characters from the input string that are invalid for file names.
         /// </summary>

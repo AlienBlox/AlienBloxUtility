@@ -2,7 +2,12 @@
 using AlienBloxUtility.Utilities.UIUtilities.UIElements;
 using AlienBloxUtility.Utilities.UIUtilities.UIRenderers;
 using Microsoft.Xna.Framework;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Threading.Tasks;
 using Terraria;
+using Terraria.Audio;
 using Terraria.GameContent.UI.Elements;
 using Terraria.ID;
 using Terraria.Localization;
@@ -26,10 +31,17 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
 
         public UITextBoxImproved CommandBox;
 
+        public List<UIText> ConsoleText;
+
+        public List<string> BackingString;
+
         public bool Fix;
 
         public override void OnInitialize()
         {
+            ConsoleText = [];
+            BackingString = [];
+
             SendCommand = new($"Terraria/Images/Item_{ItemID.PaperAirplaneA}", Language.GetText("Mods.AlienBloxUtility.UI.SendCmd"));
             ConSysScroll = new();
             PanelScroll = new();
@@ -62,6 +74,13 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
             ClearConsoleText.Height.Percent = ExportConsoleText.Height.Percent;
             ClearConsoleText.VAlign = ExportConsoleText.VAlign = .5f;
             ClearConsoleText.HAlign = ExportConsoleText.HAlign = .5f;
+
+            ClearConsole.OnMouseOver += HoverTick;
+            ClearConsole.OnMouseOut += Unhover;
+            ClearConsole.OnLeftClick += ClearConSysText;
+            ExportConsole.OnMouseOver += HoverTick;
+            ExportConsole.OnMouseOut += Unhover;
+            ExportConsole.OnLeftClick += ExportConSysText;
 
             PanelScroll.HAlign = 1;
             PanelScroll.VAlign = .5f;
@@ -143,6 +162,8 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
         {
             if (!Fix)
             {
+                AddConsoleText($"AlienBlox's Utility V{AlienBloxUtility.Instance.Version} loaded!");
+
                 ClearConsoleText.SetText(Language.GetText("Mods.AlienBloxUtility.UI.ClearConsole"));
                 ExportConsoleText.SetText(Language.GetText("Mods.AlienBloxUtility.UI.SaveLogs"));
                 Conhost.Close.OnLeftClick += LeftClick;
@@ -153,11 +174,68 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
             base.Update(gameTime);
         }
 
+        public void AddConsoleText(string text)
+        {
+            SoundEngine.PlaySound(SoundID.MenuTick);
+
+            UIText ConsoleTextVal = new(text, 0.7f);
+
+            ConsoleTextVal.Width.Set(0, 1f);
+            ConsoleTextVal.Height.Set(30f, 0f);
+
+            ConsoleText.Add(ConsoleTextVal);
+            BackingConSysUI.Add(ConsoleTextVal);
+            BackingString.Add(text);
+        }
+
+        public void ClearConSysText(UIMouseEvent evt, UIElement element)
+        {
+            for (int i = 0; i < ConsoleText.Count; i++)
+            {
+                UIElement T = ConsoleText[i];
+
+                if (T is UIText text)
+                {
+                    BackingConSysUI.Remove(text);
+                }
+            }
+
+            BackingString.Clear();
+        }
+
+        public void ExportConSysText(UIMouseEvent evt, UIElement element)
+        {
+            if (!Directory.Exists(AlienBloxUtility.LogLocation))
+            {
+                Directory.CreateDirectory(AlienBloxUtility.LogLocation);
+            }
+
+            Task.Run(async () => File.WriteAllTextAsync($"{AlienBloxUtility.LogLocation}\\Logs-{Guid.NewGuid()}.txt", BackingString.ToArray().MakeString()));
+        }
+
         public static void LeftClick(UIMouseEvent evt, UIElement element)
         {
             DebugUtilityList.ConsoleWindowEnabled = false;
 
             ModContent.GetInstance<DebugPanelStackRender>().Element.buttons[0].Toggle = false;
+        }
+
+        public static void HoverTick(UIMouseEvent evt, UIElement element)
+        {
+            SoundEngine.PlaySound(SoundID.MenuTick);
+
+            if (element is UIPanel panel)
+            {
+                panel.BorderColor = Color.White;
+            }
+        }
+
+        public static void Unhover(UIMouseEvent evt, UIElement element)
+        {
+            if (element is UIPanel panel)
+            {
+                panel.BorderColor = Color.Black;
+            }
         }
     }
 }
