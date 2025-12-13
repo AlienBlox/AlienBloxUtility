@@ -1,4 +1,5 @@
 ﻿using AlienBloxUtility.Utilities.Core;
+using AlienBloxUtility.Utilities.Helpers;
 using AlienBloxUtility.Utilities.UIUtilities.UIElements;
 using AlienBloxUtility.Utilities.UIUtilities.UIRenderers;
 using Microsoft.Xna.Framework;
@@ -184,7 +185,7 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
             UIText ConsoleTextVal = new(text, 0.7f);
 
             ConsoleTextVal.Width.Set(0, 1f);
-            ConsoleTextVal.Height.Set(30f, 0f);
+            ConsoleTextVal.Height.Set(10f, 0f);
 
             ConsoleText.Add(ConsoleTextVal);
             BackingConSysUI.Add(ConsoleTextVal);
@@ -218,6 +219,8 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
 
         public void RunCommand(UIMouseEvent evt, UIElement element)
         {
+            CmdHelperSystem.Call(CommandBox.Text, this);
+
             CommandBox.SetText(string.Empty);
         }
 
