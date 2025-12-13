@@ -14,6 +14,12 @@
 	  <Reference Include="ICSharpCode.Decompiler">
 	    <HintPath>lib\ICSharpCode.Decompiler.dll</HintPath>
 	  </Reference>
+		<Reference Include="AlienBloxTools">
+			<HintPath>lib\KeraLua.dll</HintPath>
+		</Reference>
+		<Reference Include="ICSharpCode.Decompiler">
+			<HintPath>lib\NLua.dll</HintPath>
+		</Reference>
 	</ItemGroup>
 
 	<!-- References -->
