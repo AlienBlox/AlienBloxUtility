@@ -8,6 +8,8 @@ namespace AlienBloxUtility.Utilities.Commands
     {
         public override string CommandName => "test";
 
+        public override string FriendlyDescription => "Test command.";
+
         public override void LaunchCommand(ConHostSystem Conhost, params string[] Params)
         {
             Main.NewText("Command example!");

@@ -11,7 +11,10 @@ namespace AlienBloxUtility.Utilities.Commands
         {
             foreach (string name in CmdHelperSystem.GetCmdNames())
             {
-                Conhost.AddConsoleText("Name: " + name);
+                if (CommandName != name)
+                {
+                    Conhost.AddConsoleText("Command Name: " + name + FriendlyDescription);
+                }
             }
         }
     }

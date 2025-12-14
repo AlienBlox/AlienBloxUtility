@@ -11,6 +11,14 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIElements
 {
     public class PanelV2 : UIPanel
     {
+        private bool isResizing;
+        private float originalWidth;
+        private float originalHeight;
+        private Vector2 originalMousePosition;
+        private float minWidth = 100f;
+        private float minHeight = 50f;
+        private Vector2 Resize;
+
         private bool _dragging = false;
         private Vector2 _dragOffset;
 
@@ -50,6 +58,9 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIElements
                 Locale = Language.GetText(title);
             }
 
+            this.minHeight = minHeight;
+            this.minWidth = minWidth;
+            Resize = offsetSize;
             Title = title;
             sizeOffset = offsetSize;
             SetScalePercentage(scaleSize.X, scaleSize.Y);
@@ -109,6 +120,20 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIElements
 
             OnLeftMouseDown += MouseDown;
             OnLeftMouseUp += MouseUp;
+
+            var resizeHandle = new UIElement();
+            resizeHandle.Width.Set(0, 0.1f);
+            resizeHandle.Height.Set(0, 0.1f);
+            resizeHandle.MaxHeight.Set(50, 0);
+            resizeHandle.MaxWidth.Set(50, 0);
+            resizeHandle.Left.Set(0, 0f);  // Bottom-right corner
+            resizeHandle.Top.Set(0, 0f);
+            resizeHandle.VAlign = 1;
+            resizeHandle.HAlign = 1;
+            resizeHandle.OnLeftMouseDown += ResizeHandle_OnMouseDown;
+            resizeHandle.OnLeftMouseUp += ResizeHandle_OnMouseUp;
+
+            Append(resizeHandle);
         }
 
         public override void Update(GameTime gameTime)
@@ -136,6 +161,17 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIElements
                 Left.Set(Main.MouseScreen.X - _dragOffset.X, 0f);
                 Top.Set(Main.MouseScreen.Y - _dragOffset.Y, 0f);
             }
+
+            if (isResizing)
+            {
+                float deltaX = Main.mouseX - originalMousePosition.X;
+                float deltaY = Main.mouseY - originalMousePosition.Y;
+
+                Resize = new(Math.Max(originalWidth + deltaX, minWidth), Math.Max(originalHeight + deltaY, minHeight));
+            }
+
+            Width.Set(Resize.X, 0);
+            Height.Set(Resize.Y, 0);
         }
 
         public override void Draw(SpriteBatch spriteBatch)
@@ -212,6 +248,25 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIElements
         public void UILock(UIMouseEvent evt, UIElement element)
         {
             MenuLock = !MenuLock;
+        }
+
+        private void ResizeHandle_OnMouseDown(UIMouseEvent evt, UIElement listeningElement)
+        {
+            if (MenuLock)
+            {
+                return;
+            }
+
+            _dragging = false;
+            isResizing = true;
+            originalWidth = Width.Pixels;
+            originalHeight = Height.Pixels;
+            originalMousePosition = new Vector2(Main.mouseX, Main.mouseY);
+        }
+
+        private void ResizeHandle_OnMouseUp(UIMouseEvent evt, UIElement listeningElement)
+        {
+            isResizing = false;
         }
     }
 }

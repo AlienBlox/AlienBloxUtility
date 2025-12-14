@@ -14,6 +14,8 @@ namespace AlienBloxUtility.Utilities.Helpers
 
             public virtual string CommandName { get; set; }
 
+            public virtual string FriendlyDescription { get; }
+
             public virtual void OnLoad()
             {
                 
@@ -135,7 +137,22 @@ namespace AlienBloxUtility.Utilities.Helpers
                 }
             }
 
-            return names.ToArray();
+            return [.. names];
+        }
+
+        public static string[] GetCmdFriendlyDescription()
+        {
+            List<string> names = [];
+
+            if (CmdHelpers != null)
+            {
+                foreach (CommandHelper cmd in CmdHelpers)
+                {
+                    names.Add(cmd.FriendlyDescription);
+                }
+            }
+
+            return [.. names];
         }
     }
 }
