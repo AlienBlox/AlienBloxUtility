@@ -11,16 +11,25 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIRenderers
     [Autoload(Side = ModSide.Client)]
     public class DebugPanelStackRender : ModSystem
     {
+        public static DebugPanelStackRender Instance;
+
         internal DebugPanelStack Element;
 
         private UserInterface _element;
 
         public override void Load()
         {
+            Instance = this;
+
             Element = new();
             Element.Activate();
             _element = new UserInterface();
             _element.SetState(Element);
+        }
+
+        public override void Unload()
+        {
+            Instance = null;
         }
 
         public override void UpdateUI(GameTime gameTime)

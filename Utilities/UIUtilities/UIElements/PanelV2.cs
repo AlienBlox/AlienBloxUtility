@@ -57,9 +57,11 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIElements
 
         public override void OnInitialize()
         {
-            Topbar = new();
-            Topbar.VAlign = 0;
-            Topbar.HAlign = .5f;
+            Topbar = new()
+            {
+                VAlign = 0,
+                HAlign = .5f
+            };
             Topbar.Height.Set(34, 0);
             Topbar.Width.Set(0, 1);
             Topbar.BackgroundColor = new(BackgroundColorOverride.R, BackgroundColorOverride.G, BackgroundColorOverride.B, 0);
