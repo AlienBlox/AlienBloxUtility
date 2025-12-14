@@ -25,7 +25,7 @@ namespace AlienBloxUtility.Utilities.Commands
                             ExtraArgs = arg;
                             break;
                         case 1:
-                            if (arg.ToLower() == "true")
+                            if (arg.Equals("true", StringComparison.CurrentCultureIgnoreCase))
                             {
                                 RedirOutput = true;
                             }
