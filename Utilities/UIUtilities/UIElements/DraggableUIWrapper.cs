@@ -24,7 +24,7 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIElements
         private float _sizeXScale;
         private float _sizeYScale;
 
-        private string Title;
+        private readonly string Title;
 
         private readonly bool effectsForUIChild;
 

@@ -14,11 +14,9 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIElements
         private bool _dragging = false;
         private Vector2 _dragOffset;
 
-        public UIElement Close;
+        public UIElement Close, LockUI, Dragger;
 
         public UIText Text;
-
-        public UIElement Dragger;
 
         public UIPanel Topbar;
 
@@ -31,6 +29,8 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIElements
         private float _sizeYScale;
 
         private string Title;
+
+        private bool MenuLock = false;
 
         private readonly bool effectsForUIChild;
 
@@ -62,16 +62,26 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIElements
                 VAlign = 0,
                 HAlign = .5f
             };
-            Topbar.Height.Set(34, 0);
+            Topbar.Height.Set(0, .1f);
             Topbar.Width.Set(0, 1);
             Topbar.BackgroundColor = new(BackgroundColorOverride.R, BackgroundColorOverride.G, BackgroundColorOverride.B, 0);
             Topbar.BorderColor = new(BorderColorOverride.R, BorderColorOverride.G, BorderColorOverride.B, 255);
+            Topbar.MaxHeight.Set(34, 0);
             Topbar.SetPadding(0);
 
             Text = new(Title);
             Text.Width.Set(0, 1);
             Text.Height.Set(0, 1);
             Text.VAlign = 0.5f;
+
+            LockUI = new();
+            LockUI.Width.Set(0, .1f);
+            LockUI.Height.Set(0, 1f);
+            LockUI.MaxWidth.Set(34, 0);
+            LockUI.VAlign = 0f;
+            LockUI.HAlign = 0f;
+            LockUI.MarginLeft = 34;
+            LockUI.OnLeftClick += UILock;
 
             Close = new();
             Close.Width.Set(0, .1f);
@@ -89,6 +99,7 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIElements
 
             Topbar.Append(Text);
             Topbar.Append(Close);
+            Topbar.Append(LockUI);
 
             SetPadding(0);
 
@@ -119,7 +130,7 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIElements
             BackgroundColor = BackgroundColorOverride;
             BorderColor = BorderColorOverride;
 
-            if (_dragging)
+            if (_dragging && !MenuLock)
             {
                 // Update panel position while dragging
                 Left.Set(Main.MouseScreen.X - _dragOffset.X, 0f);
@@ -140,7 +151,23 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIElements
 
                 if (Close.ContainsPoint(Main.MouseScreen))
                 {
-                    Main.hoverItemName = "Close";
+                    Main.hoverItemName = Language.GetTextValue("Mods.AlienBloxUtility.UI.CloseUI");
+                }
+            }
+
+            if (LockUI != null)
+            {
+                Vector2 Pos = LockUI.GetDimensions().Position();
+                spriteBatch.Draw(ModContent.Request<Texture2D>("AlienBloxUtility/Common/Assets/MenuLock").Value, Pos, Color.White);
+
+                if (LockUI.ContainsPoint(Main.MouseScreen))
+                {
+                    Main.hoverItemName = Language.GetTextValue("Mods.AlienBloxUtility.UI.LockUI");
+                }
+
+                if (MenuLock)
+                {
+                    spriteBatch.Draw(ModContent.Request<Texture2D>("AlienBloxUtility/Common/Assets/ButtonV2Outline").Value, Pos, Main.DiscoColor);
                 }
             }
         }
@@ -180,6 +207,11 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIElements
         public void MouseUp(UIMouseEvent evt, UIElement Element)
         {
             _dragging = false;
+        }
+
+        public void UILock(UIMouseEvent evt, UIElement element)
+        {
+            MenuLock = !MenuLock;
         }
     }
 }
