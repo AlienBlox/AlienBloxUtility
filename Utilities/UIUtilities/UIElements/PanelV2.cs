@@ -64,6 +64,7 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIElements
             Topbar.Width.Set(0, 1);
             Topbar.BackgroundColor = new(BackgroundColorOverride.R, BackgroundColorOverride.G, BackgroundColorOverride.B, 0);
             Topbar.BorderColor = new(BorderColorOverride.R, BorderColorOverride.G, BorderColorOverride.B, 255);
+            Topbar.SetPadding(0);
 
             Text = new(Title);
             Text.Width.Set(0, 1);
@@ -88,9 +89,13 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIElements
             Topbar.Append(Close);
 
             SetPadding(0);
+
             Append(Topbar);
 
             Text.TextOriginY += 0.5f;
+
+            OnLeftMouseDown += MouseDown;
+            OnLeftMouseUp += MouseUp;
         }
 
         public override void Update(GameTime gameTime)
@@ -159,6 +164,20 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIElements
         public Vector2 GetScale()
         {
             return new(_sizeXScale, _sizeYScale);
+        }
+
+        public void MouseDown(UIMouseEvent evt, UIElement Element)
+        {
+            if (ContainsPoint(evt.MousePosition))
+            {
+                _dragging = true;
+                _dragOffset = evt.MousePosition - new Vector2(Left.Pixels, Top.Pixels);
+            }
+        }
+
+        public void MouseUp(UIMouseEvent evt, UIElement Element)
+        {
+            _dragging = false;
         }
     }
 }
