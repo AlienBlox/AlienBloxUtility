@@ -11,16 +11,6 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIElements
 {
     public class PanelV2 : UIPanel
     {
-        private UIElement resizableElement;
-        private bool isResizing;
-        private float originalWidth;
-        private float originalHeight;
-        private Vector2 originalMousePosition;
-
-        // Minimum size for the panel
-        private int minWidth = 100;
-        private int minHeight = 75;
-
         private bool _dragging = false;
         private Vector2 _dragOffset;
 
@@ -60,8 +50,6 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIElements
                 Locale = Language.GetText(title);
             }
 
-            this.minHeight = minHeight;
-            this.minWidth = minWidth;
             Title = title;
             sizeOffset = offsetSize;
             SetScalePercentage(scaleSize.X, scaleSize.Y);
@@ -69,21 +57,6 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIElements
 
         public override void OnInitialize()
         {
-            resizableElement = new UIElement();
-            resizableElement.Width.Set(200f, 0f); // Initial width
-            resizableElement.Height.Set(100f, 0f); // Initial height
-            resizableElement.Left.Set(100f, 0f); // X position
-            resizableElement.Top.Set(100f, 0f); // Y position
-
-            Topbar = new();
-            Topbar.VAlign = 0;
-            Topbar.HAlign = .5f;
-            Topbar.Height.Set(34, 0);
-            Topbar.Width.Set(0, 1);
-            Topbar.BackgroundColor = new(BackgroundColorOverride.R, BackgroundColorOverride.G, BackgroundColorOverride.B, 0);
-            Topbar.BorderColor = new(BorderColorOverride.R, BorderColorOverride.G, BorderColorOverride.B, 255);
-            Topbar.SetPadding(0);
-
             Text = new(Title);
             Text.Width.Set(0, 1);
             Text.Height.Set(0, 1);
@@ -103,23 +76,11 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIElements
             BackgroundColor = BackgroundColorOverride;
             BorderColor = BorderColorOverride;
 
-            var resizeHandle = new UIElement();
-            resizeHandle.Width.Set(10f, 0f);
-            resizeHandle.Height.Set(10f, 0f);
-            resizeHandle.Left.Set(190f, 0f);  // Bottom-right corner
-            resizeHandle.Top.Set(90f, 0f);
-            resizeHandle.OnLeftMouseDown += ResizeHandle_OnMouseDown;
-            resizeHandle.OnLeftMouseUp += ResizeHandle_OnMouseUp;
-            resizeHandle.OnMouseOver += (a, b) => BackgroundColor = Color.Gray; // Change color on hover
-            resizeHandle.OnMouseOut += (a, b) => BackgroundColor = Color.Transparent; // Reset color
-            resizableElement.Append(resizeHandle);
-
             Topbar.Append(Text);
             Topbar.Append(Close);
 
             SetPadding(0);
             Append(Topbar);
-            Append(resizeHandle);
 
             Text.TextOriginY += 0.5f;
         }
@@ -127,17 +88,6 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIElements
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
-
-            if (isResizing)
-            {
-                float deltaX = Main.mouseX - originalMousePosition.X;
-                float deltaY = Main.mouseY - originalMousePosition.Y;
-
-                // Set minimum size constraints (optional)
-
-                Width.Set(Math.Max(originalWidth + deltaX, minWidth), 0f);
-                Height.Set(Math.Max(originalHeight + deltaY, minHeight), 0f);
-            }
 
             if (Text != null && Locale != null)
             {
@@ -183,21 +133,6 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIElements
         public override void OnActivate()
         {
             base.OnActivate();
-        }
-
-        private void ResizeHandle_OnMouseDown(UIMouseEvent evt, UIElement listeningElement)
-        {
-            isResizing = true;
-            originalWidth = resizableElement.Width.Pixels;
-            originalHeight = resizableElement.Height.Pixels;
-            originalMousePosition = new Vector2(Main.mouseX, Main.mouseY);
-            // Stop mouse input from propagating
-            //evt.Handled = true;
-        }
-
-        private void ResizeHandle_OnMouseUp(UIMouseEvent evt, UIElement listeningElement)
-        {
-            isResizing = false;
         }
 
         public void SetScalePercentage(float x, float y)
