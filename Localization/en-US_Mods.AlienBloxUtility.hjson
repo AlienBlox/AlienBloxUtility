@@ -19,6 +19,11 @@ UI: {
 	LockUI: Lock UI adjustments
 	CloseUI: Close menu
 
+	Console: {
+		ConWelcome: AlienBlox's Utility V{0} loaded!
+		ConHelp: Use 'help' to get a list of commands and their uses!
+	}
+
 	StatsBar: {
 		PrimaryStats: Melee Damage Modifier: {0}x | Magic Damage Modifier: {1}x | Ranged Damage Modifier: {2}x | Summon Damage Modifier: {3}x | Generic Damage Modifier: {4}x
 		SecondaryStats: Luck: {0} Pts | PVP Deaths: {1} | PVE Deaths: {2}

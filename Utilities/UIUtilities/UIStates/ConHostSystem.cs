@@ -167,7 +167,8 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
         {
             if (!Fix)
             {
-                AddConsoleText($"AlienBlox's Utility V{AlienBloxUtility.Instance.Version} loaded!");
+                AddConsoleText(Language.GetText("Mods.AlienBloxUtility.UI.Console.ConWelcome").Format(AlienBloxUtility.Instance.Version));
+                AddConsoleText(Language.GetTextValue("Mods.AlienBloxUtility.UI.Console.ConHelp"));
 
                 ClearConsoleText.SetText(Language.GetText("Mods.AlienBloxUtility.UI.ClearConsole"));
                 ExportConsoleText.SetText(Language.GetText("Mods.AlienBloxUtility.UI.SaveLogs"));
