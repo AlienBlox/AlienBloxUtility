@@ -18,6 +18,8 @@ UI: {
 	SendCmd: Send Command
 	LockUI: Lock UI adjustments
 	CloseUI: Close menu
+	AboutTab: About AlienBlox's Utility
+	ExtrasTab: Extra Utilities
 
 	Console: {
 		ConWelcome: AlienBlox's Utility V{0} loaded!

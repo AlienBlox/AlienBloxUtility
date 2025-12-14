@@ -1,15 +1,69 @@
 ﻿using AlienBloxUtility.Utilities.Core;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Terraria;
+using Terraria.GameContent.UI.Elements;
 using Terraria.GameInput;
+using Terraria.Localization;
 using Terraria.UI;
 
 namespace AlienBloxUtility
 {
     public static class AlienBloxUtilitySpecials
     {
+        /// <summary>
+        /// Quickly sets the margin of an UIElement
+        /// </summary>
+        /// <param name="element">The element to set.</param>
+        /// <param name="margin">The margin</param>
+        /// <returns>The margin</returns>
+        public static float SetMargin(this UIElement element, float margin)
+        {
+            return element.MarginBottom = element.MarginLeft = element.MarginRight = element.MarginTop = margin;
+        }
+
+        /// <summary>
+        /// Quickly inserts a text into an UI element
+        /// </summary>
+        /// <param name="element">The element to insert into</param>
+        /// <param name="text">The text</param>
+        /// <param name="textScale">The text scale</param>
+        /// <param name="large">Should the text be large</param>
+        /// <returns>The created text.</returns>
+        public static UIText InsertText(this UIElement element, string text, float textScale = 1, bool large = false)
+        {
+            UIText textElement = new(text, textScale, large);
+
+            textElement.Width.Set(0, 1);
+            textElement.Height.Set(0, 1);
+            textElement.VAlign = textElement.HAlign = 0.5f;
+            
+            element.Append(textElement);
+
+            return textElement;
+        }
+
+        /// <summary>
+        /// Quickly inserts a text into an UI element
+        /// </summary>
+        /// <param name="element">The element to insert into</param>
+        /// <param name="text">The localized text</param>
+        /// <param name="textScale">The text scale</param>
+        /// <param name="large">Should the text be large</param>
+        /// <returns>The created text.</returns>
+        public static UIText InsertText(this UIElement element, LocalizedText text, float textScale = 1, bool large = false)
+        {
+            UIText textElement = new(text, textScale, large);
+
+            textElement.Width.Set(0, 1);
+            textElement.Height.Set(0, 1);
+            textElement.VAlign = textElement.HAlign = 0.5f;
+
+            element.Append(textElement);
+
+            return textElement;
+        }
+
         /// <summary>
         /// Turns a string array into a text for writing files with.
         /// </summary>
