@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 using Terraria;
 using Terraria.GameContent.UI.Elements;
 using Terraria.Localization;
@@ -10,10 +11,11 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIElements
 {
     public class PanelV2 : UIPanel
     {
+        private UIElement resizableElement;
         private bool isResizing;
+        private float originalWidth;
+        private float originalHeight;
         private Vector2 originalMousePosition;
-        private int originalPanelWidth;
-        private int originalPanelHeight;
 
         // Minimum size for the panel
         private int minWidth = 100;
@@ -67,6 +69,12 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIElements
 
         public override void OnInitialize()
         {
+            resizableElement = new UIElement();
+            resizableElement.Width.Set(200f, 0f); // Initial width
+            resizableElement.Height.Set(100f, 0f); // Initial height
+            resizableElement.Left.Set(100f, 0f); // X position
+            resizableElement.Top.Set(100f, 0f); // Y position
+
             Topbar = new();
             Topbar.VAlign = 0;
             Topbar.HAlign = .5f;
@@ -74,14 +82,17 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIElements
             Topbar.Width.Set(0, 1);
             Topbar.BackgroundColor = new(BackgroundColorOverride.R, BackgroundColorOverride.G, BackgroundColorOverride.B, 0);
             Topbar.BorderColor = new(BorderColorOverride.R, BorderColorOverride.G, BorderColorOverride.B, 255);
+            Topbar.SetPadding(0);
 
             Text = new(Title);
             Text.Width.Set(0, 1);
             Text.Height.Set(0, 1);
-
+            Text.VAlign = 0.5f;
+            
             Close = new();
-            Close.Width.Set(34, 0);
-            Close.Height.Set(34, 0);
+            Close.Width.Set(0, .1f);
+            Close.Height.Set(0, 1f);
+            Close.MaxWidth.Set(34, 0);
             Close.VAlign = 0f;
             Close.HAlign = 0f;
 
@@ -92,24 +103,25 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIElements
             BackgroundColor = BackgroundColorOverride;
             BorderColor = BorderColorOverride;
 
-            OnLeftMouseUp += MouseUp;
-            OnLeftMouseDown += MouseDown;
-
-            var resizeCorner = new UIPanel();
-            resizeCorner.Width.Set(50, 0f);
-            resizeCorner.Height.Set(50, 0f);
-            resizeCorner.Top.Set(0, 0f);
-            resizeCorner.Left.Set(1f, 1f); // Place it in the top-right corner
-            resizeCorner.OnLeftMouseDown += ResizeCorner_OnMouseDown;
-            resizeCorner.OnLeftMouseUp += ResizeCorner_OnMouseUp;
-            resizeCorner.OnMouseOver += (evt, element) => Main.hoverItemName = "Resize";
+            var resizeHandle = new UIElement();
+            resizeHandle.Width.Set(10f, 0f);
+            resizeHandle.Height.Set(10f, 0f);
+            resizeHandle.Left.Set(190f, 0f);  // Bottom-right corner
+            resizeHandle.Top.Set(90f, 0f);
+            resizeHandle.OnLeftMouseDown += ResizeHandle_OnMouseDown;
+            resizeHandle.OnLeftMouseUp += ResizeHandle_OnMouseUp;
+            resizeHandle.OnMouseOver += (a, b) => BackgroundColor = Color.Gray; // Change color on hover
+            resizeHandle.OnMouseOut += (a, b) => BackgroundColor = Color.Transparent; // Reset color
+            resizableElement.Append(resizeHandle);
 
             Topbar.Append(Text);
+            Topbar.Append(Close);
 
             SetPadding(0);
-            Append(Close);
             Append(Topbar);
-            Append(resizeCorner);
+            Append(resizeHandle);
+
+            Text.TextOriginY += 0.5f;
         }
 
         public override void Update(GameTime gameTime)
@@ -118,21 +130,13 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIElements
 
             if (isResizing)
             {
-                Vector2 mouseDelta = new Vector2(Main.mouseX, Main.mouseY) - originalMousePosition;
+                float deltaX = Main.mouseX - originalMousePosition.X;
+                float deltaY = Main.mouseY - originalMousePosition.Y;
 
-                // Calculate new width and height based on mouse movement
-                int newWidth = (int)(originalPanelWidth + mouseDelta.X);
-                int newHeight = (int)(originalPanelHeight + mouseDelta.Y);
+                // Set minimum size constraints (optional)
 
-                // Enforce the minimum size
-                if (newWidth < minWidth)
-                    newWidth = minWidth;
-                if (newHeight < minHeight)
-                    newHeight = minHeight;
-
-                // Update the panel size with the adjusted values
-                Width.Set(newWidth, 0f);
-                Height.Set(newHeight, 0f);
+                Width.Set(Math.Max(originalWidth + deltaX, minWidth), 0f);
+                Height.Set(Math.Max(originalHeight + deltaY, minHeight), 0f);
             }
 
             if (Text != null && Locale != null)
@@ -181,31 +185,19 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIElements
             base.OnActivate();
         }
 
-        private void ResizeCorner_OnMouseDown(UIMouseEvent evt, UIElement listeningElement)
+        private void ResizeHandle_OnMouseDown(UIMouseEvent evt, UIElement listeningElement)
         {
             isResizing = true;
+            originalWidth = resizableElement.Width.Pixels;
+            originalHeight = resizableElement.Height.Pixels;
             originalMousePosition = new Vector2(Main.mouseX, Main.mouseY);
-            originalPanelWidth = (int)Width.Pixels;
-            originalPanelHeight = (int)Height.Pixels;
+            // Stop mouse input from propagating
+            //evt.Handled = true;
         }
 
-        private void ResizeCorner_OnMouseUp(UIMouseEvent evt, UIElement listeningElement)
+        private void ResizeHandle_OnMouseUp(UIMouseEvent evt, UIElement listeningElement)
         {
             isResizing = false;
-        }
-
-        public void MouseDown(UIMouseEvent evt, UIElement Element)
-        {
-            if (ContainsPoint(evt.MousePosition))
-            {
-                _dragging = true;
-                _dragOffset = evt.MousePosition - new Vector2(Left.Pixels, Top.Pixels);
-            }
-        }
-
-        public void MouseUp(UIMouseEvent evt, UIElement Element)
-        {
-            _dragging = false;
         }
 
         public void SetScalePercentage(float x, float y)

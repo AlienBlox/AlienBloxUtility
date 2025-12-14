@@ -75,7 +75,14 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIElements
         {
             base.Update(gameTime);
 
-            Text.SetText(Locale?.Value);
+            if (Text != null && Locale != null)
+            {
+                Text?.SetText(Locale?.Value);
+            }
+            else if (Text != null && Locale == null)
+            {
+                Text.SetText(Title);
+            }
 
             Width.Set(sizeOffset.X, _sizeXScale);
             Height.Set(sizeOffset.Y, _sizeYScale);
