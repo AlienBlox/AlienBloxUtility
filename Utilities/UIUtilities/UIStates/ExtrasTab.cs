@@ -22,9 +22,9 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
             AboutButton.HAlign = .5f;
             AboutButton.VAlign = 1;
             AboutButton.SetMargin(15);
-            AboutButton.Width.Set(0, 1f);
-            AboutButton.Height.Set(0, .05f);
-            AboutButton.MaxHeight.Set(30, 0);
+            AboutButton.Width.Set(0, .9f);
+            AboutButton.Height.Set(0, .1f);
+            AboutButton.MaxHeight.Set(50, 0);
             AboutButton.InsertText(Language.GetText("Mods.AlienBloxUtility.UI.AboutTab"));
 
             MainP.Append(AboutButton);

@@ -58,6 +58,7 @@ namespace AlienBloxUtility
             textElement.Width.Set(0, 1);
             textElement.Height.Set(0, 1);
             textElement.VAlign = textElement.HAlign = 0.5f;
+            textElement.TextOriginY = 0.5f;
 
             element.Append(textElement);
 
