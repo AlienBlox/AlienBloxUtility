@@ -1,4 +1,5 @@
 ﻿using AlienBloxTools;
+using AlienBloxUtility.Utilities.Core;
 using AlienBloxUtility.Utilities.Helpers;
 using AlienBloxUtility.Utilities.UIUtilities.UIStates;
 using Terraria.Localization;
@@ -20,8 +21,14 @@ namespace AlienBloxUtility.Utilities.Commands
 
                 foreach (Mod M in ModLoader.Mods)
                 {
-                    Conhost.AddConsoleText($"Modname: {M.Name}, Display Name: {M.DisplayName}, Mod Path: ");
-                    //Conhost.AddConsoleText(L.Format(M.Name, M.DisplayName, M.GetTmodFile().path));
+                    string Path = "";
+
+                    if (TModInspector.ModFileData.TryGetValue(M.Name, out var data))
+                    {
+                        Path = data.Item1.path;
+                    }
+
+                    Conhost.AddConsoleText($"Modname: {M.Name}, Display Name: {M.DisplayName}, Mod Path: {Path}");
                 }
             }
             catch

@@ -1,4 +1,5 @@
 ﻿using AlienBloxUtility.Utilities.Core;
+using System;
 using System.IO;
 using System.Linq;
 using Terraria;
@@ -11,6 +12,23 @@ namespace AlienBloxUtility
 {
     public static class AlienBloxUtilitySpecials
     {
+        /// <summary>
+        /// Safely accesses an array
+        /// </summary>
+        /// <typeparam name="T">The type</typeparam>
+        /// <param name="array">The array</param>
+        /// <param name="Pos">The position of the array</param>
+        /// <returns>The content</returns>
+        public static T SafeAccess<T>(this T[] array, int Pos)
+        {
+            if (Pos <= array.Length)
+            {
+                return array[Pos]; 
+            }
+
+            return default;
+        }
+
         /// <summary>
         /// Quickly sets the margin of an UIElement
         /// </summary>

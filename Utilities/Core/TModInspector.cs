@@ -40,7 +40,7 @@ namespace AlienBloxUtility.Utilities.Core
         public static void DecompileModThreadSafe(string ModName = "AlienBloxUtility")
         {
             MessWithMod(ModName);
-            Task.Run(async () => TModInspector.DecompileAssembly(ModName));
+            Task.Run(async () => DecompileAssembly(ModName));
         }
 
         /// <summary>
@@ -195,6 +195,7 @@ namespace AlienBloxUtility.Utilities.Core
                     File.WriteAllBytes(AlienBloxUtility.ModDumpLocation + $"\\{ModName}\\{ModName}.dll", Assembly);
                     File.WriteAllBytes(AlienBloxUtility.ModDumpLocation + $"\\{ModName}\\{ModName}.pdb", PDB);
                     File.WriteAllBytes(AlienBloxUtility.ModDumpLocation + $"\\{ModName}\\{ModName}.tmod", File.ReadAllBytes(ModOutput.Item1.path));
+                    AlienBloxUtility.Instance.Logger.Info($"Mod Path: {ModOutput.Item1.path}");
                 }
                 catch (Exception ex)
                 {
