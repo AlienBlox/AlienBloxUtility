@@ -26,6 +26,7 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
             AboutButton.Height.Set(0, .1f);
             AboutButton.MaxHeight.Set(50, 0);
             AboutButton.InsertText(Language.GetText("Mods.AlienBloxUtility.UI.AboutTab"));
+            AboutButton.OnLeftClick += (_, _) => { AboutPageRender.ShowAboutPage = !AboutPageRender.ShowAboutPage; };
 
             MainP.Append(AboutButton);
             Append(MainP);
