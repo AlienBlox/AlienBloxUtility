@@ -14,11 +14,19 @@ namespace AlienBloxUtility.Utilities.Commands
 
         public override void LaunchCommand(ConHostSystem Conhost, params string[] Params)
         {
-            LocalizedText L = Language.GetText("Mods.AlienBloxUtility.Commands.ModInfo");
-
-            foreach (Mod M in ModLoader.Mods)
+            try
             {
-                Conhost.AddConsoleText(L.Format(M.Name, M.DisplayName, M.GetTmodFile().path));
+                LocalizedText L = Language.GetText("Mods.AlienBloxUtility.Commands.ModInfo");
+
+                foreach (Mod M in ModLoader.Mods)
+                {
+                    Conhost.AddConsoleText($"Modname: {M.Name}, Display Name: {M.DisplayName}, Mod Path: ");
+                    //Conhost.AddConsoleText(L.Format(M.Name, M.DisplayName, M.GetTmodFile().path));
+                }
+            }
+            catch
+            {
+
             }
         }
     }
