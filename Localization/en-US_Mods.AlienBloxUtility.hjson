@@ -77,3 +77,4 @@ Configs: {
 }
 
 Exceptions.CommandConflictException: Can't add command: Command name conflict
+Commands.ModInfo Modname: {0}, Display Name: {1}, Mod Path: {2}

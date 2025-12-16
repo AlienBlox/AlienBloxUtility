@@ -188,6 +188,7 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
 
             ConsoleTextVal.Width.Set(0, 1f);
             ConsoleTextVal.Height.Set(10f, 0f);
+            ConsoleTextVal.TextOriginX = 0f;
 
             ConsoleText.Add(ConsoleTextVal);
             BackingConSysUI.Add(ConsoleTextVal);
