@@ -67,11 +67,11 @@ Configs: {
 
 	AlienBloxUtilityServerConfig: {
 		DisplayName: AlienBlox's Utility Server Config
-		Headers.Debugger: Debugger Header
+		Headers.Debugger: Debugger Configs
 
 		ClearCache: {
 			Label: Clear Cache
-			Tooltip: ""
+			Tooltip: Should AlienBlox's Utility clear the cache folder it makes
 		}
 	}
 }
