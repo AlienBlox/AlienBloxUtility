@@ -1,4 +1,5 @@
-﻿using AlienBloxUtility.Utilities.UIUtilities.UIElements;
+﻿using AlienBloxUtility.Utilities.Helpers;
+using AlienBloxUtility.Utilities.UIUtilities.UIElements;
 using AlienBloxUtility.Utilities.UIUtilities.UIRenderers;
 using Microsoft.Xna.Framework;
 using Terraria.GameContent.UI.Elements;
@@ -87,6 +88,36 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
             InfoSubDisplay.Height.Set(0, .2f);
             InfoSubDisplay.VAlign = 1;
             InfoSubDisplay.HAlign = 0.5f;
+
+            GitHub.OnLeftClick += (_, _) =>
+            {
+                UrlEngine.OpenURL("https://github.com/AlienBlox/AlienBloxUtility");
+            };
+
+            YouTube.OnLeftClick += (_, _) =>
+            {
+                UrlEngine.OpenURL("https://www.youtube.com/channel/UCpu_V3nxWViuAOHAeGlkyvQ/");
+            };
+
+            Steam.OnLeftClick += (_, _) =>
+            {
+                UrlEngine.OpenURL("https://steamcommunity.com/id/AlienBloxxed");
+            };
+
+            Reddit.OnLeftClick += (_, _) =>
+            {
+                UrlEngine.OpenURL("https://www.reddit.com/r/AlienBloxMod/");
+            };
+
+            Discord.OnLeftClick += (_, _) =>
+            {
+                UrlEngine.OpenURL("https://discord.gg/R4DH9pmbCN");
+            };
+
+            Roblox.OnLeftClick += (_, _) =>
+            {
+                UrlEngine.OpenURL("https://www.roblox.com/communities/872497747/Official-AlienBloxs-Mod-UGC-Store#!/about");
+            };
 
             InfoSubDisplay.Append(GitHub);
             InfoSubDisplay.Append(YouTube);
