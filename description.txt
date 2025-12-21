@@ -4,8 +4,8 @@ The official home of AlienBlox's Utilities!
 
 Overview:
 Features includes these abilities:
- * A decompiler used to decompile `TMOD` files.
- * A command console used to execute commands like `help`.
+ * A decompiler used to decompile TMOD files.
+ * A command console used to execute commands like help`
  * A packet spy utility used to see what packet is coming in.
  * A debugger bar to see RAM usage.
  * A stats bar to see stats like damage multipliers
