@@ -21,6 +21,7 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
         public override void OnInitialize()
         {
             MainP = new(new(300, 500), Vector2.Zero, new(0, 150, 0), Color.Black, Language.GetText("Mods.AlienBloxUtility.UI.AboutTab").Value, true);
+            Content = new("");
             InfoSubDisplay = new();
             GitHub = new();
             YouTube = new();
@@ -35,6 +36,12 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
             DiscordText = new("");
             RobloxText = new("");
 
+            Content.Width.Set(0, 1f);
+            Content.Height.Set(-30, .8f);
+            Content.HAlign = 0.5f;
+            Content.VAlign = .8f;
+            Content.IsWrapped = true;
+
             GitHub.Height.Set(0, .5f);
             GitHub.Width.Set(0, .33f);
             YouTube.Height.Set(0, .5f);
@@ -47,13 +54,6 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
             Discord.Height.Set(0, .5f);
             Roblox.Width.Set(0, .33f);
             Roblox.Height.Set(0, .5f);
-
-            GitHub.SetPadding(0);
-            YouTube.SetPadding(0);
-            Steam.SetPadding(0);
-            Reddit.SetPadding(0);
-            Discord.SetPadding(0);
-            Roblox.SetPadding(0);
 
             GitHubText.Width.Percent =
             YouTubeText.Width.Percent =
@@ -126,6 +126,7 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
             InfoSubDisplay.Append(Discord);
             InfoSubDisplay.Append(Roblox);
 
+            MainP.Append(Content);
             MainP.Append(InfoSubDisplay);
             Append(MainP);
         }
@@ -134,12 +135,13 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
         {
             if (!Fix)
             {
-                GitHubText.SetText(Language.GetText("Mods.AlienBloxUtility.SocialMedia.GitHub"));
-                YouTubeText.SetText(Language.GetText("Mods.AlienBloxUtility.SocialMedia.YouTube"));
-                SteamText.SetText(Language.GetText("Mods.AlienBloxUtility.SocialMedia.Steam"));
-                RedditText.SetText(Language.GetText("Mods.AlienBloxUtility.SocialMedia.Reddit"));
-                DiscordText.SetText(Language.GetText("Mods.AlienBloxUtility.SocialMedia.Discord"));
-                RobloxText.SetText(Language.GetText("Mods.AlienBloxUtility.SocialMedia.Roblox"));
+                GitHubText.SetText(Language.GetText("Mods.AlienBloxUtility.UI.SocialMedia.GitHub"));
+                YouTubeText.SetText(Language.GetText("Mods.AlienBloxUtility.UI.SocialMedia.YouTube"));
+                SteamText.SetText(Language.GetText("Mods.AlienBloxUtility.UI.SocialMedia.Steam"));
+                RedditText.SetText(Language.GetText("Mods.AlienBloxUtility.UI.SocialMedia.Reddit"));
+                DiscordText.SetText(Language.GetText("Mods.AlienBloxUtility.UI.SocialMedia.Discord"));
+                RobloxText.SetText(Language.GetText("Mods.AlienBloxUtility.UI.SocialMedia.Roblox"));
+                Content.SetText(Language.GetText("Mods.AlienBloxUtility.UI.AboutMod"));
 
                 MainP.Close.OnLeftClick += (_, _) => { AboutPageRender.ShowAboutPage = false; };
 

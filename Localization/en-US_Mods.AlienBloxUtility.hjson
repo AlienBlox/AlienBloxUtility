@@ -39,6 +39,13 @@ UI: {
 		Discord: Discord
 		Roblox: Roblox
 	}
+
+	AboutMod:
+		'''
+		AlienBlox's Utility is a general purpose modder utility used for things like interop testing,
+		decompilation of mods and general debugging, the mod is open source and its info can be found
+		in the links below.
+		'''
 }
 
 Messages: {
