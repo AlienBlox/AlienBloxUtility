@@ -10,6 +10,25 @@ namespace AlienBloxUtility
     {
         public override object Call(params object[] args)
         {
+            object Msg = args[0];
+
+            try
+            {
+                if (Msg is string S)
+                {
+                    switch (S)
+                    {
+                        case "Lua":
+                            Lua((string)args[1]);
+                            break;
+                    }
+                }
+            }
+            catch (Exception E)
+            {
+                return E;
+            }
+
             return base.Call(args);
         }
 

@@ -20,6 +20,10 @@ UI: {
 	CloseUI: Close menu
 	AboutTab: About AlienBlox's Utility
 	ExtrasTab: Extra Utilities
+	PacketSuppressor: Activate Packet Suppressor
+	Lua: Open Lua Injector
+	ModSpecificToggle: Toggle Mod-Specific Options
+	LuaDisplay: Lua Script Manager
 
 	Console: {
 		ConWelcome: AlienBlox's Utility V{0} loaded!
@@ -63,6 +67,8 @@ Messages: {
 		DecompilerFile: File Decompiled: File Name: {0}, At: {1}
 		DecompilerEnd: ===DECOMPILER END===
 	}
+
+	PacketSuppression: Packet Suppressed: {0}
 }
 
 ToggleUtilityBar: Toggle Utility Bar

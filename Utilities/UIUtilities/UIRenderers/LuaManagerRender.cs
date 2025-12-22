@@ -1,5 +1,4 @@
-﻿using AlienBloxUtility.Utilities.Core;
-using AlienBloxUtility.Utilities.UIUtilities.UIStates;
+﻿using AlienBloxUtility.Utilities.UIUtilities.UIStates;
 using Microsoft.Xna.Framework;
 using System.Collections.Generic;
 using Terraria;
@@ -9,9 +8,11 @@ using Terraria.UI;
 namespace AlienBloxUtility.Utilities.UIUtilities.UIRenderers
 {
     [Autoload(Side = ModSide.Client)]
-    public class ConHostRender : ModSystem
+    public class LuaManagerRender : ModSystem
     {
-        internal ConHostSystem Element;
+        public static bool LuaManagerEnabled;
+
+        internal LuaManager Element;
 
         private UserInterface _element;
 
@@ -25,7 +26,7 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIRenderers
 
         public override void UpdateUI(GameTime gameTime)
         {
-            if (DebugUtilityList.ConsoleWindowEnabled)
+            if (LuaManagerEnabled)
             {
                 if (_element?.CurrentState == null)
                 {
@@ -38,6 +39,8 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIRenderers
             {
                 _element?.SetState(null);
             }
+
+            Element?.Update(gameTime);
         }
 
         public override void ModifyInterfaceLayers(List<GameInterfaceLayer> layers)
@@ -46,7 +49,7 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIRenderers
             if (mouseTextIndex != -1)
             {
                 layers.Insert(mouseTextIndex, new LegacyGameInterfaceLayer(
-                    "AlienBloxUtility: Console Host System",
+                    "AlienBloxUtility: Lua Manager",
                     delegate
                     {
                         _element.Draw(Main.spriteBatch, new GameTime());
@@ -55,11 +58,6 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIRenderers
                     InterfaceScaleType.UI)
                 );
             }
-        }
-
-        public static void Write(string Text)
-        {
-            ModContent.GetInstance<ConHostRender>().Element.AddConsoleText(Text);
         }
     }
 }

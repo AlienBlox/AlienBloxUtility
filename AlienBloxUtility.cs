@@ -34,6 +34,8 @@ namespace AlienBloxUtility
 
         public static string LogLocation { get; private set; }
 
+        public static string LuaStorageLocation { get; private set; }
+
         public override void Load()
         {
             Instance = this;
@@ -50,11 +52,13 @@ namespace AlienBloxUtility
                 DirectoryInfo ModDecomp = Directory.CreateDirectory(Path.Combine(Main.SavePath, "AlienBloxUtility", "ModDecompiledLocation"));
                 DirectoryInfo Dir = Directory.CreateDirectory(Path.Combine(Main.SavePath, "AlienBloxUtility", "Cache"));
                 DirectoryInfo Log = Directory.CreateDirectory(Path.Combine(Main.SavePath, "AlienBloxUtility", "Logs"));
+                DirectoryInfo directoryInfo = Directory.CreateDirectory(Path.Combine(Main.SavePath, "AlienBloxUtility", "Lua"));
 
                 ModDumpLocation = ModDump.FullName;
                 DecompLocation = ModDecomp.FullName;
                 CacheLocation = Dir.FullName;
                 LogLocation = Log.FullName;
+                LuaStorageLocation = directoryInfo.FullName;
 
                 if (Dir.Exists && !File.Exists(Dir.FullName + "\\tModUnpacker.exe"))
                 {
