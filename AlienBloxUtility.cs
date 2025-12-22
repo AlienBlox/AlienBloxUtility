@@ -1,4 +1,5 @@
 using AlienBloxTools.Utilities;
+using Neo.IronLua;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -16,7 +17,13 @@ namespace AlienBloxUtility
     // Please read https://github.com/tModLoader/tModLoader/wiki/Basic-tModLoader-Modding-Guide#mod-skeleton-contents for more information about the various files in a mod.
     public partial class AlienBloxUtility : Mod
     {
+        #pragma warning disable CA2211 // Non-constant fields should not be visible
+        public static Lua GlobalLua;
+
+        public static LuaGlobal LuaEnv;
+
         public static AlienBloxUtility Instance;
+        #pragma warning restore CA2211 // Non-constant fields should not be visible
 
         public static string ModDumpLocation { get; private set; }
 
@@ -29,6 +36,12 @@ namespace AlienBloxUtility
         public override void Load()
         {
             Instance = this;
+            GlobalLua = new Lua();
+            LuaEnv = GlobalLua.CreateEnvironment();
+            Cts = new();
+            MainThreadQueue = [];
+
+            TestRun("return { x = 1, y = 2 }"); // Ensure lua is working
 
             try
             {
@@ -62,6 +75,11 @@ namespace AlienBloxUtility
         public override void Unload()
         {
             Instance = null;
+            GlobalLua = null;
+            LuaEnv = null;
+            Cts = null;
+            MainThreadQueue.Clear();
+            MainThreadQueue = null;
 
             if (Directory.Exists(Path.Combine(Main.SavePath, "AlienBloxUtility", "Cache")) && AlienBloxUtilityServerConfig.Instance.ClearCache)
             {
