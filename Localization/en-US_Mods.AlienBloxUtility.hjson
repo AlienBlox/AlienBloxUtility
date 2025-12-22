@@ -49,6 +49,8 @@ UI: {
 }
 
 Messages: {
+	Server.SpawnNPC: "{0} spawned NPC with type of {1} at {2}"
+
 	PacketSpy: {
 		NotOnMP: Not on multiplayer, Packet Spy disabled
 		MsgBegin: ===PACKET SPY BEGIN===

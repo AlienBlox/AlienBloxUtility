@@ -87,6 +87,11 @@ namespace AlienBloxUtility
             Cts = new CancellationTokenSource();
         }
         
+        public static void Lua(string lua)
+        {
+            RunLuaAsync(lua);
+        }
+
         public static async Task<object> TryRun(string lua, KeyValuePair<string, object>? kvp = null)
         {
             var result = await RunLuaAsync(lua, kvp);
