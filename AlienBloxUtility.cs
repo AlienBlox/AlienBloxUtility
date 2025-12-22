@@ -1,4 +1,5 @@
 using AlienBloxTools.Utilities;
+using NLua;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -14,8 +15,10 @@ using Terraria.ModLoader;
 namespace AlienBloxUtility
 {
     // Please read https://github.com/tModLoader/tModLoader/wiki/Basic-tModLoader-Modding-Guide#mod-skeleton-contents for more information about the various files in a mod.
-    public class AlienBloxUtility : Mod
+    public partial class AlienBloxUtility : Mod
     {
+        public static Lua GlobalLua;
+
         public static AlienBloxUtility Instance;
 
         public static string ModDumpLocation { get; private set; }
@@ -28,6 +31,10 @@ namespace AlienBloxUtility
 
         public override void Load()
         {
+            mainThreadActions = [];
+            RegisteredFunctions = [];
+            GlobalLua = new();
+            InitLua();
             Instance = this;
 
             try
@@ -61,6 +68,9 @@ namespace AlienBloxUtility
 
         public override void Unload()
         {
+            mainThreadActions = null;
+            RegisteredFunctions = null;
+            GlobalLua = null; //Prevent memory leaks
             Instance = null;
 
             if (Directory.Exists(Path.Combine(Main.SavePath, "AlienBloxUtility", "Cache")) && AlienBloxUtilityServerConfig.Instance.ClearCache)
