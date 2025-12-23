@@ -1,4 +1,5 @@
-﻿using Neo.IronLua;
+﻿using AlienBloxUtility.Utilities.UIUtilities.UIRenderers;
+using Neo.IronLua;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -9,12 +10,19 @@ namespace AlienBloxUtility
 {
     public partial class AlienBloxUtility
     {
-        public static List<(Task, CancellationToken)> LuaInstances;
-
-        #pragma warning disable CA2211 // Non-constant fields should not be visible
+#pragma warning disable CA2211 // Non-constant fields should not be visible
+        public static List<CancellationTokenSource> CentralTokenStorage;
         public static ConcurrentQueue<Action> MainThreadQueue;
-        public static CancellationTokenSource Cts;
         #pragma warning restore CA2211 // Non-constant fields should not be visible}
+
+        public static CancellationTokenSource GetToken()
+        {
+            var token = new CancellationTokenSource();
+
+            CentralTokenStorage.Add(token);
+
+            return token;
+        }
 
         /// <summary>
         /// Registers a function to the global Lua system
@@ -50,78 +58,9 @@ namespace AlienBloxUtility
             }
         }
 
-        public static void RunLuaSafe(string code, out Task task, out CancellationToken Cancel)
+        public static Task<LuaResult> RunLuaAsync(string code, CancellationTokenSource tokenSource)
         {
-            task = RunLuaAsync(code, out var token);
-
-            Cancel = token;
-
-            LuaInstances?.Add((task, token));
-        }
-
-        public static void RunLuaSafe(string code, out Task task, out CancellationToken Cancel, params KeyValuePair<string, object>[] pair)
-        {
-            task = RunLuaAsync(code, out var token, pair);
-
-            Cancel = token;
-
-            LuaInstances?.Add((task, token));
-        }
-
-        public static Task<LuaResult> RunLuaAsync(string code, out CancellationToken tokenOut, params KeyValuePair<string, object>[] pair)
-        {
-            var token = Cts.Token;
-            tokenOut = token;
-
-            return Task.Run(() =>
-            {
-                token.ThrowIfCancellationRequested();
-
-                LuaResult result = null;
-
-                try
-                {
-                    result = LuaEnv.DoChunk(code, "chunk", pair);
-                }
-                catch (Exception ex)
-                {
-                    // Handle Lua runtime errors
-                    Console.WriteLine("Lua error: " + ex.Message);
-                }
-
-                token.ThrowIfCancellationRequested();
-                return result;
-            }, token);
-        }
-
-        public static Task<LuaResult> RunLuaAsync(string code, params KeyValuePair<string, object>[] pair)
-        {
-            var token = Cts.Token;
-
-            return Task.Run(() =>
-            {
-                token.ThrowIfCancellationRequested();
-
-                LuaResult result = null;
-
-                try
-                {
-                    result = LuaEnv.DoChunk(code, "chunk", pair);
-                }
-                catch (Exception ex)
-                {
-                    // Handle Lua runtime errors
-                    Console.WriteLine("Lua error: " + ex.Message);
-                }
-
-                token.ThrowIfCancellationRequested();
-                return result;
-            }, token);
-        }
-
-        public static Task<LuaResult> RunLuaAsync(string code)
-        {
-            var token = Cts.Token;
+            var token = tokenSource.Token;
 
             return Task.Run(() =>
             {
@@ -144,11 +83,9 @@ namespace AlienBloxUtility
             }, token);
         }
 
-        public static Task<LuaResult> RunLuaAsync(string code, out CancellationToken tokenOut)
+        public static Task<LuaResult> RunLuaAsync(string code, CancellationTokenSource tokenSource, params KeyValuePair<string, object>[] objects)
         {
-            var token = Cts.Token;
-
-            tokenOut = token;
+            var token = tokenSource.Token;
 
             return Task.Run(() =>
             {
@@ -158,7 +95,7 @@ namespace AlienBloxUtility
 
                 try
                 {
-                    result = LuaEnv.DoChunk(code, "chunk");
+                    result = LuaEnv.DoChunk(code, "chunk", objects);
                 }
                 catch (Exception ex)
                 {
@@ -171,15 +108,25 @@ namespace AlienBloxUtility
             }, token);
         }
 
-        public static void Cancel()
+        public static void CancelAll()
         {
-            Cts?.Cancel();
-            Cts = new CancellationTokenSource();
+            try
+            {
+                foreach (var token in CentralTokenStorage)
+                {
+                    token.Cancel();
+                    token.Dispose();
+                }
+            }
+            catch (Exception e)
+            {
+                ConHostRender.Write("Can't cancel lua tasks.");
+            }
         }
         
         public static void Lua(string lua)
         {
-            RunLuaSafe(lua, out _, out _);
+            RunLua(lua);
         }
 
         public static async void TestRun(string code)
@@ -187,7 +134,7 @@ namespace AlienBloxUtility
             try
             {
                 // Run asynchronously on a background thread
-                LuaResult result = await RunLuaAsync(code);
+                LuaResult result = await RunLuaAsync(code, GetToken());
 
                 // Now we are back on the main thread continuation
                 if (result != null)

@@ -11,7 +11,7 @@ namespace AlienBloxUtility.Utilities.Commands
         {
             Conhost.AddConsoleText("Lua execution canceled");
 
-            AlienBloxUtility.Cancel();
+            AlienBloxUtility.CancelAll();
         }
     }
 }

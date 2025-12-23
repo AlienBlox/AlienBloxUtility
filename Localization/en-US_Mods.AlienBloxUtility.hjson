@@ -122,5 +122,7 @@ Configs: {
 	}
 }
 
-Exceptions.CommandConflictException: Can't add command: Command name conflict
-Exceptions.LuaHaltException: Lua operation halted.
+Exceptions: {
+	CommandConflictException: Can't add command: Command name conflict
+	LuaHaltException: Lua operation halted.
+}

@@ -42,9 +42,8 @@ namespace AlienBloxUtility
             Instance = this;
             GlobalLua = new Lua();
             LuaEnv = GlobalLua.CreateEnvironment();
-            Cts = new();
+            CentralTokenStorage = [];
             MainThreadQueue = [];
-            LuaInstances = [];
 
             TestRun("return { x = 1, y = 2 }"); // Ensure lua is working
 
@@ -81,13 +80,14 @@ namespace AlienBloxUtility
 
         public override void Unload()
         {
+            CancelAll();
+
             Instance = null;
             GlobalLua = null;
             LuaEnv = null;
-            Cts = null;
+            CentralTokenStorage = null;
             MainThreadQueue.Clear();
             MainThreadQueue = null;
-            LuaInstances = null;
 
             if (Directory.Exists(Path.Combine(Main.SavePath, "AlienBloxUtility", "Cache")) && AlienBloxUtilityServerConfig.Instance.ClearCache)
             {

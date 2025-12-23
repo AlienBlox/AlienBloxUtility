@@ -2,6 +2,7 @@
 using System;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using Terraria;
 using Terraria.GameContent.UI.Elements;
 using Terraria.GameInput;
@@ -12,6 +13,10 @@ namespace AlienBloxUtility
 {
     public static class AlienBloxUtilitySpecials
     {
+        public static void ThrowIfCancellationRequested(this CancellationTokenSource token)
+        {
+            token.Token.ThrowIfCancellationRequested();
+        }
         /// <summary>
         /// Safely accesses an array
         /// </summary>
