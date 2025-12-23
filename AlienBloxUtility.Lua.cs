@@ -118,7 +118,7 @@ namespace AlienBloxUtility
                     token.Dispose();
                 }
             }
-            catch (Exception e)
+            catch
             {
                 ConHostRender.Write("Can't cancel lua tasks.");
             }
