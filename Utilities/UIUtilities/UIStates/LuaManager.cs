@@ -12,6 +12,8 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
 
         public UIPanel ScriptManagerBacking, InfoPanel, RefreshScripts;
 
+        public UIElement BackerElement;
+
         public UIScrollbar Scrollbar;
 
         public UIList BackingList;
@@ -26,10 +28,35 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
             InfoPanel = new();
             RefreshScripts = new();
             Scrollbar = new();
+            BackerElement = new();
 
+            BackerElement.Width.Set(0, 1);
+            BackerElement.Height.Set(-30, 1);
+            BackerElement.HAlign = .5f;
+            BackerElement.VAlign = 1;
+            BackerElement.SetPadding(15);
 
-            BackingPanel.Append(ScriptManagerBacking);
-            ScriptManagerBacking.Append(InfoPanel);
+            ScriptManagerBacking.Width.Set(0, .6f);
+            ScriptManagerBacking.Height.Set(0, 1f);
+            ScriptManagerBacking.VAlign = 0.5f;
+
+            BackingList.VAlign = 0.5f;
+            BackingList.HAlign = 0.5f;
+            BackingList.Height.Set(0, 1);
+            BackingList.Width = BackingList.Height;
+            BackingList.ManualSortMethod = (_) => { };
+            BackingList.Append(Scrollbar);
+            BackingList.SetScrollbar(Scrollbar);
+
+            InfoPanel.Width.Set(0, .4f);
+            InfoPanel.Height.Set(0, 1f);
+            InfoPanel.VAlign = 0.5f;
+            InfoPanel.HAlign = 1f;
+
+            ScriptManagerBacking.Append(BackingList);
+            BackerElement.Append(ScriptManagerBacking);
+            BackerElement.Append(InfoPanel);
+            BackingPanel.Append(BackerElement); 
             Append(BackingPanel);
         }
 
