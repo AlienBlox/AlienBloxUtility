@@ -1,7 +1,9 @@
 ﻿using AlienBloxUtility.Utilities.UIUtilities.UIElements;
 using AlienBloxUtility.Utilities.UIUtilities.UIRenderers;
 using Microsoft.Xna.Framework;
+using Terraria;
 using Terraria.GameContent.UI.Elements;
+using Terraria.GameInput;
 using Terraria.UI;
 
 namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
@@ -40,6 +42,8 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
             ScriptManagerBacking.Height.Set(0, 1f);
             ScriptManagerBacking.VAlign = 0.5f;
 
+            Scrollbar.OnScrollWheel += HotbarScrollFix;
+
             BackingList.VAlign = 0.5f;
             BackingList.HAlign = 0.5f;
             BackingList.Height.Set(0, 1);
@@ -74,5 +78,7 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
 
             base.Update(gameTime);
         }
+
+        public static void HotbarScrollFix(UIScrollWheelEvent evt, UIElement listeningElement) => Main.LocalPlayer.ScrollHotbar(PlayerInput.ScrollWheelDelta / 120);
     }
 }

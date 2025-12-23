@@ -47,6 +47,9 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
             ConSysScroll = new();
             PanelScroll = new();
 
+            PanelScroll.OnScrollWheel += LuaManager.HotbarScrollFix;
+            ConSysScroll.OnScrollWheel += LuaManager.HotbarScrollFix;
+
             BackingConSysUI = [];
             BackingList = [];
 

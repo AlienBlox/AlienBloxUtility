@@ -26,7 +26,9 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
         public override void OnInitialize()
         {
             panel = new(new Vector2(300, 500), Vector2.Zero, new(0, 128, 0, 128), new(0, 0, 0), Language.GetText("Mods.AlienBloxUtility.UI.DecompUI").Value, true);
-            scrollBar = new UIScrollbar();
+            scrollBar = new();
+
+            scrollBar.OnScrollWheel += LuaManager.HotbarScrollFix;
 
             backingPanel = new UIPanel();
             backingPanel.Width.Set(0, .9f);
