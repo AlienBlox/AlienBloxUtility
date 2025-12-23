@@ -13,14 +13,23 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIRenderers
     {
         internal ConHostSystem Element;
 
+        private static ConHostRender Instance;
+
         private UserInterface _element;
 
         public override void Load()
         {
+            Instance = this;
+
             Element = new();
             Element.Activate();
             _element = new UserInterface();
             _element.SetState(Element);
+        }
+
+        public override void Unload()
+        {
+            Instance = null;
         }
 
         public override void UpdateUI(GameTime gameTime)
@@ -59,7 +68,12 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIRenderers
 
         public static void Write(string Text)
         {
-            ModContent.GetInstance<ConHostRender>().Element.AddConsoleText(Text);
+            if (Instance.Element == null)
+            {
+                return;
+            }
+
+            Instance.Element.AddConsoleText(Text);
         }
     }
 }

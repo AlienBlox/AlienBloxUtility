@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AlienBloxUtility.Utilities.UIUtilities.UIRenderers;
+using System;
 using System.IO;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -14,7 +15,7 @@ namespace AlienBloxUtility.Utilities.Lua
         /// <param name="url">The url to request from.</param>
         /// <param name="outputPath">The output location.</param>
         /// <returns>The task.</returns>
-        public static async Task Request(string url, string outputPath)
+        public static async Task Request(string url, string outputPath, string fileName = "Test")
         {
             using HttpClient client = new();
 
@@ -24,12 +25,14 @@ namespace AlienBloxUtility.Utilities.Lua
             {
                 byte[] fileBytes = await client.GetByteArrayAsync(url);
 
-                await File.WriteAllBytesAsync(outputPath, fileBytes);
+                await File.WriteAllBytesAsync(outputPath + $"\\{fileName}.lua", fileBytes);
 
+                ConHostRender.Write($"Installing...");
                 AlienBloxUtility.Instance.Logger.Debug("File downloaded successfully!");
             }
             catch (HttpRequestException e)
             {
+                ConHostRender.Write($"Request error: {e.Message}");
                 AlienBloxUtility.Instance.Logger.Debug($"Request error: {e.Message}");
             }
         }

@@ -24,6 +24,10 @@ UI: {
 	Lua: Open Lua Injector
 	ModSpecificToggle: Toggle Mod-Specific Options
 	LuaDisplay: Lua Script Manager
+	DownloadLua: Download Scripts
+	RefreshLua: Refresh Scripts
+	DownloadingScript: Download a script...
+	OpenLuaFolder: Open Lua Folder
 
 	Console: {
 		ConWelcome: AlienBlox's Utility V{0} loaded!
@@ -76,7 +80,11 @@ ToggleUtilityBar: Toggle Utility Bar
 Configs: {
 	AlienBloxUtilityConfig: {
 		DisplayName: AlienBlox's Utility Config
-		Headers.Debugger: Debugger Configs
+
+		Headers: {
+			Debugger: Debugger Configs
+			Lua: Lua
+		}
 
 		DecompilerMessages: {
 			Label: Decompiler Messages
@@ -87,15 +95,29 @@ Configs: {
 			Label: General Debug Messages
 			Tooltip: ""
 		}
+
+		Sandboxed: {
+			Tooltip: Is the Lua system sandboxed or not
+			Label: Lua Sandboxed
+		}
 	}
 
 	AlienBloxUtilityServerConfig: {
 		DisplayName: AlienBlox's Utility Server Config
-		Headers.Debugger: Debugger Configs
+
+		Headers: {
+			Debugger: Debugger Configs
+			Lua: Lua
+		}
 
 		ClearCache: {
 			Label: Clear Cache
 			Tooltip: Should AlienBlox's Utility clear the cache folder it makes
+		}
+
+		Sandboxed: {
+			Tooltip: Is the Lua system sandboxed or not
+			Label: Lua Sandboxed
 		}
 	}
 }

@@ -20,6 +20,12 @@ namespace AlienBloxUtility
         [BackgroundColor(25, 50, 25)]
         public bool GeneralDebugMessages;
 
+        [Header("Lua")]
+        [DefaultValue(true)]
+        [ReloadRequired]
+        [BackgroundColor(25, 50, 25)]
+        public bool Sandboxed;
+
         public override void OnLoaded()
         {
             Instance = this;
@@ -37,6 +43,12 @@ namespace AlienBloxUtility
         [DefaultValue(false)]
         [BackgroundColor(25, 50, 25)]
         public bool ClearCache;
+
+        [Header("Lua")]
+        [DefaultValue(true)]
+        [ReloadRequired]
+        [BackgroundColor(25, 50, 25)]
+        public bool Sandboxed;
 
         public override void OnLoaded()
         {
