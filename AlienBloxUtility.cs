@@ -44,6 +44,7 @@ namespace AlienBloxUtility
             LuaEnv = GlobalLua.CreateEnvironment();
             Cts = new();
             MainThreadQueue = [];
+            LuaInstances = [];
 
             TestRun("return { x = 1, y = 2 }"); // Ensure lua is working
 
@@ -86,6 +87,7 @@ namespace AlienBloxUtility
             Cts = null;
             MainThreadQueue.Clear();
             MainThreadQueue = null;
+            LuaInstances = null;
 
             if (Directory.Exists(Path.Combine(Main.SavePath, "AlienBloxUtility", "Cache")) && AlienBloxUtilityServerConfig.Instance.ClearCache)
             {

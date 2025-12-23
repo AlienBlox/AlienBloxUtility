@@ -123,3 +123,4 @@ Configs: {
 }
 
 Exceptions.CommandConflictException: Can't add command: Command name conflict
+Exceptions.LuaHaltException: Lua operation halted.

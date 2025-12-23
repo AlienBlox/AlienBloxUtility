@@ -53,7 +53,7 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIElements
             {
                 string FileContents = File.ReadAllText(LuaFileLocation);
 
-                Task.Run( () => AlienBloxUtility.RunLuaAsync(FileContents));
+                Task.Run( () => AlienBloxUtility.RunLuaSafe(FileContents, out _, out _));
             }
             catch (FileNotFoundException)
             {

@@ -23,7 +23,7 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
 
         public UIText ClearConsoleText, ExportConsoleText;
 
-        public UIPanel MainPanel, SidePanel, CommandPanel, ClearConsole, ExportConsole;
+        public UIPanel MainPanel, SidePanel, CommandPanel, ClearConsole, ExportConsole, StopLuaExecution;
 
         public SpriteButton SendCommand;
 
