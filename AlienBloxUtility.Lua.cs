@@ -100,6 +100,7 @@ namespace AlienBloxUtility
                 catch (Exception ex)
                 {
                     // Handle Lua runtime errors
+                    ConHostRender.Write("Lua error: " + ex.Message);
                     Console.WriteLine("Lua error: " + ex.Message);
                 }
 
@@ -117,6 +118,8 @@ namespace AlienBloxUtility
                     token.Cancel();
                     token.Dispose();
                 }
+
+                CentralTokenStorage.Clear();
             }
             catch
             {

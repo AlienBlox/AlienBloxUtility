@@ -46,6 +46,7 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
             SendCommand = new($"Terraria/Images/Item_{ItemID.PaperAirplaneA}", Language.GetText("Mods.AlienBloxUtility.UI.SendCmd"));
             ConSysScroll = new();
             PanelScroll = new();
+            StopLuaExecution = new();
 
             PanelScroll.OnScrollWheel += LuaManager.HotbarScrollFix;
             ConSysScroll.OnScrollWheel += LuaManager.HotbarScrollFix;
@@ -61,11 +62,19 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
             ConSysScroll.Height.Set(0, 1);
 
             ClearConsole.Width.Set(0, 1f);
-            //ClearConsole.Height.Set(0, .25f);
             ClearConsole.Height.Set(30, 0);
             ExportConsole.Width.Set(0, 1f);
-            //ExportConsole.Height.Set(0, .25f);
             ExportConsole.Height.Set(30, 0);
+            StopLuaExecution.Width.Set(0, 1f);
+            StopLuaExecution.Height.Set(30, 0);
+            StopLuaExecution.BackgroundColor = new(255, 0, 0);
+            StopLuaExecution.InsertText("Stop Lua Execution", .5f);
+            StopLuaExecution.OnLeftClick += (_, _) =>
+            {
+                AddConsoleText($"Task Count: {AlienBloxUtility.CentralTokenStorage.Count}");
+                AlienBloxUtility.CancelAll();
+                AddConsoleText("Obliterated all tasks.");
+            };
 
             ClearConsoleText = new(Language.GetText("Mods.AlienBloxUtility.UI.ClearConsole"), .7f);
             ExportConsoleText = new(Language.GetText("Mods.AlienBloxUtility.UI.SaveLogs"), .7f);
@@ -99,6 +108,8 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
             BackingConSysUI.SetScrollbar(ConSysScroll);
             BackingConSysUI.Append(ConSysScroll);
 
+            BackingList.ManualSortMethod = (_) => { };
+            
             BackingList.Width.Percent = BackingList.Height.Percent = 1f;
             BackingList.SetScrollbar(PanelScroll);
             BackingList.Append(PanelScroll);
@@ -158,7 +169,7 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
             CommandBox.Append(SendCommand);
             CommandPanel.Append(BackingConSysUI);
 
-            BackingList.AddRange([ClearConsole, ExportConsole]);
+            BackingList.AddRange([ClearConsole, ExportConsole, StopLuaExecution]);
 
             ClearConsole.Append(ClearConsoleText);
             ExportConsole.Append(ExportConsoleText);
