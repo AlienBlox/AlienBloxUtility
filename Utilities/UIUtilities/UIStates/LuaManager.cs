@@ -88,6 +88,7 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
             ScriptManagerBacking.VAlign = 0.5f;
 
             Scrollbar.OnScrollWheel += HotbarScrollFix;
+            Scrollbar.VAlign = .5f;
 
             BackingList.VAlign = 0.5f;
             BackingList.HAlign = 0.5f;
@@ -182,6 +183,7 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
 
                     Panel.Width.Set(0, 1f);
                     Panel.Height.Set(30, 0);
+                    Panel.OnLeftClick += Panel.DoLua;
                     BackingList.Add(Panel);
                 }
             }
