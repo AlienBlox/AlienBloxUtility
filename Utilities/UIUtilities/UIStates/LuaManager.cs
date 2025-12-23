@@ -4,6 +4,7 @@ using AlienBloxUtility.Utilities.UIUtilities.UIElements;
 using AlienBloxUtility.Utilities.UIUtilities.UIRenderers;
 using Microsoft.Xna.Framework;
 using System;
+using System.IO;
 using System.Threading.Tasks;
 using Terraria;
 using Terraria.Audio;
@@ -60,6 +61,7 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
             RefreshScripts.InsertText(Language.GetText("Mods.AlienBloxUtility.UI.RefreshLua"));
             RefreshScripts.OnMouseOver += HoverOn;
             RefreshScripts.OnMouseOut += HoverOff;
+            RefreshScripts.OnLeftClick += ReloadScripts;
 
             OpenLuaFolder.Width.Set(0, 1f);
             OpenLuaFolder.Height.Set(30, 0f);
@@ -90,7 +92,7 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
             BackingList.VAlign = 0.5f;
             BackingList.HAlign = 0.5f;
             BackingList.Height.Set(0, 1);
-            BackingList.Width = BackingList.Height;
+            BackingList.Width.Set(0, 1);
             BackingList.ManualSortMethod = (_) => { };
             BackingList.Append(Scrollbar);
             BackingList.SetScrollbar(Scrollbar);
@@ -166,6 +168,27 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
             }
 
             base.Update(gameTime);
+        }
+
+        public void ReloadScripts(UIEvent evt, UIElement element)
+        {
+            BackingList.Clear();
+
+            try
+            {
+                foreach (string s in Directory.GetFiles(AlienBloxUtility.LuaStorageLocation))
+                {
+                    LuaPanel Panel = new(s);
+
+                    Panel.Width.Set(0, 1f);
+                    Panel.Height.Set(30, 0);
+                    BackingList.Add(Panel);
+                }
+            }
+            catch (Exception e)
+            {
+                ConHostRender.Write($"{e.GetType().Name}: {e.Message}");
+            }
         }
 
         public void ShowInstallMenu(UIEvent evt, UIElement element)

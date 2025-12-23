@@ -1,8 +1,10 @@
 ﻿using AlienBloxUtility.Utilities.UIUtilities.UIRenderers;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Terraria.GameContent.UI.Elements;
 using Terraria.ModLoader;
 
 namespace AlienBloxUtility.Utilities.Lua
@@ -35,6 +37,18 @@ namespace AlienBloxUtility.Utilities.Lua
                 ConHostRender.Write($"Request error: {e.Message}");
                 AlienBloxUtility.Instance.Logger.Debug($"Request error: {e.Message}");
             }
+        }
+
+        public static string[][] GetAllLuaFiles()
+        {
+            List<string[]> LuaFile = [];
+
+            foreach (string F in Directory.GetFiles(AlienBloxUtility.LuaStorageLocation))
+            {
+                LuaFile.Add(File.ReadAllLines(F));
+            }
+
+            return [.. LuaFile];
         }
     }
 }
