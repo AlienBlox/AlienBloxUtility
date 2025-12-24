@@ -116,6 +116,11 @@ Configs: {
 			Tooltip: Is the Lua system sandboxed or not
 			Label: Lua Sandboxed
 		}
+
+		Noisy: {
+			Label: Noisy
+			Tooltip: ""
+		}
 	}
 
 	AlienBloxUtilityServerConfig: {
