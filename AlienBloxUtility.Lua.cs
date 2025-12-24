@@ -1,4 +1,5 @@
-﻿using AlienBloxUtility.Utilities.UIUtilities.UIRenderers;
+﻿using AlienBloxUtility.Utilities.DataStructures;
+using AlienBloxUtility.Utilities.UIUtilities.UIRenderers;
 using Neo.IronLua;
 using System;
 using System.Collections.Concurrent;
@@ -24,6 +25,46 @@ namespace AlienBloxUtility
             CentralTokenStorage.Add(token);
 
             return token;
+        }
+
+        public static string MakeWhileLoopsSafe(string code)
+        {
+            /*
+            string pattern = @"\bwhile\b\s*(.*?)\s*do";
+            return Regex.Replace(code, pattern, m =>
+            {
+                string condition = m.Groups[1].Value;
+                return $"while {condition} do check_timeout()";
+            }, RegexOptions.Singleline);
+            */
+
+            if (string.IsNullOrWhiteSpace(code))
+                return code;
+
+            // Handle while loops
+            string whilePattern = @"\bwhile\b\s*(.*?)\s*do";
+            code = Regex.Replace(code, whilePattern, m =>
+            {
+                string condition = m.Groups[1].Value;
+                return $"while {condition} do check_timeout()";
+            }, RegexOptions.Singleline);
+
+            // Handle repeat ... until loops
+            string repeatPattern = @"\brepeat\b";
+            code = Regex.Replace(code, repeatPattern, "repeat check_timeout()");
+
+            return code;
+        }
+
+        public static void InjectCheckTimeout(LuaGlobal luaGlobal, LuaScriptContext context)
+        {
+            // Assign a per-script check_timeout function
+            luaGlobal["check_timeout"] = (Action)(() =>
+            {
+                var elapsed = DateTime.UtcNow - context.StartTime;
+                if (elapsed.TotalMilliseconds > context.MaxMilliseconds)
+                    throw new Exception("Lua loop timeout exceeded!");
+            });
         }
 
         /// <summary>
@@ -60,38 +101,6 @@ namespace AlienBloxUtility
             }
         }
 
-        public static Task<LuaResult> RunLuaAsync(string code, CancellationTokenSource tokenSource)
-        {
-            tokenSource ??= GlobalCts;
-
-            var token = tokenSource.Token;
-
-            ConHostRender.Write(Language.GetTextValue("Mods.AlienBloxUtility.UI.ScriptStart"));
-
-            return Task.Run(() =>
-            {
-                token.ThrowIfCancellationRequested();
-
-                LuaResult result = null;
-
-                try
-                {
-                    result = LuaEnv.DoChunk(code, "chunk");
-
-                    ConHostRender.Write(Language.GetTextValue("Mods.AlienBloxUtility.UI.ScriptEnd"));
-                }
-                catch (Exception ex)
-                {
-                    // Handle Lua runtime errors
-                    Console.WriteLine("Lua error: " + ex.Message);
-                    ConHostRender.Write("Lua error: " + ex.Message);
-                }
-
-                token.ThrowIfCancellationRequested();
-                return result;
-            }, token);
-        }
-
         public static Task<LuaResult> RunLuaAsync(string code, CancellationTokenSource tokenSource, params KeyValuePair<string, object>[] objects)
         {
             tokenSource ??= GlobalCts;
@@ -106,7 +115,9 @@ namespace AlienBloxUtility
 
                 try
                 {
-                    result = LuaEnv.DoChunk(code, "chunk", objects);
+                    InjectCheckTimeout(LuaEnv, new(5000));
+
+                    result = LuaEnv.DoChunk(MakeWhileLoopsSafe(code), "chunk", objects);
 
                     ConHostRender.Write(Language.GetTextValue("Mods.AlienBloxUtility.UI.ScriptEnd"));
                 }
