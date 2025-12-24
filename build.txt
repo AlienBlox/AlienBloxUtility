@@ -5,5 +5,5 @@ hideCode = false
 hideResources = false
 includeSource = true
 includePDB = true
-dllReferences = AlienBloxTools, ICSharpCode.Decompiler, Neo.Lua, Neo.Lua.Dbg, Scripting\Microsoft.Dynamic, Scripting\Microsoft.Scripting, Scripting\Microsoft.Scripting.Metadata, Scripting\System.CodeDom
+dllReferences = AlienBloxTools, ICSharpCode.Decompiler, Neo.Lua
 buildIgnore = FutureAdditions/*

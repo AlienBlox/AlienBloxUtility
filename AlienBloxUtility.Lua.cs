@@ -1,4 +1,5 @@
 ﻿using AlienBloxUtility.Utilities.UIUtilities.UIRenderers;
+using ICSharpCode.Decompiler.IL;
 using Neo.IronLua;
 using System;
 using System.Collections.Concurrent;
@@ -14,7 +15,7 @@ namespace AlienBloxUtility
 #pragma warning disable CA2211 // Non-constant fields should not be visible
         public static List<CancellationTokenSource> CentralTokenStorage;
         public static ConcurrentQueue<Action> MainThreadQueue;
-        #pragma warning restore CA2211 // Non-constant fields should not be visible}
+#pragma warning restore CA2211 // Non-constant fields should not be visible}
 
         public static CancellationTokenSource GetToken()
         {
@@ -61,6 +62,8 @@ namespace AlienBloxUtility
 
         public static Task<LuaResult> RunLuaAsync(string code, CancellationTokenSource tokenSource)
         {
+            tokenSource ??= GlobalCts;
+
             var token = tokenSource.Token;
 
             ConHostRender.Write(Language.GetTextValue("Mods.AlienBloxUtility.UI.ScriptStart"));
@@ -91,6 +94,8 @@ namespace AlienBloxUtility
 
         public static Task<LuaResult> RunLuaAsync(string code, CancellationTokenSource tokenSource, params KeyValuePair<string, object>[] objects)
         {
+            tokenSource ??= GlobalCts;
+
             var token = tokenSource.Token;
 
             return Task.Run(() =>

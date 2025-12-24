@@ -20,7 +20,7 @@ namespace AlienBloxUtility
     // Please read https://github.com/tModLoader/tModLoader/wiki/Basic-tModLoader-Modding-Guide#mod-skeleton-contents for more information about the various files in a mod.
     public partial class AlienBloxUtility : Mod
     {
-#pragma warning disable CA2211 // Non-constant fields should not be visible
+        #pragma warning disable CA2211 // Non-constant fields should not be visible
         public static CancellationTokenSource GlobalCts;
 
         public static Lua GlobalLua;
@@ -85,7 +85,17 @@ namespace AlienBloxUtility
         public override void Unload()
         {
             CancelAll();
-            GlobalLua.Dispose();
+
+            try
+            {
+                GlobalLua.Dispose();
+                GlobalCts.Cancel();
+                GlobalCts.Dispose();
+            }
+            catch
+            {
+
+            }
 
             GlobalCts = null;
             Instance = null;

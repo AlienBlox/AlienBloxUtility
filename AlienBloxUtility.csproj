@@ -17,9 +17,6 @@
 		<Reference Include="Neo.Lua">
 			<HintPath>lib\Neo.Lua.dll</HintPath>
 		</Reference>
-		<Reference Include="Neo.Lua.Dbg">
-			<HintPath>lib\Neo.Lua.Dbg.dll</HintPath>
-		</Reference>
 	</ItemGroup>
 
 	<!-- References -->
