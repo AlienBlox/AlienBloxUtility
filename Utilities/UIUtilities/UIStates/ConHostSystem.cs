@@ -73,6 +73,7 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
             {
                 AddConsoleText($"Task Count: {AlienBloxUtility.CentralTokenStorage.Count}");
                 AlienBloxUtility.CancelAll();
+                AlienBloxUtility.CancelGlobal();
                 AddConsoleText("Obliterated all tasks.");
             };
 

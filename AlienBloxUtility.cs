@@ -49,7 +49,7 @@ namespace AlienBloxUtility
             CentralTokenStorage = [];
             MainThreadQueue = [];
 
-            TestRun("return { x = 1, y = 2 }"); // Ensure lua is working
+            //TestRun("return { x = 1, y = 2 }"); // Ensure lua is working
 
             try
             {

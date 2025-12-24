@@ -1,9 +1,9 @@
 ﻿using AlienBloxUtility.Utilities.UIUtilities.UIRenderers;
-using ICSharpCode.Decompiler.IL;
 using Neo.IronLua;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Terraria.Localization;
@@ -12,6 +12,58 @@ namespace AlienBloxUtility
 {
     public partial class AlienBloxUtility
     {
+        public static class CentralizedLua
+        {
+            /// <summary>
+            /// Rewrites all while loops to insert a per-script timeout check.
+            /// </summary>
+            private static string MakeWhileLoopsSafe(string code)
+            {
+                string pattern = @"\bwhile\b\s*(.*?)\s*do";
+
+                string safeCode = Regex.Replace(code, pattern, m =>
+                {
+                    string condition = m.Groups[1].Value;
+                    return $"while {condition} do check_timeout()";
+                }, RegexOptions.Singleline);
+
+                return safeCode;
+            }
+
+            public static void RunSafeScriptAsync(string code, int max = 1000, CancellationToken cancellationToken = default)
+            {
+                Task.Run( () => RunSafeScriptAsync(code, max, cancellationToken), cancellationToken);
+            }
+
+            /// <summary>
+            /// Runs Lua code safely using the centralized environment.
+            /// </summary>
+            public static async Task RunSafeScriptAsync(string code, int MaxTime = 1000, CancellationToken cancellationToken = default, params KeyValuePair<string, object>[] objects)
+            {
+                // Each script gets its own startTime
+                var startTime = DateTime.UtcNow;
+
+                // Inject a per-script timeout function
+                LuaEnv["check_timeout"] = (Action)(() =>
+                {
+                    if (cancellationToken.IsCancellationRequested)
+                        throw new OperationCanceledException("Script cancelled");
+
+                    var elapsed = DateTime.UtcNow - startTime;
+                    if (elapsed.TotalMilliseconds > MaxTime)
+                        throw new Exception("Lua loop timeout exceeded!");
+                });
+
+                string safeCode = MakeWhileLoopsSafe(code);
+
+                // Run script in a Task to allow async execution
+                await Task.Run(() =>
+                {
+                    LuaEnv.DoChunk(safeCode, "script", objects);
+                }, cancellationToken);
+            }
+        }
+
 #pragma warning disable CA2211 // Non-constant fields should not be visible
         public static List<CancellationTokenSource> CentralTokenStorage;
         public static ConcurrentQueue<Action> MainThreadQueue;
