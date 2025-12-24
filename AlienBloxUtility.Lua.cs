@@ -107,6 +107,8 @@ namespace AlienBloxUtility
                 try
                 {
                     result = LuaEnv.DoChunk(code, "chunk", objects);
+
+                    ConHostRender.Write(Language.GetTextValue("Mods.AlienBloxUtility.UI.ScriptEnd"));
                 }
                 catch (Exception ex)
                 {
@@ -144,9 +146,22 @@ namespace AlienBloxUtility
             GlobalCts = new();
         }
 
-        public static void Lua(string lua)
+        public static Task<LuaResult> Lua(string lua, CancellationTokenSource tokenSource = null)
         {
-            RunLuaAsync(lua, GetToken());
+            tokenSource ??= GlobalCts;
+
+            return RunLuaAsync(lua, tokenSource);
+        }
+
+        public static void Lua(string lua, int timeOutCount)
+        {
+            var tsk = Lua(lua);
+
+            if (!tsk.Wait(timeOutCount))
+            {
+                tsk.Dispose(); // signal cancellation
+                Console.WriteLine("Timed out");
+            }
         }
 
         public static async void TestRun(string code)
