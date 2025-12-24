@@ -1,4 +1,5 @@
-﻿using Steamworks;
+﻿using AlienBloxUtility.Utilities.UIUtilities.UIRenderers;
+using Steamworks;
 using System.Diagnostics;
 using Terraria;
 
@@ -6,6 +7,16 @@ namespace AlienBloxUtility.Utilities.Helpers
 {
     public static class MultiLaunchUtility
     {
+        public static void LogEvt(object sender, DataReceivedEventArgs evt)
+        {
+            ConHostRender.Write(evt.Data);
+        }
+
+        public static void LogErr(object sender, DataReceivedEventArgs evt)
+        {
+            ConHostRender.Write($"[c/FF0000:{evt.Data}]");
+        }
+
         /// <summary>
         /// Runs an extra instance of tModLoader
         /// </summary>
@@ -29,7 +40,19 @@ namespace AlienBloxUtility.Utilities.Helpers
                         RedirectStandardError = redirectOutput,
                     };
 
-                    return Process.Start(info);
+                    var proc = Process.Start(info);
+
+                    if (info.RedirectStandardOutput)
+                    {
+                        proc.OutputDataReceived += LogEvt;
+                    }
+
+                    if (info.RedirectStandardError)
+                    {
+                        proc.ErrorDataReceived += LogErr;
+                    }
+
+                    return proc;
                 }
 
                 if (AlienBloxUtility.GetPlatform() == "macOS" || AlienBloxUtility.GetPlatform() == "Linux")
@@ -43,7 +66,19 @@ namespace AlienBloxUtility.Utilities.Helpers
                         RedirectStandardError = redirectOutput,
                     };
 
-                    return Process.Start(info);
+                    var proc = Process.Start(info);
+
+                    if (info.RedirectStandardOutput)
+                    {
+                        proc.OutputDataReceived += LogEvt;
+                    }
+
+                    if (info.RedirectStandardError)
+                    {
+                        proc.ErrorDataReceived += LogErr;
+                    }
+
+                    return proc;
                 }
             }
             catch
