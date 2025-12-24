@@ -32,6 +32,10 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
             ModSpecificToggle.MaxHeight.Set(50, 0);
             ModSpecificToggle.InsertText(Language.GetText("Mods.AlienBloxUtility.UI.ModSpecificToggle"));
             ModSpecificToggle.Top.Set(-45, 0);
+            ModSpecificToggle.OnLeftClick += (_, _) =>
+            {
+                ModSpecificUtilitiesRender.UtilityEnabled = !ModSpecificUtilitiesRender.UtilityEnabled;
+            };
 
             PacketSuppressor.HAlign = .5f;
             PacketSuppressor.VAlign = .8f;

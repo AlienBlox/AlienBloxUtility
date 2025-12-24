@@ -123,6 +123,8 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
         {
             if (!Fix)
             {
+                ReloadScripts(null, null);
+
                 BackingPanel.Close.OnLeftClick += (_, _) =>
                 {
                     LuaManagerRender.LuaManagerEnabled = !LuaManagerRender.LuaManagerEnabled;
@@ -184,6 +186,7 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
                     Panel.Width.Set(0, 1f);
                     Panel.Height.Set(30, 0);
                     Panel.OnLeftClick += Panel.DoLua;
+                    Panel.OnRightClick += Panel.LuaInfo;
                     BackingList.Add(Panel);
                 }
             }

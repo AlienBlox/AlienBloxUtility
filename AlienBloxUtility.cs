@@ -28,7 +28,9 @@ namespace AlienBloxUtility
         public static LuaGlobal LuaEnv;
 
         public static AlienBloxUtility Instance;
-        #pragma warning restore CA2211 // Non-constant fields should not be visible
+#pragma warning restore CA2211 // Non-constant fields should not be visible
+
+        public static string AlienBloxUtilityBasePath { get; private set; }
 
         public static string ModDumpLocation { get; private set; }
 
@@ -59,6 +61,7 @@ namespace AlienBloxUtility
                 DirectoryInfo Log = Directory.CreateDirectory(Path.Combine(Main.SavePath, "AlienBloxUtility", "Logs"));
                 DirectoryInfo directoryInfo = Directory.CreateDirectory(Path.Combine(Main.SavePath, "AlienBloxUtility", "Lua"));
 
+                AlienBloxUtilityBasePath = Path.Combine(Main.SavePath, "AlienBloxUtility");
                 ModDumpLocation = ModDump.FullName;
                 DecompLocation = ModDecomp.FullName;
                 CacheLocation = Dir.FullName;

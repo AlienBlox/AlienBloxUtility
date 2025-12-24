@@ -1,9 +1,12 @@
-﻿using Microsoft.Xna.Framework;
+﻿using AlienBloxUtility.Utilities.DataStructures;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System.IO;
 using System.Threading.Tasks;
+using Terraria;
 using Terraria.GameContent.UI.Elements;
 using Terraria.ID;
+using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.UI;
 
@@ -42,7 +45,7 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIElements
 
         protected override void DrawSelf(SpriteBatch spriteBatch)
         {
-            this.SetUIBase("Execute Lua");
+            this.SetUIBase(Language.GetText("Mods.AlienBloxUtility.UI.ExecLua").Value);
 
             base.DrawSelf(spriteBatch);
         }
@@ -58,6 +61,25 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIElements
             catch (FileNotFoundException)
             {
                 Parent.RemoveChild(this);
+            }
+        }
+
+        public void LuaInfo(UIEvent evt, UIElement element)
+        {
+            try
+            {
+                string FileContents = File.ReadAllText(LuaFileLocation);
+
+                var Metadata = LuaMetadataParser.ParseMetadata(FileContents);
+
+                Main.NewText(Language.GetText("Mods.AlienBloxUtility.Messages.LuaInfo.Description").Format(Metadata.Description));
+                Main.NewText(Language.GetText("Mods.AlienBloxUtility.Messages.LuaInfo.Author").Format(Metadata.Author));
+                Main.NewText(Language.GetText("Mods.AlienBloxUtility.Messages.LuaInfo.Origin").Format(Metadata.Origin));
+                Main.NewText(Language.GetText("Mods.AlienBloxUtility.Messages.LuaInfo.Version").Format(Metadata.Version));
+            }
+            catch
+            {
+                
             }
         }
     }

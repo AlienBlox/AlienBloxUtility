@@ -31,6 +31,8 @@ UI: {
 	EmergencyStop: Stop Lua Scripts
 	ScriptStart: Lua script started.
 	ScriptEnd: Lua script ended.
+	ModSpecificUtilities: Mod Specific Tools
+	ExecLua: Execute Lua Script (Right-click for info)
 
 	Console: {
 		ConWelcome: AlienBlox's Utility V{0} loaded!
@@ -73,6 +75,13 @@ Messages: {
 		DecompilerStart: ===DECOMPILER BEGIN===
 		DecompilerFile: File Decompiled: File Name: {0}, At: {1}
 		DecompilerEnd: ===DECOMPILER END===
+	}
+
+	LuaInfo: {
+		Description: Description: {0}
+		Author: Author: {0}
+		Origin: Origin: {0}
+		Version: Version: {0}
 	}
 
 	PacketSuppression: Packet Suppressed: {0}
