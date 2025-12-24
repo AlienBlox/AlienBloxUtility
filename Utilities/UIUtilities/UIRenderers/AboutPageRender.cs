@@ -19,20 +19,6 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIRenderers
 
         public override void Load()
         {
-            if (!File.Exists(AlienBloxUtility.AlienBloxUtilityBasePath + "\\Firststart.txt"))
-            {
-                ShowAboutPage = true;
-
-                try
-                {
-                    File.Create(AlienBloxUtility.AlienBloxUtilityBasePath + "\\Firststart.txt");
-                }
-                catch
-                {
-
-                }
-            }
-
             Element = new();
             Element.Activate();
             _element = new UserInterface();
