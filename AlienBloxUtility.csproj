@@ -17,6 +17,12 @@
 		<Reference Include="Neo.Lua">
 			<HintPath>lib\Neo.Lua.dll</HintPath>
 		</Reference>
+		<Reference Include="Acornima">
+			<HintPath>lib\Acornima.dll</HintPath>
+		</Reference>
+		<Reference Include="Jint">
+			<HintPath>lib\Jint.dll</HintPath>
+		</Reference>
 	</ItemGroup>
 
 	<!-- References -->

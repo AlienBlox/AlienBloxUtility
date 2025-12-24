@@ -26,6 +26,10 @@ namespace AlienBloxUtility
         [BackgroundColor(25, 50, 25)]
         public bool Sandboxed;
 
+        [DefaultValue(true)]
+        [BackgroundColor(25, 50, 25)]
+        public bool Noisy;
+
         public override void OnLoaded()
         {
             Instance = this;

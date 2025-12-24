@@ -12,5 +12,4 @@ Features includes these abilities:
  * A quick launch tModLoader utility that allows you to launch multiple tModLoader instances
 	
 [h1]Upcoming Features[/h1]
- * A packet suppressor (stops packets from being received)
- * A lua injector system used to debug stats in real time on the go
+ * A console chat feature that allows you to chat directly from the debug console

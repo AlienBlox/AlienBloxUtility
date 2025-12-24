@@ -1,8 +1,5 @@
 ﻿using AlienBloxUtility.Utilities.Commands;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace AlienBloxUtility
@@ -20,13 +17,17 @@ namespace AlienBloxUtility
                     switch (S)
                     {
                         case "Lua":
-                            Task.Run(() => RunLuaAsync((string)args[1], GetToken()));
-                            break;
+                            return Task.Run(() => RunLuaAsync((string)args[1], GetToken()));
                         case "RegisterLua":
                             LuaEnv.Add(args[1], args[2]);
                             break;
                         case "RegisterCommand":
                             ModCommandHelper.Commands.TryAdd((string)args[1], (Action<string[]>)args[2]);
+                            break;
+                        case "DoJavaScript":
+                            return RunJavaScript((string)args[1]);
+                        case "AddToJSEnv":
+                            SetValue((string)args[1], args[2]);
                             break;
                     }
                 }

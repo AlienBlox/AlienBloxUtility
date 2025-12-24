@@ -1,5 +1,7 @@
 using AlienBloxTools.Utilities;
 using AlienBloxUtility.Utilities.DataStructures;
+using AlienBloxUtility.Utilities.UIUtilities.UIRenderers;
+using Jint;
 using Neo.IronLua;
 using System;
 using System.Collections.Generic;
@@ -22,6 +24,10 @@ namespace AlienBloxUtility
     public partial class AlienBloxUtility : Mod
     {
 #pragma warning disable CA2211 // Non-constant fields should not be visible
+        private static object engineLock;
+
+        public static Engine JSEngine;
+
         public static LuaStdout LuaStdout;
 
         public static CancellationTokenSource GlobalCts;
@@ -45,8 +51,12 @@ namespace AlienBloxUtility
 
         public static string LuaStorageLocation { get; private set; }
 
+        public static string JSStorageLocation { get; private set; }
+
         public override void Load()
         {
+            JSEngine = EngineCreate();
+            engineLock = new();
             LuaStdout = new LuaStdout();
             Instance = this;
             GlobalCts = new();
@@ -54,6 +64,21 @@ namespace AlienBloxUtility
             LuaEnv = GlobalLua.CreateEnvironment();
             CentralTokenStorage = [];
             MainThreadQueue = [];
+
+            JSEngine.SetValue("log", new Action<string>(message =>
+            {
+                Console.WriteLine(message);         // Debug output in console
+                Logger.Info(message);         // tML mod logger
+
+                if (Main.netMode == NetmodeID.Server)
+                {
+                    OutputTo(message);
+                }
+                else
+                {
+                    ConHostRender.Write(message);
+                }
+            }));
 
             // Define a custom print function in Lua
             Action<object> print = (type) =>
@@ -87,6 +112,7 @@ namespace AlienBloxUtility
                 DirectoryInfo Dir = Directory.CreateDirectory(Path.Combine(Main.SavePath, "AlienBloxUtility", "Cache"));
                 DirectoryInfo Log = Directory.CreateDirectory(Path.Combine(Main.SavePath, "AlienBloxUtility", "Logs"));
                 DirectoryInfo directoryInfo = Directory.CreateDirectory(Path.Combine(Main.SavePath, "AlienBloxUtility", "Lua"));
+                DirectoryInfo jSStorage = Directory.CreateDirectory(Path.Combine(Main.SavePath, "AlienBloxUtility", "JS"));
 
                 AlienBloxUtilityBasePath = Path.Combine(Main.SavePath, "AlienBloxUtility");
                 ModDumpLocation = ModDump.FullName;
@@ -94,6 +120,7 @@ namespace AlienBloxUtility
                 CacheLocation = Dir.FullName;
                 LogLocation = Log.FullName;
                 LuaStorageLocation = directoryInfo.FullName;
+                JSStorageLocation = jSStorage.FullName;
 
                 if (Dir.Exists && !File.Exists(Dir.FullName + "\\tModUnpacker.exe"))
                 {
@@ -127,6 +154,9 @@ namespace AlienBloxUtility
 
             }
 
+            engineLock = null;
+            JSEngine.Dispose();
+            JSEngine = null;
             LuaStdout.Flush();
             LuaStdout.Close();
             GlobalCts = null;

@@ -19,6 +19,7 @@ namespace AlienBloxUtility
             SpawnNPC,
             ServerLua,
             OutputTo,
+            ServerJavaScript,
         }
 
         public override void HandlePacket(BinaryReader reader, int whoAmI)
@@ -65,11 +66,41 @@ namespace AlienBloxUtility
                         }
                     }
                     break;
+                case Messages.ServerJavaScript:
+                    if (Main.netMode == NetmodeID.Server)
+                    {
+                        string code = reader.ReadString();
+                        bool file = reader.ReadBoolean();
+
+                        ChatHelper.BroadcastChatMessage(NetworkText.FromKey("Mods.AlienBloxUtility.Messages.Server.DoJS", PlrNet.name, PacketSpyUtility.UnixTime), Colors.CoinSilver);
+
+                        if (!file)
+                        {
+                            Task.Run(() => RunLuaAsync(code, GetToken()));
+                        }
+                        else
+                        {
+                            try
+                            {
+                                Task.Run(() => RunLuaAsync(File.ReadAllText(JSStorageLocation + $"\\{code}"), GetToken()));
+                            }
+                            catch (Exception e)
+                            {
+                                ChatHelper.BroadcastChatMessage(NetworkText.FromLiteral($"{e.GetType().Name}: {e.Message}"), Colors.CoinSilver);
+                            }
+
+                        }
+                    }
+                    break;
                 case Messages.OutputTo:
                     if (Main.netMode == NetmodeID.MultiplayerClient)
                     {
                         string msg = reader.ReadString();
 
+                        if (!AlienBloxUtilityConfig.Instance.Noisy)
+                            Main.NewText(msg);
+
+                        Logger.Info(msg);
                         ConHostRender.Write(msg);
                     }
                     break;
@@ -84,6 +115,19 @@ namespace AlienBloxUtility
 
                 Pkt.Write((byte)Messages.OutputTo);
                 Pkt.Write(output);
+                Pkt.Send();
+            }
+        }
+
+        public static void JSServer(string code, bool file = false)
+        {
+            if (Main.netMode == NetmodeID.MultiplayerClient)
+            {
+                ModPacket Pkt = Instance.GetPacket();
+
+                Pkt.Write((byte)Messages.ServerJavaScript);
+                Pkt.Write(code);
+                Pkt.Write(file);
                 Pkt.Send();
             }
         }

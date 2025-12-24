@@ -65,6 +65,7 @@ Messages: {
 	Server: {
 		SpawnNPC: "{0} spawned NPC with type of {1} at {2}"
 		DoLua: "{0} ran a lua script at {1} (Unix Time)!"
+		DoJS: "{0} ran a JavaScript at {1} (Unix Time)!"
 	}
 
 	PacketSpy: {

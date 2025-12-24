@@ -12,5 +12,4 @@ Features includes these abilities:
 	
 Upcoming Features
 =================
- * A packet suppressor (stops packets from being received)
- * A lua injector system used to debug stats in real time on the go
+* A console chat feature that allows you to chat directly from the debug console
