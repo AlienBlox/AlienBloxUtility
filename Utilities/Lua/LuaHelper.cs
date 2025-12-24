@@ -14,6 +14,8 @@ namespace AlienBloxUtility.Utilities.Lua
             };
 
             AlienBloxUtility.RegisterFunc("SpawnNPC", myAction);
+            AlienBloxUtility.LuaEnv.Add(nameof(LuaHelper), this);
+            AlienBloxUtility.LuaEnv.Add(nameof(LuaGambling.RNG), LuaGambling.RNG);
         }
     }
 }

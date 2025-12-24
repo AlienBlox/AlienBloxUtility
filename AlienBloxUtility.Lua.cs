@@ -7,6 +7,8 @@ using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using Terraria;
+using Terraria.ID;
 using Terraria.Localization;
 
 namespace AlienBloxUtility
@@ -119,12 +121,14 @@ namespace AlienBloxUtility
 
                     result = LuaEnv.DoChunk(MakeWhileLoopsSafe(code), "chunk", objects);
 
-                    ConHostRender.Write(Language.GetTextValue("Mods.AlienBloxUtility.UI.ScriptEnd"));
+                    if (Main.netMode != NetmodeID.Server)
+                        ConHostRender.Write(Language.GetTextValue("Mods.AlienBloxUtility.UI.ScriptEnd"));
                 }
                 catch (Exception ex)
                 {
                     // Handle Lua runtime errors
-                    ConHostRender.Write("Lua error: " + ex.Message);
+                    if (Main.netMode != NetmodeID.Server)
+                        ConHostRender.Write("Lua error: " + ex.Message);
                     Console.WriteLine("Lua error: " + ex.Message);
                 }
 

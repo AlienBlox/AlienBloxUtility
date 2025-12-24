@@ -1,5 +1,8 @@
 ﻿using AlienBloxUtility.Utilities.Helpers;
+using AlienBloxUtility.Utilities.UIUtilities.UIRenderers;
+using System;
 using System.IO;
+using System.Threading.Tasks;
 using Terraria;
 using Terraria.Chat;
 using Terraria.DataStructures;
@@ -15,6 +18,7 @@ namespace AlienBloxUtility
         {
             SpawnNPC,
             ServerLua,
+            OutputTo,
         }
 
         public override void HandlePacket(BinaryReader reader, int whoAmI)
@@ -35,6 +39,65 @@ namespace AlienBloxUtility
                         ChatHelper.BroadcastChatMessage(NetworkText.FromKey("Mods.AlienBloxUtility.Messages.Server.SpawnNPC", PlrNet.name, type, PacketSpyUtility.UnixTime), Colors.CoinSilver);
                     }
                     break;
+                case Messages.ServerLua:
+                    if (Main.netMode == NetmodeID.Server)
+                    {
+                        string code = reader.ReadString();
+                        bool file = reader.ReadBoolean();
+
+                        ChatHelper.BroadcastChatMessage(NetworkText.FromKey("Mods.AlienBloxUtility.Messages.Server.DoLua", PlrNet.name, PacketSpyUtility.UnixTime), Colors.CoinSilver);
+
+                        if (!file)
+                        {
+                            Task.Run(() => RunLuaAsync(code, GetToken()));
+                        }
+                        else
+                        {
+                            try
+                            {
+                                Task.Run(() => RunLuaAsync(File.ReadAllText(LuaStorageLocation + $"\\{code}"), GetToken()));
+                            }
+                            catch (Exception e)
+                            {
+                                ChatHelper.BroadcastChatMessage(NetworkText.FromLiteral($"{e.GetType().Name}: {e.Message}"), Colors.CoinSilver);
+                            }
+                            
+                        }
+                    }
+                    break;
+                case Messages.OutputTo:
+                    if (Main.netMode == NetmodeID.MultiplayerClient)
+                    {
+                        string msg = reader.ReadString();
+
+                        ConHostRender.Write(msg);
+                    }
+                    break;
+            }
+        }
+
+        public static void OutputTo(string output)
+        {
+            if (Main.netMode == NetmodeID.Server)
+            {
+                ModPacket Pkt = Instance.GetPacket();
+
+                Pkt.Write((byte)Messages.OutputTo);
+                Pkt.Write(output);
+                Pkt.Send();
+            }
+        }
+
+        public static void LuaServer(string code, bool file = false)
+        {
+            if (Main.netMode == NetmodeID.MultiplayerClient)
+            {
+                ModPacket Pkt = Instance.GetPacket();
+
+                Pkt.Write((byte)Messages.ServerLua);
+                Pkt.Write(code);
+                Pkt.Write(file);
+                Pkt.Send();
             }
         }
 

@@ -208,6 +208,8 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
             ConsoleText.Add(ConsoleTextVal);
             BackingConSysUI.Add(ConsoleTextVal);
             BackingString.Add(text);
+
+            AlienBloxUtility.Instance.Logger.Debug(text);
         }
 
         public void ClearConSysText(UIMouseEvent evt, UIElement element)

@@ -1,6 +1,6 @@
 displayName = AlienBlox's Utilities
 author = Alienblox1234
-version = 0.1
+version = 0.1.2
 hideCode = false
 hideResources = false
 includeSource = true

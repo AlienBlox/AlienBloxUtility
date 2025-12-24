@@ -1,4 +1,5 @@
 using AlienBloxTools.Utilities;
+using AlienBloxUtility.Utilities.DataStructures;
 using Neo.IronLua;
 using System;
 using System.Collections.Generic;
@@ -20,7 +21,9 @@ namespace AlienBloxUtility
     // Please read https://github.com/tModLoader/tModLoader/wiki/Basic-tModLoader-Modding-Guide#mod-skeleton-contents for more information about the various files in a mod.
     public partial class AlienBloxUtility : Mod
     {
-        #pragma warning disable CA2211 // Non-constant fields should not be visible
+#pragma warning disable CA2211 // Non-constant fields should not be visible
+        public static LuaStdout LuaStdout;
+
         public static CancellationTokenSource GlobalCts;
 
         public static Lua GlobalLua;
@@ -44,12 +47,36 @@ namespace AlienBloxUtility
 
         public override void Load()
         {
+            LuaStdout = new LuaStdout();
             Instance = this;
             GlobalCts = new();
             GlobalLua = new Lua();
             LuaEnv = GlobalLua.CreateEnvironment();
             CentralTokenStorage = [];
             MainThreadQueue = [];
+
+            // Define a custom print function in Lua
+            Action<object> print = (type) =>
+            {
+                LuaStdout.WriteLine(type);
+            };
+
+            RegisterFunc("print", print);
+
+            if (Main.netMode == NetmodeID.Server)
+            {
+                if (!AlienBloxUtilityServerConfig.Instance.Sandboxed)
+                {
+
+                }
+            }
+            else
+            {
+                if (!AlienBloxUtilityConfig.Instance.Sandboxed)
+                {
+
+                }
+            }
 
             //TestRun("return { x = 1, y = 2 }"); // Ensure lua is working
 
@@ -100,6 +127,8 @@ namespace AlienBloxUtility
 
             }
 
+            LuaStdout.Flush();
+            LuaStdout.Close();
             GlobalCts = null;
             Instance = null;
             GlobalLua = null;
