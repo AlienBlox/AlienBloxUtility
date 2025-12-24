@@ -68,7 +68,7 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
             StopLuaExecution.Width.Set(0, 1f);
             StopLuaExecution.Height.Set(30, 0);
             StopLuaExecution.BackgroundColor = new(255, 0, 0);
-            StopLuaExecution.InsertText("Stop Lua Execution", .5f);
+            StopLuaExecution.InsertText(Language.GetText("Mods.AlienBloxUtility.UI.EmergencyStop"), .7f);
             StopLuaExecution.OnLeftClick += (_, _) =>
             {
                 AddConsoleText($"Task Count: {AlienBloxUtility.CentralTokenStorage.Count}");

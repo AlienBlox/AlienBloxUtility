@@ -28,6 +28,9 @@ UI: {
 	RefreshLua: Refresh Scripts
 	DownloadingScript: Download a script...
 	OpenLuaFolder: Open Lua Folder
+	EmergencyStop: Stop Lua Scripts
+	ScriptStart: Lua script started.
+	ScriptEnd: Lua script ended.
 
 	Console: {
 		ConWelcome: AlienBlox's Utility V{0} loaded!

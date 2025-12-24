@@ -31,10 +31,5 @@ namespace AlienBloxUtility
 
             return base.Call(args);
         }
-
-        public static void RunLua(string lua)
-        {
-
-        }
     }
 }

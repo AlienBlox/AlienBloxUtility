@@ -5,6 +5,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Terraria.Localization;
 
 namespace AlienBloxUtility
 {
@@ -62,6 +63,8 @@ namespace AlienBloxUtility
         {
             var token = tokenSource.Token;
 
+            ConHostRender.Write(Language.GetTextValue("Mods.AlienBloxUtility.UI.ScriptStart"));
+
             return Task.Run(() =>
             {
                 token.ThrowIfCancellationRequested();
@@ -71,11 +74,14 @@ namespace AlienBloxUtility
                 try
                 {
                     result = LuaEnv.DoChunk(code, "chunk");
+
+                    ConHostRender.Write(Language.GetTextValue("Mods.AlienBloxUtility.UI.ScriptEnd"));
                 }
                 catch (Exception ex)
                 {
                     // Handle Lua runtime errors
                     Console.WriteLine("Lua error: " + ex.Message);
+                    ConHostRender.Write("Lua error: " + ex.Message);
                 }
 
                 token.ThrowIfCancellationRequested();
@@ -126,10 +132,16 @@ namespace AlienBloxUtility
                 ConHostRender.Write("Can't cancel lua tasks.");
             }
         }
-        
+
+        public static void CancelGlobal()
+        {
+            GlobalCts?.Cancel();
+            GlobalCts = new();
+        }
+
         public static void Lua(string lua)
         {
-            RunLua(lua);
+            RunLuaAsync(lua, GetToken());
         }
 
         public static async void TestRun(string code)

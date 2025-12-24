@@ -12,7 +12,14 @@ namespace AlienBloxUtility.Utilities.Commands
         {
             try
             {
-                AlienBloxUtility.Lua(Params[0]);
+                string luaTotal = string.Empty;
+
+                foreach (string param in Params)
+                {
+                    luaTotal += param;
+                }
+
+                AlienBloxUtility.Lua(luaTotal);
             }
             catch (Exception E)
             {

@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Terraria;
 using Terraria.ID;
@@ -19,7 +20,9 @@ namespace AlienBloxUtility
     // Please read https://github.com/tModLoader/tModLoader/wiki/Basic-tModLoader-Modding-Guide#mod-skeleton-contents for more information about the various files in a mod.
     public partial class AlienBloxUtility : Mod
     {
-        #pragma warning disable CA2211 // Non-constant fields should not be visible
+#pragma warning disable CA2211 // Non-constant fields should not be visible
+        public static CancellationTokenSource GlobalCts;
+
         public static Lua GlobalLua;
 
         public static LuaGlobal LuaEnv;
@@ -40,6 +43,7 @@ namespace AlienBloxUtility
         public override void Load()
         {
             Instance = this;
+            GlobalCts = new();
             GlobalLua = new Lua();
             LuaEnv = GlobalLua.CreateEnvironment();
             CentralTokenStorage = [];
@@ -81,7 +85,9 @@ namespace AlienBloxUtility
         public override void Unload()
         {
             CancelAll();
+            GlobalLua.Dispose();
 
+            GlobalCts = null;
             Instance = null;
             GlobalLua = null;
             LuaEnv = null;
