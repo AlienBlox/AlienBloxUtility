@@ -104,18 +104,18 @@ namespace AlienBloxUtility
             {
                 if (!AlienBloxUtilityServerConfig.Instance.Sandboxed)
                 {
-                    LuaEnv.Add("Main", typeof(Main));
-                    LuaEnv.Add("Run", run);
+                    LuaEnv["Main"] = typeof(Main);
+                    LuaEnv["Run"] = run;
                 }
             }
             else
             {
                 if (!AlienBloxUtilityConfig.Instance.Sandboxed)
                 {
-                    LuaEnv.Add("Run", run);
+                    LuaEnv["Run"] = run;
                 }
-                
-                LuaEnv.Add("Main", typeof(Main));
+
+                LuaEnv["Main"] = typeof(Main);
             }
 
             //TestRun("return { x = 1, y = 2 }"); // Ensure lua is working
