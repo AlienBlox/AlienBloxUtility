@@ -1,0 +1,4 @@
+https://www.nuget.org/packages/jint - Jint.dll
+https://www.nuget.org/packages/Acornima/ - Acornima
+https://www.nuget.org/packages/NeoLua - NeoLua
+https://www.nuget.org/packages/icsharpcode.decompiler/ - ICSharpCode
