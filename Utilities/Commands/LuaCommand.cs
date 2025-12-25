@@ -16,7 +16,7 @@ namespace AlienBloxUtility.Utilities.Commands
 
                 foreach (string param in Params)
                 {
-                    luaTotal += param;
+                    luaTotal += ' ' + param;
                 }
 
                 AlienBloxUtility.Lua(luaTotal);

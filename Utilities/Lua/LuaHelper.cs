@@ -6,6 +6,8 @@ namespace AlienBloxUtility.Utilities.Lua
 {
     public class LuaHelper : ModSystem
     {
+        public Action<string> InjectJS = (js) => AlienBloxUtility.RunJavaScript(js);
+
         public override void OnModLoad()
         {
             Action<int>myAction = (type) =>
@@ -14,6 +16,7 @@ namespace AlienBloxUtility.Utilities.Lua
             };
 
             AlienBloxUtility.RegisterFunc("SpawnNPC", myAction);
+            AlienBloxUtility.RegisterFunc("JavaScript", InjectJS);
             AlienBloxUtility.LuaEnv.Add(nameof(LuaHelper), this);
             AlienBloxUtility.LuaEnv.Add(nameof(LuaGambling.RNG), LuaGambling.RNG);
         }

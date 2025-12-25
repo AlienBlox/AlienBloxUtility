@@ -18,7 +18,7 @@ namespace AlienBloxUtility.Utilities.Commands
 
                     foreach (string param in Params)
                     {
-                        jsTotal += param;
+                        jsTotal += ' ' + param;
                     }
 
                     AlienBloxUtility.RunJavaScript(jsTotal);
@@ -29,7 +29,7 @@ namespace AlienBloxUtility.Utilities.Commands
 
                     for (int i = 1; i < Params.Length; i++)
                     {
-                        jsTotal += Params[1];
+                        jsTotal += ' ' + Params[1];
                     }
 
                     AlienBloxUtility.JSServer(jsTotal);
