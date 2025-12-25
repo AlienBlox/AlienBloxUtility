@@ -48,9 +48,10 @@ UI: {
 	Documentation: {
 		Lua: Filter Lua
 		JavaScript: Filter JavaScript
-		Core: Filter AlienBlox's Utility Mod Calls
+		Core: Filter AlienBlox's Utility Mod Functions
 		CSharp: Filter C#
 		Search: Search Documentation
+		SearchBar: Search a documentation entry...
 	}
 
 	SocialMedia: {
@@ -153,4 +154,16 @@ Configs: {
 Exceptions: {
 	CommandConflictException: Can't add command: Command name conflict
 	LuaHaltException: Lua operation halted.
+}
+
+Documents: {
+	Test: {
+		Title: Test Document
+		Description: little pig
+	}
+
+	Lua: {
+		Title: Lua
+		Description: little lua
+	}
 }

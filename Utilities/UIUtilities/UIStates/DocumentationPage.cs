@@ -1,6 +1,8 @@
-﻿using AlienBloxUtility.Utilities.UIUtilities.UIElements;
+﻿using AlienBloxUtility.Utilities.Helpers;
+using AlienBloxUtility.Utilities.UIUtilities.UIElements;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 using Terraria;
 using Terraria.GameContent.UI.Elements;
 using Terraria.ID;
@@ -19,6 +21,16 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
         public UITextBoxImproved TextBox;
         public ButtonIcon ButtonLua, ButtonCSharp, ButtonCore, ButtonJS, EnterButton;
 
+        public bool Fix;
+
+        public bool LuaFilter => ButtonLua.Toggle;
+
+        public bool CSharpFilter => ButtonCSharp.Toggle;
+
+        public bool JSFilter => ButtonJS.Toggle;
+
+        public bool CoreFilter => ButtonCore.Toggle;
+
         public override void OnInitialize()
         {
             ButtonCore = new("Mods.AlienBloxUtility.UI.Documentation.Core", ItemID.IronAxe, Color.Red);
@@ -27,7 +39,14 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
             ButtonCSharp = new("Mods.AlienBloxUtility.UI.Documentation.CSharp", ItemID.Zenith, Color.Gray);
             EnterButton = new("Mods.AlienBloxUtility.UI.Documentation.Search", ItemID.PaperAirplaneA, Color.Gray);
 
-            TextBox = new("");
+            ButtonCore.OnLeftClick += Toggle;
+            ButtonLua.OnLeftClick += Toggle;
+            ButtonJS.OnLeftClick += Toggle;
+            ButtonCSharp.OnLeftClick += Toggle;
+
+            EnterButton.OnLeftClick += (_, _) => { SearchDocs(TextBox.Text); TextBox.SetText(string.Empty); };
+
+            TextBox = new(Language.GetTextValue("Mods.AlienBloxUtility.UI.Documentation.SearchBar"));
             BackingElement = new();
             BackingPanel = new();
             SideBar = new();
@@ -128,6 +147,23 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
             Append(BackingElement);
         }
 
+        public override void Update(GameTime gameTime)
+        {
+            if (!Fix)
+            {
+                foreach (var doc in DocumentationStorage.Entries)
+                {
+                    BackingChart.Add(DocumentationStorage.GetDocumentationPanel(doc));
+                }
+
+                TextBox.SetHintText(Language.GetTextValue("Mods.AlienBloxUtility.UI.Documentation.SearchBar"));
+
+                Fix = true;
+            }
+
+            base.Update(gameTime);
+        }
+
         public override void Draw(SpriteBatch spriteBatch)
         {
             base.Draw(spriteBatch);
@@ -150,6 +186,27 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
             if (ButtonCSharp.ContainsPoint(Main.MouseScreen))
             {
                 Main.hoverItemName = Language.GetTextValue("Mods.AlienBloxUtility.UI.Documentation.CSharp");
+            }
+        }
+
+        public static void Toggle(UIEvent evt, UIElement element)
+        {
+            if (element is ButtonIcon b)
+            {
+                b.Toggle = !b.Toggle;
+            }
+        }
+
+        public void SearchDocs(string docName)
+        {
+            BackingChart.Clear();
+
+            foreach (var item in DocumentationStorage.Entries)
+            {
+                if (item.Title.Contains(docName, StringComparison.CurrentCultureIgnoreCase))
+                {
+                    BackingChart.Add(DocumentationStorage.GetDocumentationPanel(item));
+                }
             }
         }
     }

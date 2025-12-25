@@ -279,5 +279,10 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIElements
             }
             Utils.DrawBorderString(spriteBatch, "|", pos, base.TextColor, base.TextScale, 0f, 0f, -1);
         }
+
+        public void SetHintText(string v)
+        {
+            hintText = v;
+        }
     }
 }
