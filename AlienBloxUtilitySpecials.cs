@@ -133,9 +133,14 @@ namespace AlienBloxUtility
         /// <param name="Element">The element to do for</param>
         /// <param name="textToDisplay">What text should be displayed when you hover over the UI</param>
         /// <param name="ApplyToChildren">Should this be applied to children elements</param>
-        public static void SetUIBase(this UIElement Element, string textToDisplay, bool ApplyToChildren = false)
+        public static void SetUIBase(this UIElement Element, string textToDisplay, bool ApplyToChildren = false, bool fix = false)
         {
-            if (Element.IsMouseHovering)
+            if (Element.IsMouseHovering && !fix)
+            {
+                Main.hoverItemName = textToDisplay;
+            }
+
+            if (Element.ContainsPoint(Main.screenPosition) && fix)
             {
                 Main.hoverItemName = textToDisplay;
             }

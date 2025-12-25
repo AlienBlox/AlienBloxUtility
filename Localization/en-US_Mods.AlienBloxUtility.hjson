@@ -45,6 +45,14 @@ UI: {
 		SecondaryStats: Luck: {0} Pts | PVP Deaths: {1} | PVE Deaths: {2}
 	}
 
+	Documentation: {
+		Lua: Filter Lua
+		JavaScript: Filter JavaScript
+		Core: Filter AlienBlox's Utility Mod Calls
+		CSharp: Filter C#
+		Search: Search Documentation
+	}
+
 	SocialMedia: {
 		GitHub: GitHub
 		YouTube: YouTube

@@ -1,5 +1,6 @@
 ﻿using AlienBloxUtility.Utilities.Core;
 using AlienBloxUtility.Utilities.UIUtilities.UIElements;
+using AlienBloxUtility.Utilities.UIUtilities.UIRenderers;
 using Microsoft.Xna.Framework.Graphics;
 using System.Threading.Tasks;
 using Terraria;
@@ -26,6 +27,7 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
             _UI.VAlign = 1f;  // Align to the bottom (1 = bottom edge of the screen)
 
             _UI.OnLeftClick += ToggleDebugPanel;
+            _UI.OnRightClick += ToggleDocumentationUI;
 
             Append(_UI);
         }
@@ -34,6 +36,12 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
         {
             SoundEngine.PlaySound(SoundID.MenuTick);
             DebugUtilityList.DebugMenuEnabled = !DebugUtilityList.DebugMenuEnabled;
+        }
+
+        public static void ToggleDocumentationUI(UIMouseEvent evt, UIElement listeningElement)
+        {
+            SoundEngine.PlaySound(SoundID.MenuTick);
+            DocumentationRender.DocumentationEnabled = !DocumentationRender.DocumentationEnabled;
         }
     }
 }
