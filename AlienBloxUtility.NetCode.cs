@@ -76,13 +76,13 @@ namespace AlienBloxUtility
 
                         if (!file)
                         {
-                            Task.Run(() => RunLuaAsync(code, GetToken()));
+                            Task.Run(() => RunJavaScript(code));
                         }
                         else
                         {
                             try
                             {
-                                Task.Run(() => RunLuaAsync(File.ReadAllText(JSStorageLocation + $"\\{code}"), GetToken()));
+                                Task.Run(() => RunJavaScript(File.ReadAllText(JSStorageLocation + $"\\{code}")));
                             }
                             catch (Exception e)
                             {
