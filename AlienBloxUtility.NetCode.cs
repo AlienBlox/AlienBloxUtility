@@ -109,6 +109,7 @@ namespace AlienBloxUtility
 
         public static void OutputTo(string output)
         {
+            /*
             if (Main.netMode == NetmodeID.Server)
             {
                 ModPacket Pkt = Instance.GetPacket();
@@ -117,6 +118,7 @@ namespace AlienBloxUtility
                 Pkt.Write(output);
                 Pkt.Send();
             }
+            */
         }
 
         public static void JSServer(string code, bool file = false)

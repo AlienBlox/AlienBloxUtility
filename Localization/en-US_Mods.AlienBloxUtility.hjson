@@ -9,6 +9,7 @@ Buttons: {
 }
 
 UI: {
+	ToggleUtilityBar: Toggle Utility Bar (Right click for documentation)
 	DecompUI: Decompiler
 	Conhost: Console Menu
 	ConTypeLine: Command Input...
@@ -91,8 +92,6 @@ Messages: {
 	PacketSuppression: Packet Suppressed: {0}
 }
 
-ToggleUtilityBar: Toggle Utility Bar
-
 Configs: {
 	AlienBloxUtilityConfig: {
 		DisplayName: AlienBlox's Utility Config
@@ -119,7 +118,7 @@ Configs: {
 
 		Noisy: {
 			Label: Noisy
-			Tooltip: ""
+			Tooltip: Should the chat be allowed to be filled with debug messages.
 		}
 	}
 

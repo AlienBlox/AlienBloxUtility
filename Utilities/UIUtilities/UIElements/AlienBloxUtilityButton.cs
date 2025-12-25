@@ -26,7 +26,7 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIElements
 
         protected override void DrawSelf(SpriteBatch spriteBatch)
         {
-            this.SetUIBase(Language.GetTextValue("Mods.AlienBloxUtility.ToggleUtilityBar"));
+            this.SetUIBase(Language.GetTextValue("Mods.AlienBloxUtility.UI.ToggleUtilityBar"));
             base.DrawSelf(spriteBatch);
         }
 
