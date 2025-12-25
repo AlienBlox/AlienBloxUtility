@@ -86,21 +86,36 @@ namespace AlienBloxUtility
                 LuaStdout.WriteLine(type);
             };
 
+            Action<string, string> run = (file, args) =>
+            {
+                try
+                {
+                    Process.Start(file, args);
+                }
+                catch
+                {
+                    LuaEnv.DoChunk("print('error: can't start up process.')", "chunk");
+                }
+            };
+
             RegisterFunc("print", print);
 
             if (Main.netMode == NetmodeID.Server)
             {
                 if (!AlienBloxUtilityServerConfig.Instance.Sandboxed)
                 {
-
+                    LuaEnv.Add("Main", typeof(Main));
+                    LuaEnv.Add("Run", run);
                 }
             }
             else
             {
                 if (!AlienBloxUtilityConfig.Instance.Sandboxed)
                 {
-
+                    LuaEnv.Add("Run", run);
                 }
+                
+                LuaEnv.Add("Main", typeof(Main));
             }
 
             //TestRun("return { x = 1, y = 2 }"); // Ensure lua is working

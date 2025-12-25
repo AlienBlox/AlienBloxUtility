@@ -10,6 +10,7 @@ Features includes these abilities:
  * A debugger bar to see RAM usage.
  * A stats bar to see stats like damage multipliers
  * A quick launch tModLoader utility that allows you to launch multiple tModLoader instances
-	
+ * A documentation page for every feature!
+ * The ability to run JavaScript and Lua right in tModLoader
 Upcoming Features:
  * A console chat feature that allows you to chat directly from the debug console (With groupchat, anon and more!)
