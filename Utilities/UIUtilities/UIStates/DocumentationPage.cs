@@ -3,6 +3,7 @@ using AlienBloxUtility.Utilities.UIUtilities.UIElements;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
+using System.Collections.Generic;
 using Terraria;
 using Terraria.GameContent.UI.Elements;
 using Terraria.ID;
@@ -205,7 +206,29 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
             {
                 if (item.Title.Contains(docName, StringComparison.CurrentCultureIgnoreCase))
                 {
-                    BackingChart.Add(DocumentationStorage.GetDocumentationPanel(item));
+                    var E = DocumentationStorage.GetDocumentationPanel(item);
+
+                    BackingChart.Add(E);
+
+                    if (LuaFilter && !item.lua)
+                    {
+                        BackingChart.Remove(E);
+                    }
+
+                    if (CSharpFilter && !item.csharp)
+                    {
+                        BackingChart.Remove(E);
+                    }
+
+                    if (JSFilter && !item.js)
+                    {
+                        BackingChart.Remove(E);
+                    }
+
+                    if (CoreFilter && !item.core)
+                    {
+                        BackingChart.Remove(E);
+                    }
                 }
             }
         }

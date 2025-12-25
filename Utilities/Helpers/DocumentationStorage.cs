@@ -109,8 +109,8 @@ namespace AlienBloxUtility.Utilities.Helpers
         {
             Entries = [];
 
-            RegisterEntry(Mod, "ExampleEntry", "Mods.AlienBloxUtility.Documents.Test", true, true, true, true);
-            RegisterEntry(Mod, "ExampleLua", "Mods.AlienBloxUtility.Documents.Lua", true, true, true, true);
+            //RegisterEntry(Mod, "ExampleEntry", "Mods.AlienBloxUtility.Documents.Test", true, true, true, true);
+            //RegisterEntry(Mod, "ExampleLua", "Mods.AlienBloxUtility.Documents.Lua", true, false, false, false);
         }
 
         public override void Unload()
