@@ -2,7 +2,7 @@
 using System.Security.Cryptography;
 using Terraria.ModLoader;
 
-namespace AlienBloxUtility.Utilities.Lua
+namespace AlienBloxUtility.Utilities.LuaHelpers
 {
     public class LuaGambling : ModSystem
     {

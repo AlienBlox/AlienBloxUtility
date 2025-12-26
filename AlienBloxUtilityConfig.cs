@@ -30,6 +30,16 @@ namespace AlienBloxUtility
         [BackgroundColor(25, 50, 25)]
         public bool Noisy;
 
+        [DefaultValue(10)]
+        [ReloadRequired]
+        [BackgroundColor(25, 50, 25)]
+        public int LuaMaxCount;
+
+        [Header("JavaScript")]
+        [ReloadRequired]
+        [BackgroundColor(25, 50, 25)]
+        public int JavaScriptMaxCount;
+
         public override void OnLoaded()
         {
             Instance = this;
@@ -53,6 +63,16 @@ namespace AlienBloxUtility
         [ReloadRequired]
         [BackgroundColor(25, 50, 25)]
         public bool Sandboxed;
+
+        [DefaultValue(10)]
+        [ReloadRequired]
+        [BackgroundColor(25, 50, 25)]
+        public int LuaMaxCount;
+
+        [Header("JavaScript")]
+        [ReloadRequired]
+        [BackgroundColor(25, 50, 25)]
+        public int JavaScriptMaxCount;
 
         public override void OnLoaded()
         {

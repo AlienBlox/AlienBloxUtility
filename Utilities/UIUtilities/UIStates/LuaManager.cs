@@ -1,5 +1,5 @@
 ﻿using AlienBloxUtility.Utilities.Helpers;
-using AlienBloxUtility.Utilities.Lua;
+using AlienBloxUtility.Utilities.LuaHelpers;
 using AlienBloxUtility.Utilities.UIUtilities.UIElements;
 using AlienBloxUtility.Utilities.UIUtilities.UIRenderers;
 using Microsoft.Xna.Framework;

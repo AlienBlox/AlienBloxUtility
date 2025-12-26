@@ -8,7 +8,7 @@ namespace AlienBloxUtility
     {
         public static Task RunJavaScript(string code)
         {
-            return Task.Run(async () => RunAsync(code));
+            return JavaScriptUnifiedEnv.RunJavaScript(code, engineLock);
         }
 
         /// <summary>
@@ -33,13 +33,7 @@ namespace AlienBloxUtility
         /// <returns>Task for awaiting completion</returns>
         public static Task RunAsync(string jsCode)
         {
-            return Task.Run(() =>
-            {
-                lock (engineLock)
-                {
-                    JSEngine.Execute(jsCode);
-                }
-            });
+            return JavaScriptUnifiedEnv.RunJavaScript(jsCode, engineLock);
         }
 
         /// <summary>
@@ -49,13 +43,7 @@ namespace AlienBloxUtility
         /// <returns>Result as object</returns>
         public static Task<object> EvaluateAsync(string jsCode)
         {
-            return Task.Run(() =>
-            {
-                lock (engineLock)
-                {
-                    return JSEngine.Evaluate(jsCode).ToObject();
-                }
-            });
+            return JavaScriptUnifiedEnv.EvaluateAsync(jsCode, engineLock);
         }
 
         /// <summary>
@@ -66,13 +54,7 @@ namespace AlienBloxUtility
         /// <returns>Result as object</returns>
         public static Task<object> InvokeAsync(string functionName, params object[] args)
         {
-            return Task.Run(() =>
-            {
-                lock (engineLock)
-                {
-                    return JSEngine.Invoke(functionName, args).ToObject();
-                }
-            });
+            return JavaScriptUnifiedEnv.InvokeAsync(functionName, args);
         }
 
         /// <summary>
@@ -80,10 +62,7 @@ namespace AlienBloxUtility
         /// </summary>
         public static void SetValue(string name, object value)
         {
-            lock (engineLock)
-            {
-                JSEngine.SetValue(name, value);
-            }
+            JavaScriptUnifiedEnv.SetValue(name, engineLock, value);
         }
     }
 }

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using Terraria.GameContent.UI.Elements;
 using Terraria.ModLoader;
 
-namespace AlienBloxUtility.Utilities.Lua
+namespace AlienBloxUtility.Utilities.LuaHelpers
 {
     public class LuaFileManagement : ModSystem
     {

@@ -29,46 +29,6 @@ namespace AlienBloxUtility
             return token;
         }
 
-        public static string MakeWhileLoopsSafe(string code)
-        {
-            /*
-            string pattern = @"\bwhile\b\s*(.*?)\s*do";
-            return Regex.Replace(code, pattern, m =>
-            {
-                string condition = m.Groups[1].Value;
-                return $"while {condition} do check_timeout()";
-            }, RegexOptions.Singleline);
-            */
-
-            if (string.IsNullOrWhiteSpace(code))
-                return code;
-
-            // Handle while loops
-            string whilePattern = @"\bwhile\b\s*(.*?)\s*do";
-            code = Regex.Replace(code, whilePattern, m =>
-            {
-                string condition = m.Groups[1].Value;
-                return $"while {condition} do check_timeout()";
-            }, RegexOptions.Singleline);
-
-            // Handle repeat ... until loops
-            string repeatPattern = @"\brepeat\b";
-            code = Regex.Replace(code, repeatPattern, "repeat check_timeout()");
-
-            return code;
-        }
-
-        public static void InjectCheckTimeout(LuaGlobal luaGlobal, LuaScriptContext context)
-        {
-            // Assign a per-script check_timeout function
-            luaGlobal["check_timeout"] = (Action)(() =>
-            {
-                var elapsed = DateTime.UtcNow - context.StartTime;
-                if (elapsed.TotalMilliseconds > context.MaxMilliseconds)
-                    throw new Exception("Lua loop timeout exceeded!");
-            });
-        }
-
         /// <summary>
         /// Registers a function to the global Lua system
         /// </summary>
@@ -76,18 +36,12 @@ namespace AlienBloxUtility
         /// <param name="func">The function to register</param>
         public static void RegisterFunc(string name, Delegate func)
         {
-            if (LuaEnv != null)
-            {
-                LuaEnv[name] = func;
-            }
+            LuaUnifiedEnv.RegisterFunc(name, func);
         }
 
         public static void Deregister(string name)
         {
-            if (LuaEnv != null)
-            {
-                LuaEnv[name] = null;
-            }
+            LuaUnifiedEnv.Deregister(name);
         }
 
         public static void QueueMainThreadAction(Action action)
@@ -105,36 +59,7 @@ namespace AlienBloxUtility
 
         public static Task<LuaResult> RunLuaAsync(string code, CancellationTokenSource tokenSource, params KeyValuePair<string, object>[] objects)
         {
-            tokenSource ??= GlobalCts;
-
-            var token = tokenSource.Token;
-
-            return Task.Run(() =>
-            {
-                token.ThrowIfCancellationRequested();
-
-                LuaResult result = null;
-
-                try
-                {
-                    InjectCheckTimeout(LuaEnv, new(5000));
-
-                    result = LuaEnv.DoChunk(MakeWhileLoopsSafe(code), "chunk", objects);
-
-                    if (Main.netMode != NetmodeID.Server)
-                        ConHostRender.Write(Language.GetTextValue("Mods.AlienBloxUtility.UI.ScriptEnd"));
-                }
-                catch (Exception ex)
-                {
-                    // Handle Lua runtime errors
-                    if (Main.netMode != NetmodeID.Server)
-                        ConHostRender.Write("Lua error: " + ex.Message);
-                    Console.WriteLine("Lua error: " + ex.Message);
-                }
-
-                token.ThrowIfCancellationRequested();
-                return result;
-            }, token);
+            return LuaUnifiedEnv.RunLuaAsync(code, tokenSource, objects);
         }
 
         public static void CancelAll()
@@ -163,45 +88,7 @@ namespace AlienBloxUtility
 
         public static Task<LuaResult> Lua(string lua, CancellationTokenSource tokenSource = null)
         {
-            tokenSource ??= GlobalCts;
-
-            return RunLuaAsync(lua, tokenSource);
-        }
-
-        public static void Lua(string lua, int timeOutCount)
-        {
-            var tsk = Lua(lua);
-
-            if (!tsk.Wait(timeOutCount))
-            {
-                tsk.Dispose(); // signal cancellation
-                Console.WriteLine("Timed out");
-            }
-        }
-
-        public static async void TestRun(string code)
-        {
-            try
-            {
-                // Run asynchronously on a background thread
-                LuaResult result = await RunLuaAsync(code, GetToken());
-
-                // Now we are back on the main thread continuation
-                if (result != null)
-                {
-                    var table = result[2] as LuaTable;
-                    if (table != null)
-                    {
-                        foreach (var kv in table)
-                            Instance.Logger.Debug($"Results: {kv} = {table[kv]}");
-                    }
-                }
-            }
-            catch (Exception E)
-            {
-                Instance.Logger.Warn(E.Message);
-                throw new("Aw Crap!");
-            }
+            return LuaUnifiedEnv.RunLuaAsync(lua, tokenSource);
         }
     }
 }

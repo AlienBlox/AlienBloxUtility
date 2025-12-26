@@ -26,15 +26,19 @@ namespace AlienBloxUtility
 #pragma warning disable CA2211 // Non-constant fields should not be visible
         private static object engineLock;
 
-        public static Engine JSEngine;
+        public static LuaScriptingEnv LuaUnifiedEnv;
+
+        public static JavaScriptScriptingEnv JavaScriptUnifiedEnv;
+
+        public static Engine JSEngine => JavaScriptUnifiedEnv.Env;
 
         public static LuaStdout LuaStdout;
 
         public static CancellationTokenSource GlobalCts;
 
-        public static Lua GlobalLua;
+        public static Lua GlobalLua => LuaUnifiedEnv.Env;
 
-        public static LuaGlobal LuaEnv;
+        public static LuaGlobal LuaEnv => LuaUnifiedEnv.LuaEnv;
 
         public static AlienBloxUtility Instance;
 #pragma warning restore CA2211 // Non-constant fields should not be visible
@@ -55,13 +59,12 @@ namespace AlienBloxUtility
 
         public override void Load()
         {
-            JSEngine = EngineCreate();
+            LuaUnifiedEnv = LuaScriptingEnv.Create();
+            JavaScriptUnifiedEnv = JavaScriptScriptingEnv.Create();
             engineLock = new();
             LuaStdout = new LuaStdout();
             Instance = this;
             GlobalCts = new();
-            GlobalLua = new Lua();
-            LuaEnv = GlobalLua.CreateEnvironment();
             CentralTokenStorage = [];
             MainThreadQueue = [];
 
@@ -169,15 +172,30 @@ namespace AlienBloxUtility
 
             }
 
+            if (LuaScriptingEnv.Envs != null)
+            {
+                foreach (var element in LuaScriptingEnv.Envs)
+                {
+                    element.Dispose();
+                }
+            }
+
+            if (JavaScriptScriptingEnv.Envs != null)
+            {
+                foreach (var element in JavaScriptScriptingEnv.Envs)
+                {
+                    element.Dispose();
+                }
+            }
+
+            LuaUnifiedEnv.Dispose();
             engineLock = null;
-            JSEngine.Dispose();
-            JSEngine = null;
+            JavaScriptUnifiedEnv.Dispose();
+            JavaScriptUnifiedEnv = null;
             LuaStdout.Flush();
             LuaStdout.Close();
             GlobalCts = null;
             Instance = null;
-            GlobalLua = null;
-            LuaEnv = null;
             CentralTokenStorage = null;
             MainThreadQueue.Clear();
             MainThreadQueue = null;
