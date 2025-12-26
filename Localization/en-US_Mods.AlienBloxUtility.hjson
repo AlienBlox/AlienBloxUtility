@@ -108,6 +108,7 @@ Configs: {
 		Headers: {
 			Debugger: Debugger Configs
 			Lua: Lua
+			JavaScript: JavaScript
 		}
 
 		DecompilerMessages: {
@@ -129,6 +130,16 @@ Configs: {
 			Label: Noisy
 			Tooltip: Should the chat be allowed to be filled with debug messages.
 		}
+
+		LuaMaxCount: {
+			Label: Lua Max Count
+			Tooltip: The max amount of JavaScript engines allowed.
+		}
+
+		JavaScriptMaxCount: {
+			Label: JavaScript Max Count
+			Tooltip: The max amount of Lua engines allowed.
+		}
 	}
 
 	AlienBloxUtilityServerConfig: {
@@ -137,6 +148,7 @@ Configs: {
 		Headers: {
 			Debugger: Debugger Configs
 			Lua: Lua
+			JavaScript: JavaScript
 		}
 
 		ClearCache: {
@@ -147,6 +159,16 @@ Configs: {
 		Sandboxed: {
 			Tooltip: Is the Lua system sandboxed or not
 			Label: Lua Sandboxed
+		}
+
+		LuaMaxCount: {
+			Label: Lua Max Count
+			Tooltip: The max amount of JavaScript engines allowed.
+		}
+
+		JavaScriptMaxCount: {
+			Label: JavaScript Max Count
+			Tooltip: The max amount of Lua engines allowed.
 		}
 	}
 }

@@ -65,11 +65,14 @@ namespace AlienBloxUtility
         public bool Sandboxed;
 
         [DefaultValue(10)]
+        [Range(1, int.MaxValue)]
         [ReloadRequired]
         [BackgroundColor(25, 50, 25)]
         public int LuaMaxCount;
 
         [Header("JavaScript")]
+        [DefaultValue(10)]
+        [Range(1, int.MaxValue)]
         [ReloadRequired]
         [BackgroundColor(25, 50, 25)]
         public int JavaScriptMaxCount;
