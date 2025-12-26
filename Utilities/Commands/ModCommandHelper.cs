@@ -18,8 +18,15 @@ namespace AlienBloxUtility.Utilities.Commands
 
         public override void OnUnload()
         {
-            Commands.Clear();
-            Commands = null;
+            try
+            {
+                Commands.Clear();
+                Commands = null;
+            }
+            catch
+            {
+
+            }
         }
 
         public override void LaunchCommand(ConHostSystem Conhost, params string[] Params)
