@@ -68,7 +68,7 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIRenderers
 
         public static void Write(string Text)
         {
-            if (Instance.Element == null)
+            if (Instance == null || Instance?.Element == null)
             {
                 return;
             }

@@ -24,14 +24,14 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
 
         public UIElement BackingElement;
 
-        public UIPanel MainPanel, SidePanel, CommandPanel, ClearConsole, ExportConsole, StopLuaExecution, CommandListPanel;
+        public UIPanel MainPanel, SidePanel, CommandPanel, ClearConsole, ExportConsole, StopLuaExecution, CommandListPanel, CommandScrollBacking;
 
         public SpriteButton SendCommand, CommandList;
 
-        public UIScrollbar PanelScroll, ConSysScroll;
-        public UIList BackingList, BackingConSysUI;
+        public UIScrollbar PanelScroll, ConSysScroll, CommandsMenuScroll;
+        public UIList BackingList, BackingConSysUI, CommandsScroll;
 
-        public UITextBoxImproved CommandBox;
+        public UITextBoxImproved CommandBox, SearchBar;
 
         public List<UIText> ConsoleText;
 
@@ -41,16 +41,21 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
 
         public override void OnInitialize()
         {
+            CommandsScroll = [];
             ConsoleText = [];
             BackingString = [];
+            CommandsScroll = [];
 
             SendCommand = new($"Terraria/Images/Item_{ItemID.PaperAirplaneA}", Language.GetText("Mods.AlienBloxUtility.UI.SendCmd"));
             CommandList = new($"Terraria/Images/Item_{ItemID.Book}", Language.GetText("Mods.AlienBloxUtility.UI.CommandList"));
             ConSysScroll = new();
             PanelScroll = new();
+            CommandsMenuScroll = new();
             StopLuaExecution = new();
             CommandListPanel = new();
             BackingElement = new();
+            CommandScrollBacking = new();
+            SearchBar = new("Search Command");
 
             BackingElement.Width.Set(0, 1f);
             BackingElement.Height.Set(0, 1f);
@@ -155,6 +160,30 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
             CommandListPanel.Height.Set(0, .3f);
             CommandListPanel.SetPadding(0);
 
+            SearchBar.Width.Set(0, 1);
+            SearchBar.Height.Set(0, .2f);
+            SearchBar.VAlign = 0;
+            SearchBar.HAlign = .5f;
+
+            CommandScrollBacking.Width.Set(0, 1f);
+            CommandScrollBacking.Height.Set(0, .8f);
+            CommandScrollBacking.VAlign = 1;
+            CommandScrollBacking.HAlign = .5f;
+            CommandScrollBacking.BackgroundColor = CommandScrollBacking.BorderColor = new(0, 0, 0, 0);
+
+            CommandsMenuScroll.HAlign = 1f;
+            CommandsMenuScroll.VAlign = .5f;
+
+            CommandsScroll.Append(CommandsMenuScroll);
+            CommandsScroll.SetScrollbar(CommandsMenuScroll);
+            CommandScrollBacking.Append(CommandsScroll);
+
+            CommandsScroll.Width.Set(0, 1f);
+            CommandsScroll.Height.Set(0, 1f);
+
+            CommandListPanel.Append(SearchBar);
+            CommandListPanel.Append(CommandScrollBacking);
+
             CommandBox.SetTextMaxLength(100);
             CommandBox.Width.Set(0, 1f);
             CommandBox.Height.Set(0, .05f);
@@ -167,7 +196,7 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
             SidePanel.BackgroundColor = new(0, 175, 0);
 
             SidePanel.Width.Set(-5, .25f);
-            SidePanel.Height.Set(0, 1);
+            SidePanel.Height.Set(0, 1f);
 
             SidePanel.HAlign = 1f;
 
