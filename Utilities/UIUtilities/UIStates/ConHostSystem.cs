@@ -26,7 +26,7 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
 
         public UIPanel MainPanel, SidePanel, CommandPanel, ClearConsole, ExportConsole, StopLuaExecution, CommandListPanel, CommandScrollBacking;
 
-        public SpriteButton SendCommand, CommandList;
+        public SpriteButton SendCommand, CommandList, SearchButton;
 
         public UIScrollbar PanelScroll, ConSysScroll, CommandsMenuScroll;
         public UIList BackingList, BackingConSysUI, CommandsScroll;
@@ -46,6 +46,7 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
             BackingString = [];
             CommandsScroll = [];
 
+            SearchButton = new($"Terraria/Images/Item_{ItemID.PaperAirplaneA}", Language.GetText("Mods.AlienBloxUtility.UI.SearchBar"));
             SendCommand = new($"Terraria/Images/Item_{ItemID.PaperAirplaneA}", Language.GetText("Mods.AlienBloxUtility.UI.SendCmd"));
             CommandList = new($"Terraria/Images/Item_{ItemID.Book}", Language.GetText("Mods.AlienBloxUtility.UI.CommandList"));
             ConSysScroll = new();
@@ -56,7 +57,7 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
             BackingElement = new();
             CommandScrollBacking = new();
             SearchBar = new("Search Command");
-
+            
             BackingElement.Width.Set(0, 1f);
             BackingElement.Height.Set(0, 1f);
             BackingElement.VAlign = 1;
@@ -181,8 +182,18 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
             CommandsScroll.Width.Set(0, 1f);
             CommandsScroll.Height.Set(0, 1f);
 
+            SearchButton.Width.Set(0, .1f);
+            SearchButton.Height.Set(0, 1);
+            SearchButton.VAlign = .5f;
+            SearchButton.HAlign = 1;
+            SearchButton.OnLeftClick += Search;
+
+            SearchBar.Append(SearchButton);
+
+            CommandListPanel.BackgroundColor = new(0, 128, 0, 128);
             CommandListPanel.Append(SearchBar);
             CommandListPanel.Append(CommandScrollBacking);
+            CommandListPanel.SetPadding(5);
 
             CommandBox.SetTextMaxLength(100);
             CommandBox.Width.Set(0, 1f);
@@ -238,6 +249,8 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
                 ExportConsoleText.SetText(Language.GetText("Mods.AlienBloxUtility.UI.SaveLogs"));
                 Conhost.Close.OnLeftClick += LeftClick;
                 BackingElement.MaxHeight.Set(-Conhost.Topbar.GetDimensions().Height, 1f);
+
+                Search(null, null);
 
                 Fix = true;
             }
@@ -304,6 +317,33 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
             {
                 CommandPanel.RemoveChild(CommandListPanel);
             }
+        }
+
+        public void Search(UIMouseEvent evt, UIElement element)
+        {
+            CommandsScroll.Clear();
+
+            foreach (var item in CmdHelperSystem.GetCmdNames())
+            {
+                if (item.Contains(SearchBar.Text))
+                {
+                    var panel = new UIPanel();
+
+                    panel.Width.Set(0, 1f);
+                    panel.Height.Set(30, 0);
+                    panel.InsertText(item);
+                    panel.OnLeftClick += (_, _) =>
+                    {
+                        SoundEngine.PlaySound(SoundID.MenuTick);
+
+                        CommandBox.SetText(item);
+                    };
+
+                    CommandsScroll.Add(panel);
+                }
+            }
+
+            SearchBar.SetText(string.Empty);
         }
 
         public static void LeftClick(UIMouseEvent evt, UIElement element)
