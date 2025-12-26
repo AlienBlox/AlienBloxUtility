@@ -13,7 +13,7 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
     {
         public DecompilerModListDisplay[] modListDecomp;
 
-        public DraggableUIWrapper panel;
+        public PanelV2 panel;
 
         public UIPanel backingPanel;
 
@@ -21,12 +21,20 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
 
         public UIScrollbar scrollBar;
 
+        public UIElement backer;
+
         private bool Fixer = false;
 
         public override void OnInitialize()
         {
-            panel = new(new Vector2(300, 500), Vector2.Zero, new(0, 128, 0, 128), new(0, 0, 0), Language.GetText("Mods.AlienBloxUtility.UI.DecompUI").Value, true);
+            panel = new(new Vector2(300, 500), Vector2.Zero, new(0, 128, 0, 128), new(0, 0, 0), Language.GetText("Mods.AlienBloxUtility.UI.DecompUI").Value, true, true, 300, 500);
             scrollBar = new();
+            backer = new();
+
+            backer.Width.Set(0, 1);
+            backer.Height.Set(0, 1);
+            backer.VAlign = 1f;
+            backer.HAlign = .5f;
 
             scrollBar.OnScrollWheel += LuaManager.HotbarScrollFix;
 
@@ -34,7 +42,7 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
             backingPanel.Width.Set(0, .9f);
             backingPanel.Height.Set(0, .9f);
 
-            backingPanel.VAlign = 0.6f;
+            backingPanel.VAlign = 0.5f;
             backingPanel.HAlign = 0.5f;
             backingPanel.BackgroundColor = new(0, 128, 0);
 
@@ -55,7 +63,8 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
 
             backingPanel.Append(modList);
 
-            panel.Append(backingPanel);
+            backer.Append(backingPanel);
+            panel.Append(backer);
 
             modListDecomp = TModInspector.GetAllMods();
             modList.AddRange(modListDecomp);
@@ -75,6 +84,7 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
             if (!Fixer)
             {
                 panel.Close.OnLeftClick += OnClick;
+                backer.MaxHeight.Set(-panel.Topbar.GetDimensions().Height, 1f);
 
                 Fixer = true;
             }

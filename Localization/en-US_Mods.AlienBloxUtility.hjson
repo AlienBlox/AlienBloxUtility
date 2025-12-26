@@ -34,6 +34,7 @@ UI: {
 	ScriptEnd: Lua script ended.
 	ModSpecificUtilities: Mod Specific Tools
 	ExecLua: Execute Lua Script (Right-click for info)
+	CommandList: Command List
 
 	Console: {
 		ConWelcome: AlienBlox's Utility V{0} loaded!

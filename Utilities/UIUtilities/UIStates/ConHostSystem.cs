@@ -7,7 +7,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
-using Terraria;
 using Terraria.Audio;
 using Terraria.GameContent.UI.Elements;
 using Terraria.ID;
@@ -19,13 +18,15 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
 {
     public class ConHostSystem : UIState
     {
-        public DraggableUIWrapper Conhost;
+        public PanelV2 Conhost;
 
         public UIText ClearConsoleText, ExportConsoleText;
 
-        public UIPanel MainPanel, SidePanel, CommandPanel, ClearConsole, ExportConsole, StopLuaExecution;
+        public UIElement BackingElement;
 
-        public SpriteButton SendCommand;
+        public UIPanel MainPanel, SidePanel, CommandPanel, ClearConsole, ExportConsole, StopLuaExecution, CommandListPanel;
+
+        public SpriteButton SendCommand, CommandList;
 
         public UIScrollbar PanelScroll, ConSysScroll;
         public UIList BackingList, BackingConSysUI;
@@ -44,9 +45,17 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
             BackingString = [];
 
             SendCommand = new($"Terraria/Images/Item_{ItemID.PaperAirplaneA}", Language.GetText("Mods.AlienBloxUtility.UI.SendCmd"));
+            CommandList = new($"Terraria/Images/Item_{ItemID.Book}", Language.GetText("Mods.AlienBloxUtility.UI.CommandList"));
             ConSysScroll = new();
             PanelScroll = new();
             StopLuaExecution = new();
+            CommandListPanel = new();
+            BackingElement = new();
+
+            BackingElement.Width.Set(0, 1f);
+            BackingElement.Height.Set(0, 1f);
+            BackingElement.VAlign = 1;
+            BackingElement.HAlign = .5f;
 
             PanelScroll.OnScrollWheel += LuaManager.HotbarScrollFix;
             ConSysScroll.OnScrollWheel += LuaManager.HotbarScrollFix;
@@ -59,7 +68,7 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
 
             ConSysScroll.HAlign = 1f;
             ConSysScroll.VAlign = .5f;
-            ConSysScroll.Height.Set(0, 1);
+            //ConSysScroll.Height.Set(0, 1);
 
             ClearConsole.Width.Set(0, 1f);
             ClearConsole.Height.Set(30, 0);
@@ -99,7 +108,7 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
             PanelScroll.HAlign = 1;
             PanelScroll.VAlign = .5f;
 
-            Conhost = new(new(650, 450), Vector2.Zero, new(0, 128, 0, 128), new(0, 0, 0), Language.GetText("Mods.AlienBloxUtility.UI.Conhost").Value, true, false);
+            Conhost = new(new(650, 450), Vector2.Zero, new(0, 128, 0, 128), new(0, 0, 0), Language.GetText("Mods.AlienBloxUtility.UI.Conhost").Value, true, false, 650, 450);
 
             BackingConSysUI.VAlign = 0;
             BackingConSysUI.HAlign = .5f;
@@ -112,8 +121,8 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
             BackingList.ManualSortMethod = (_) => { };
             
             BackingList.Width.Percent = BackingList.Height.Percent = 1f;
-            BackingList.SetScrollbar(PanelScroll);
             BackingList.Append(PanelScroll);
+            BackingList.SetScrollbar(PanelScroll);
             BackingList.VAlign = .5f;
 
             MainPanel = new();
@@ -133,9 +142,18 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
             SendCommand.Width.Set(0, .1f);
             SendCommand.Height.Set(0, 1f);
             SendCommand.VAlign = SendCommand.HAlign = 1f;
-            //SendCommand.OnMouseOver += LockCommandBox;
-            //SendCommand.OnMouseOut += UnlockCommandBox;
             SendCommand.OnLeftClick += RunCommand;
+
+            CommandList.Width.Set(0, .1f);
+            CommandList.Height.Set(0, 1f);
+            CommandList.VAlign = CommandList.HAlign = .9f;
+            CommandList.OnLeftClick += OpenCommandList;
+
+            CommandListPanel.VAlign = .85f;
+            CommandListPanel.HAlign = .5f;
+            CommandListPanel.Width.Set(0, 1);
+            CommandListPanel.Height.Set(0, .3f);
+            CommandListPanel.SetPadding(0);
 
             CommandBox.SetTextMaxLength(100);
             CommandBox.Width.Set(0, 1f);
@@ -154,20 +172,22 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
             SidePanel.HAlign = 1f;
 
             MainPanel.Width.Set(0, 1f);
-            MainPanel.Height.Set(0, 0.9f);
+            MainPanel.Height.Set(0, 1f);
             MainPanel.HAlign = 0.5f;
-            MainPanel.VAlign = 1f;
+            MainPanel.VAlign = .5f;
 
             MainPanel.SetPadding(5);
 
             SidePanel.Append(BackingList);
 
-            Conhost.Append(MainPanel);
+            BackingElement.Append(MainPanel);
+            Conhost.Append(BackingElement);
             MainPanel.Append(SidePanel);
-            
+
+            CommandBox.Append(SendCommand);
+            CommandBox.Append(CommandList);
             MainPanel.Append(CommandPanel);
             CommandPanel.Append(CommandBox);
-            CommandBox.Append(SendCommand);
             CommandPanel.Append(BackingConSysUI);
 
             BackingList.AddRange([ClearConsole, ExportConsole, StopLuaExecution]);
@@ -188,6 +208,7 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
                 ClearConsoleText.SetText(Language.GetText("Mods.AlienBloxUtility.UI.ClearConsole"));
                 ExportConsoleText.SetText(Language.GetText("Mods.AlienBloxUtility.UI.SaveLogs"));
                 Conhost.Close.OnLeftClick += LeftClick;
+                BackingElement.MaxHeight.Set(-Conhost.Topbar.GetDimensions().Height, 1f);
 
                 Fix = true;
             }
@@ -244,14 +265,16 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
             CommandBox.SetText(string.Empty);
         }
 
-        public void LockCommandBox(UIMouseEvent evt, UIElement element)
+        public void OpenCommandList(UIMouseEvent evt, UIElement element)
         {
-            CommandBox.IgnoresMouseInteraction = true;
-        }
-
-        public void UnlockCommandBox(UIMouseEvent evt, UIElement element)
-        {
-            CommandBox.IgnoresMouseInteraction = false;
+            if (CommandListPanel.Parent == null)
+            {
+                CommandPanel.Append(CommandListPanel);
+            }
+            else
+            {
+                CommandPanel.RemoveChild(CommandListPanel);
+            }
         }
 
         public static void LeftClick(UIMouseEvent evt, UIElement element)

@@ -87,7 +87,7 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
             ScriptManagerBacking.Height.Set(0, 1f);
             ScriptManagerBacking.VAlign = 0.5f;
 
-            Scrollbar.OnScrollWheel += HotbarScrollFix;
+            //Scrollbar.OnScrollWheel += HotbarScrollFix;
             Scrollbar.VAlign = .5f;
 
             BackingList.VAlign = 0.5f;
