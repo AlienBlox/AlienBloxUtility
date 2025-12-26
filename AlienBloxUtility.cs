@@ -102,6 +102,7 @@ namespace AlienBloxUtility
             };
 
             RegisterFunc("print", print);
+            LuaEnv["_VERSION"] += $" ({DisplayName} v{Version} Remix)";
 
             if (Main.netMode == NetmodeID.Server)
             {
