@@ -98,6 +98,12 @@ Messages: {
 		Version: Version: {0}
 	}
 
+	ConsoleCredits: {
+		AlienBloxCredit: Made by alienblox1234 on Steam
+		Testers: "Testers: AwesomeSavage777"
+		Libraries: "Libraries: Neo.Lua, Jint, Acornima, ICSharpCode.Decompiler"
+	}
+
 	PacketSuppression: Packet Suppressed: {0}
 }
 
