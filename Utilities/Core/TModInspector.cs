@@ -1,6 +1,7 @@
 ﻿using AlienBloxTools.Utilities;
 using AlienBloxUtility.Utilities.Helpers;
 using AlienBloxUtility.Utilities.UIUtilities.UIElements;
+using AlienBloxUtility.Utilities.UIUtilities.UIRenderers;
 using ICSharpCode.Decompiler;
 using ICSharpCode.Decompiler.CSharp;
 using ICSharpCode.Decompiler.Metadata;
@@ -10,6 +11,7 @@ using System.IO;
 using System.Reflection;
 using System.Threading.Tasks;
 using Terraria;
+using Terraria.ID;
 using Terraria.IO;
 using Terraria.Localization;
 using Terraria.ModLoader;
@@ -166,11 +168,11 @@ namespace AlienBloxUtility.Utilities.Core
         /// Puts a mod on the Mods list and also dumps the mod's content (WARNING: MAY CAUSE PERFORMANCE ISSUES)
         /// </summary>
         /// <param name="ModName">The name of the mod to have it's content dumped</param>
-        public static void MessWithMod(string ModName)
+        public static void MessWithMod(string ModName, bool dump = true)
         {
             AddMod(ModName);
 
-            if (ModFileData.ContainsKey(ModName))
+            if (ModFileData.ContainsKey(ModName) && dump)
             {
                 DumpMod(ModName);
             }
@@ -214,16 +216,23 @@ namespace AlienBloxUtility.Utilities.Core
             try
             {
                 Type T = ModFile.GetType();
-                FieldInfo FI = T.GetField("fileTable");
+                FieldInfo FI = T.GetField("fileTable", BindingFlags.Instance | BindingFlags.NonPublic);
 
                 if (FI != null && FI.GetValue(ModFile) is TmodFile.FileEntry[] v)
                 {
+                    ConHostRender.Write("File entries retrieved!");
+
                     return v;
                 }
             }
             catch (Exception ex)
             {
                 AlienBloxUtility.Instance.Logger.Error("Can't get File Entry set:" + ex.Message);
+
+                if (Main.netMode != NetmodeID.Server)
+                {
+                    ConHostRender.Write("Can't get File Entry set:" + ex.Message);
+                }
             }
 
             return null;
