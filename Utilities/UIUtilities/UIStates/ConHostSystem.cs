@@ -193,7 +193,7 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
             CommandListPanel.BackgroundColor = new(0, 128, 0, 128);
             CommandListPanel.Append(SearchBar);
             CommandListPanel.Append(CommandScrollBacking);
-            CommandListPanel.SetPadding(5);
+            CommandListPanel.SetPadding(15);
 
             CommandBox.SetTextMaxLength(100);
             CommandBox.Width.Set(0, 1f);
