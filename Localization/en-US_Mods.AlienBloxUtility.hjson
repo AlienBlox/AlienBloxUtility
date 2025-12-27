@@ -117,6 +117,7 @@ Configs: {
 			Debugger: Debugger Configs
 			Lua: Lua
 			JavaScript: JavaScript
+			Other: Other
 		}
 
 		DecompilerMessages: {
@@ -147,6 +148,11 @@ Configs: {
 		JavaScriptMaxCount: {
 			Label: JavaScript Max Count
 			Tooltip: The max amount of Lua engines allowed.
+		}
+
+		ReworkedIcon: {
+			Tooltip: Should the mod icon of AlienBlox's Utility be changed to a more advanced one.
+			Label: Reworked icon
 		}
 	}
 

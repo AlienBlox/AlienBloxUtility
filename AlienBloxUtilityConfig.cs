@@ -40,6 +40,11 @@ namespace AlienBloxUtility
         [BackgroundColor(25, 50, 25)]
         public int JavaScriptMaxCount;
 
+        [Header("Other")]
+        [BackgroundColor(25, 50, 25)]
+        [DefaultValue(true)]
+        public bool ReworkedIcon;
+
         public override void OnLoaded()
         {
             Instance = this;

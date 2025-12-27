@@ -1,4 +1,4 @@
-displayName = AlienBlox's Utilities
+displayName = [C/00FF00:AlienBlox's Utilities]
 author = [C/00FF00:alienblox1234]
 version = 0.1.3.4
 hideCode = false

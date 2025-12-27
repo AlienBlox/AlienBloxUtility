@@ -75,6 +75,16 @@ namespace AlienBloxUtility.Utilities.Core
 
         public static Asset<Texture2D> ModIcon;
 
+        public static Asset<Texture2D> Frame_Border;
+
+        public static Asset<Texture2D> Frame_Inner;
+
+        public static Asset<Texture2D> SlimeCharacter;
+
+        public static Asset<Texture2D> SlimeGlowline;
+
+        public static Asset<Texture2D> WrenchVisual;
+
         public override void Update(GameTime gameTime)
         {
             if (ModName == null)
@@ -85,6 +95,7 @@ namespace AlienBloxUtility.Utilities.Core
                 ModName.SetText("AlienBlox's Crappy Software With 1 Million Viruses v0.1");
             }
 
+            ModName.SetText(AlienBloxUtility.Instance.DisplayNameClean + $" v{AlienBloxUtility.Instance.Version}");
             ModName.TextColor = Color.Black;
             ModName.ShadowColor = Main.DiscoColor;
         }
@@ -92,12 +103,32 @@ namespace AlienBloxUtility.Utilities.Core
         protected override void DrawSelf(SpriteBatch spriteBatch)
         {
             ModIcon ??= ModContent.Request<Texture2D>("AlienBloxUtility/icon");
+            Frame_Border ??= ModContent.Request<Texture2D>("AlienBloxUtility/Common/Assets/BrandingKit/Frame_Border");
+            Frame_Inner ??= ModContent.Request<Texture2D>("AlienBloxUtility/Common/Assets/BrandingKit/Frame_Inner");
+            SlimeCharacter ??= ModContent.Request<Texture2D>("AlienBloxUtility/Common/Assets/BrandingKit/SlimeCharacter");
+            SlimeGlowline ??= ModContent.Request<Texture2D>("AlienBloxUtility/Common/Assets/BrandingKit/SlimeGlowline");
+            WrenchVisual ??= ModContent.Request<Texture2D>("AlienBloxUtility/Common/Assets/BrandingKit/WrenchVisual");
 
             CalculatedStyle dimensions = GetDimensions();
 
             Texture2D background = ModIcon.Value;
+            Texture2D frameBorder = Frame_Border.Value;
+            Texture2D frameInner = Frame_Inner.Value;
+            Texture2D slimeCharacter = SlimeCharacter.Value;
+            Texture2D slimeGlowline = SlimeGlowline.Value;
+            Texture2D wrenchVisual = WrenchVisual.Value;
+
             Vector2 drawPos = dimensions.Position();
             spriteBatch.Draw(background, drawPos - Vector2.One * 0.5f, null, Color.White, 0, Vector2.Zero, 1f, SpriteEffects.None, 0f);
+
+            if (AlienBloxUtilityConfig.Instance.ReworkedIcon)
+            {
+                spriteBatch.Draw(frameBorder, drawPos - Vector2.One * 0.5f, null, Color.White, 0, Vector2.Zero, 1f, SpriteEffects.None, 0f);
+                spriteBatch.Draw(frameInner, drawPos - Vector2.One * 0.5f, null, Main.DiscoColor, 0, Vector2.Zero, 1f, SpriteEffects.None, 0f);
+                spriteBatch.Draw(slimeCharacter, drawPos - Vector2.One * 0.5f, null, Color.White, 0, Vector2.Zero, 1f, SpriteEffects.None, 0f);
+                spriteBatch.Draw(slimeGlowline, drawPos - Vector2.One * 0.5f, null, Main.DiscoColor, 0, Vector2.Zero, 1f, SpriteEffects.None, 0f);
+                spriteBatch.Draw(wrenchVisual, drawPos - Vector2.One * 0.5f, null, Color.White, 0, Vector2.Zero, 1f, SpriteEffects.None, 0f);
+            }
         }
     }
 }
