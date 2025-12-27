@@ -194,6 +194,74 @@ Documents: {
 
 	Lua: {
 		Title: Lua
-		Description: little lua
+		Description:
+			'''
+			\"Lua is a lightweight, high-level,
+			multi-paradigm programming language designed mainly for embedded use in applications.
+			Lua is cross-platform software, since the interpreter of compiled bytecode is written in ANSI C,
+			and Lua has a relatively simple C application programming interface (API) to embed it into applications.
+			\"
+			- From Wikipedia
+			Lua in AlienBlox's Utility is a scripting language used
+			to modify the behavior of tModLoader, it is useful for debugging.
+			AlienBlox's Utility uses NeoLua for Lua
+			'''
+	}
+
+	AlieBloxUtility: {
+		Title: AlienBlox's Utility
+		Description:
+			'''
+			AlienBlox's Utility is a tModLoader mod used for debugging
+			It has many features like a decompiler, interactive console
+			and JavaScript + Lua scripting support!
+			'''
+	}
+
+	Console: {
+		Title: Interactive Console
+		Description:
+			'''
+			The Interactive Console is an utility in AlienBlox's Utility
+			Used for running commands, Lua and JavaScript code, things also
+			print to the interactive console like Lua or JavaScript output.
+			'''
+	}
+
+	Decompiler: {
+		Title: Decompiler
+		Description:
+			'''
+			The Decompiler in AlienBlox's Utility is used
+			for decompiling mods and extracting assets, it
+			is async'd so it is thread safe and won't crash tModLoader
+			from heavy computation on its main thread
+			'''
+	}
+
+	StatsBar: {
+		Title: Stats Bar
+		Description:
+			'''
+			The Stats Bar in AlienBlox's Utility is
+			used for seeing vanilla stats, it is useful
+			for tracking damage modifiers
+			'''
+	}
+
+	JavaScript: {
+		Title: JavaScript
+		Description:
+			'''
+			\"JavaScript (JS)
+			is a programming language and core technology
+			of the Web, alongside HTML and CSS. It was created by 
+			Brendan Eich in 1995. As of 2025, the overwhelming majority of 
+			websites (98.9%) uses JavaScript on the client side for webpage behavior.\"
+			- From Wikipedia
+			JavaScript in AlienBlox's Utility is a scripting language used
+			to modify the behavior of tModLoader, it is useful for debugging.
+			AlienBlox's Utility uses Jint + Acornima for JavaScript
+			'''
 	}
 }

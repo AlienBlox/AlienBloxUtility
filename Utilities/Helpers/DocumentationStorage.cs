@@ -29,8 +29,8 @@ namespace AlienBloxUtility.Utilities.Helpers
 
             public bool js;
 
-            public string Title => Language.GetOrRegister(LocalizationLocation + ".Title").Value;
-            public string Description => Language.GetOrRegister(LocalizationLocation + ".Description").Value;
+            public string Title => Language.GetOrRegister(LocalizationLocation + ".Title", () => { return "cat"; }).Value;
+            public string Description => Language.GetOrRegister(LocalizationLocation + ".Description", () => { return "cat"; }).Value;
 
             public string FullName => $"{mod}:{entryName}";
         }
@@ -111,6 +111,12 @@ namespace AlienBloxUtility.Utilities.Helpers
 
             //RegisterEntry(Mod, "ExampleEntry", "Mods.AlienBloxUtility.Documents.Test", true, true, true, true);
             //RegisterEntry(Mod, "ExampleLua", "Mods.AlienBloxUtility.Documents.Lua", true, false, false, false);
+            RegisterEntry(Mod, "AlienBloxUtility", "Mods.AlienBloxUtility.Documents.AlienBloxUtility", true, true, true, true);
+            RegisterEntry(Mod, "Console", "Mods.AlienBloxUtility.Documents.Console", true, false, true, true);
+            RegisterEntry(Mod, "Decompiler", "Mods.AlienBloxUtility.Documents.Decompiler", false, true, true, false);
+            RegisterEntry(Mod, "StatsBar", "Mods.AlienBloxUtility.Documents.StatsBar", false, false, true, false);
+            RegisterEntry(Mod, "JavaScript", "Mods.AlienBloxUtility.Documents.JavaScript", false, false, true, true);
+            RegisterEntry(Mod, "Lua", "Mods.AlienBloxUtility.Documents.Lua", true, false, true, false);
         }
 
         public override void Unload()
