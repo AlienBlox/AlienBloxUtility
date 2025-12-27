@@ -24,6 +24,7 @@ namespace AlienBloxUtility
             SendSteamID,
             RemoveSteamID,
             RetrieveSteamID,
+            DMUser,
         }
 
         public override void HandlePacket(BinaryReader reader, int whoAmI)
@@ -169,6 +170,33 @@ namespace AlienBloxUtility
 
                             Dict.Add(kvp.Key, kvp.Value);
                         }
+                    }
+                    break;
+                case Messages.DMUser:
+                    if (Main.netMode == NetmodeID.Server)
+                    {
+                        string SteamName = reader.ReadString();
+                        string Message = reader.ReadString();
+
+                        for (int i = 0; i < SteamIDs.Count; i++)
+                        {
+                            var item = SteamIDs[i];
+
+                            if (item.Item2 == SteamName)
+                            {
+                                ModPacket pkt = GetPacket();
+
+                                pkt.Write((byte)Messages.DMUser);
+                                pkt.Write(Message);
+                                pkt.Send(i);
+                            }
+                        } 
+                    }
+                    else
+                    {
+                        string messagetype = reader.ReadString();
+
+                        ConHostRender.Write(messagetype);
                     }
                     break;
             }
