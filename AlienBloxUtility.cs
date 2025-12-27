@@ -1,5 +1,6 @@
 using AlienBloxTools.Utilities;
 using AlienBloxUtility.Utilities.DataStructures;
+using AlienBloxUtility.Utilities.Helpers;
 using AlienBloxUtility.Utilities.UIUtilities.UIRenderers;
 using Jint;
 using Neo.IronLua;
@@ -13,6 +14,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Terraria;
+using Terraria.Graphics.Effects;
 using Terraria.ID;
 using Terraria.IO;
 using Terraria.ModLoader;
@@ -120,6 +122,8 @@ namespace AlienBloxUtility
                 }
 
                 LuaEnv["Main"] = typeof(Main);
+
+                Filters.Scene["AlienBloxUtility:HighContrastShader"] = new Filter(new DebugVisionShader("DebugShader").UseOpacity(0.75f), EffectPriority.VeryHigh);
             }
 
             //TestRun("return { x = 1, y = 2 }"); // Ensure lua is working
