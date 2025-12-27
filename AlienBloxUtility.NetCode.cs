@@ -10,6 +10,7 @@ using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
+using Terraria.ModLoader.IO;
 
 namespace AlienBloxUtility
 {
@@ -183,13 +184,18 @@ namespace AlienBloxUtility
                         string SteamName = reader.ReadString();
                         string Message = reader.ReadString();
 
-                        Console.WriteLine("DM req");
+                        try
+                        {
+                            ModPacket pkt = GetPacket();
 
-                        ModPacket pkt = GetPacket();
-
-                        pkt.Write((byte)Messages.DMUser);
-                        pkt.Write(Message);
-                        pkt.Send(SteamNames.GetKeyByValue(SteamName));
+                            pkt.Write((byte)Messages.DMUser);
+                            pkt.Write(Message);
+                            pkt.Send(SteamNames.GetKeyByValue(SteamName));
+                        }
+                        catch
+                        {
+                            Console.WriteLine("Exception on DM");
+                        }
                     }
                     else
                     {

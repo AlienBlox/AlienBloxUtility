@@ -14,7 +14,7 @@ namespace AlienBloxUtility
 {
     public static class AlienBloxUtilitySpecials
     {
-        public static TKey GetKeyByValue<TKey, TValue>(this Dictionary<TKey, TValue> dict, TValue value)
+        public static TKey GetKeyByValue<TKey, TValue>(this Dictionary<TKey, TValue> dict, TValue value, bool exceptionOnFailure = true)
         {
             // Loop through each key-value pair
             foreach (KeyValuePair<TKey, TValue> pair in dict)
@@ -23,6 +23,11 @@ namespace AlienBloxUtility
                 {
                     return pair.Key; // Return the key if value matches
                 }
+            }
+
+            if (exceptionOnFailure)
+            {
+                throw new Exception("Can't find array content.");
             }
 
             return default; // Return default(TKey) if value is not found
