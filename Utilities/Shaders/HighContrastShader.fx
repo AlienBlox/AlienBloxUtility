@@ -38,6 +38,6 @@ technique HighContrastEffect
     pass Pass1
     {
         // Pixel Shader Stage
-        PixelShader = compile ps_5_0 main();
+        PixelShader = compile ps_2_0 main();
     }
 }
