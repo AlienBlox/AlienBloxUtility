@@ -70,6 +70,7 @@ namespace AlienBloxUtility
             GlobalCts = new();
             CentralTokenStorage = [];
             MainThreadQueue = [];
+            SteamIDs = [];
 
             JSEngine.SetValue("log", new Action<string>(message =>
             {
@@ -196,6 +197,7 @@ namespace AlienBloxUtility
                 }
             }
 
+            SteamIDs = null;
             LuaUnifiedEnv.Dispose();
             engineLock = null;
             JavaScriptUnifiedEnv.Dispose();

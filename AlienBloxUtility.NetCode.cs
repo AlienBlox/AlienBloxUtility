@@ -1,6 +1,7 @@
 ﻿using AlienBloxUtility.Utilities.Helpers;
 using AlienBloxUtility.Utilities.UIUtilities.UIRenderers;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using Terraria;
@@ -20,6 +21,9 @@ namespace AlienBloxUtility
             ServerLua,
             OutputTo,
             ServerJavaScript,
+            SendSteamID,
+            RemoveSteamID,
+            RetrieveSteamID,
         }
 
         public override void HandlePacket(BinaryReader reader, int whoAmI)
@@ -102,6 +106,69 @@ namespace AlienBloxUtility
 
                         Logger.Info(msg);
                         ConHostRender.Write(msg);
+                    }
+                    break;
+                case Messages.SendSteamID:
+                    if (Main.netMode == NetmodeID.Server)
+                    {
+                        ulong steamID = reader.ReadUInt64();
+                        string Persona = reader.ReadString();
+
+                        SteamIDs.TryAdd(whoAmI, (steamID, Persona));
+
+                        ModPacket pkt = GetPacket();
+
+                        pkt.Write((byte)Messages.RetrieveSteamID);
+                        pkt.Write(SteamIDs.Count);
+
+                        foreach (var item in SteamIDs)
+                        {
+                            pkt.Write(item.Key);
+                            pkt.Write(item.Value.Item1);
+                            pkt.Write(item.Value.Item2);
+                        }
+
+                        Logger.Info($"Steam ID received! ({steamID}, {Persona})");
+                        Console.WriteLine($"Steam ID received! ({steamID}, {Persona})");
+
+                        pkt.Send();
+                    }
+                    break;
+                case Messages.RemoveSteamID:
+                    if (Main.netMode == NetmodeID.Server)
+                    {
+                        SteamIDs.Remove(whoAmI);
+                    }
+                    break;
+                case Messages.RetrieveSteamID:
+                    if (Main.netMode == NetmodeID.Server)
+                    {
+                        ModPacket pkt = GetPacket();
+
+                        pkt.Write((byte)Messages.RetrieveSteamID);
+                        pkt.Write(SteamIDs.Count);
+
+                        foreach (var item in SteamIDs)
+                        {
+                            pkt.Write(item.Key);
+                            pkt.Write(item.Value.Item1);
+                            pkt.Write(item.Value.Item2);
+                        }
+
+                        pkt.Send(whoAmI);
+                    }
+                    else
+                    {
+                        int Count = reader.ReadInt32();
+
+                        Dictionary<int, (ulong, string)> Dict = [];
+
+                        for (int i = 0; i < Count; i++)
+                        {
+                            KeyValuePair<int, (ulong, string)> kvp = new(reader.ReadInt32(), (reader.ReadUInt64(), reader.ReadString()));
+
+                            Dict.Add(kvp.Key, kvp.Value);
+                        }
                     }
                     break;
             }
