@@ -3,7 +3,9 @@ using System;
 using System.IO;
 using System.Text;
 using Terraria;
+using Terraria.Chat;
 using Terraria.ID;
+using Terraria.Localization;
 
 namespace AlienBloxUtility.Utilities.DataStructures
 {
@@ -19,7 +21,8 @@ namespace AlienBloxUtility.Utilities.DataStructures
             }
             else
             {
-                AlienBloxUtility.OutputTo(value);
+                //AlienBloxUtility.OutputTo(value);
+                ChatHelper.BroadcastChatMessage(NetworkText.FromLiteral(value), Colors.CoinSilver);
                 Console.WriteLine(value);
             }
         }

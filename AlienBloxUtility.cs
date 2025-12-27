@@ -1,6 +1,7 @@
 using AlienBloxTools.Utilities;
 using AlienBloxUtility.Utilities.DataStructures;
 using AlienBloxUtility.Utilities.Helpers;
+using AlienBloxUtility.Utilities.Scripting;
 using AlienBloxUtility.Utilities.UIUtilities.UIRenderers;
 using Jint;
 using Neo.IronLua;
@@ -110,7 +111,8 @@ namespace AlienBloxUtility
             {
                 if (!AlienBloxUtilityServerConfig.Instance.Sandboxed)
                 {
-                    LuaEnv["Main"] = typeof(Main);
+                    //LuaReader.AddToLua(LuaEnv, typeof(Main), Main.instance);
+                    LuaEnv["Main"] = Main.instance;
                     LuaEnv["Run"] = run;
                 }
             }
@@ -121,7 +123,8 @@ namespace AlienBloxUtility
                     LuaEnv["Run"] = run;
                 }
 
-                LuaEnv["Main"] = typeof(Main);
+                //LuaReader.AddToLua(LuaEnv, typeof(Main), Main.instance);
+                LuaEnv["Main"] = Main.instance;
 
                 Filters.Scene["AlienBloxUtility:HighContrastShader"] = new Filter(new DebugVisionShader("DebugShader").UseOpacity(0.75f), EffectPriority.VeryHigh);
             }
