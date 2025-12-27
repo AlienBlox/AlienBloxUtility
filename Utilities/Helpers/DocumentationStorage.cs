@@ -111,7 +111,7 @@ namespace AlienBloxUtility.Utilities.Helpers
 
             //RegisterEntry(Mod, "ExampleEntry", "Mods.AlienBloxUtility.Documents.Test", true, true, true, true);
             //RegisterEntry(Mod, "ExampleLua", "Mods.AlienBloxUtility.Documents.Lua", true, false, false, false);
-            RegisterEntry(Mod, "AlienBloxUtility", "Mods.AlienBloxUtility.Documents.AlienBloxUtility", true, true, true, true);
+            //RegisterEntry(Mod, "AlienBloxUtilityDoc", "Mods.AlienBloxUtility.Documents.AlienBloxUtilityDoc", true, true, true, true);
             RegisterEntry(Mod, "Console", "Mods.AlienBloxUtility.Documents.Console", true, false, true, true);
             RegisterEntry(Mod, "Decompiler", "Mods.AlienBloxUtility.Documents.Decompiler", false, true, true, false);
             RegisterEntry(Mod, "StatsBar", "Mods.AlienBloxUtility.Documents.StatsBar", false, false, true, false);
