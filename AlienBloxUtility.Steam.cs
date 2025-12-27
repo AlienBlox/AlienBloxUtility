@@ -1,5 +1,6 @@
 ﻿using Steamworks;
 using System.Collections.Generic;
+using System.Linq;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
@@ -9,6 +10,11 @@ namespace AlienBloxUtility
     public partial class AlienBloxUtility
     {
         public static Dictionary<int, (ulong, string)> SteamIDs;
+
+        public static Dictionary<int, string> SteamNames => SteamIDs.ToDictionary(
+            kvp => kvp.Key,            // Key remains the same
+            kvp => kvp.Value.Item2     // The string part of the tuple
+        );
 
         public static void SendSteamID(Player plr)
         {

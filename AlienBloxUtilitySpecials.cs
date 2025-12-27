@@ -1,5 +1,6 @@
 ﻿using AlienBloxUtility.Utilities.Core;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -13,6 +14,20 @@ namespace AlienBloxUtility
 {
     public static class AlienBloxUtilitySpecials
     {
+        public static TKey GetKeyByValue<TKey, TValue>(this Dictionary<TKey, TValue> dict, TValue value)
+        {
+            // Loop through each key-value pair
+            foreach (KeyValuePair<TKey, TValue> pair in dict)
+            {
+                if (EqualityComparer<TValue>.Default.Equals(pair.Value, value))
+                {
+                    return pair.Key; // Return the key if value matches
+                }
+            }
+
+            return default; // Return default(TKey) if value is not found
+        }
+
         public static void ThrowIfCancellationRequested(this CancellationTokenSource token)
         {
             token.Token.ThrowIfCancellationRequested();

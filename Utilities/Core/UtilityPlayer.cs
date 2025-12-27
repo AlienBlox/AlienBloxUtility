@@ -6,7 +6,7 @@ namespace AlienBloxUtility.Utilities.Core
     {
         public override void OnEnterWorld()
         {
-            //AlienBloxUtility.SendSteamID(Player);
+            AlienBloxUtility.SendSteamID(Player);
             //AlienBloxUtility.RetrieveSteamID();
         }
     }

@@ -115,8 +115,12 @@ namespace AlienBloxUtility
                         ulong steamID = reader.ReadUInt64();
                         string Persona = reader.ReadString();
 
-                        SteamIDs.TryAdd(whoAmI, (steamID, Persona));
+                        if (SteamIDs.TryAdd(whoAmI, (steamID, Persona)))
+                        {
+                            Console.WriteLine($"Added user {Persona}");
+                        }
 
+                        /*
                         ModPacket pkt = GetPacket();
 
                         pkt.Write((byte)Messages.RetrieveSteamID);
@@ -129,10 +133,11 @@ namespace AlienBloxUtility
                             pkt.Write(item.Value.Item2);
                         }
 
+                        pkt.Send();
+                        */
+
                         Logger.Info($"Steam ID received! ({steamID}, {Persona})");
                         Console.WriteLine($"Steam ID received! ({steamID}, {Persona})");
-
-                        pkt.Send();
                     }
                     break;
                 case Messages.RemoveSteamID:
@@ -178,19 +183,13 @@ namespace AlienBloxUtility
                         string SteamName = reader.ReadString();
                         string Message = reader.ReadString();
 
-                        for (int i = 0; i < SteamIDs.Count; i++)
-                        {
-                            var item = SteamIDs[i];
+                        Console.WriteLine("DM req");
 
-                            if (item.Item2 == SteamName)
-                            {
-                                ModPacket pkt = GetPacket();
+                        ModPacket pkt = GetPacket();
 
-                                pkt.Write((byte)Messages.DMUser);
-                                pkt.Write(Message);
-                                pkt.Send(i);
-                            }
-                        } 
+                        pkt.Write((byte)Messages.DMUser);
+                        pkt.Write(Message);
+                        pkt.Send(SteamNames.GetKeyByValue(SteamName));
                     }
                     else
                     {
