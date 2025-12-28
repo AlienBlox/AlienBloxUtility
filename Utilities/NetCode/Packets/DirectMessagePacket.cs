@@ -1,7 +1,9 @@
 ﻿using AlienBloxUtility.Utilities.Abstracts;
 using AlienBloxUtility.Utilities.UIUtilities.UIRenderers;
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Text;
 using Terraria;
 using Terraria.ID;
 
@@ -13,8 +15,8 @@ namespace AlienBloxUtility.Utilities.NetCode.Packets
         {
             if (Main.netMode == NetmodeID.Server)
             {
-                MemoryStream memoryStream = new MemoryStream();
-                StreamWriter writer = new StreamWriter(memoryStream);
+                MemoryStream memoryStream = new();
+                StreamWriter writer = new(memoryStream);
 
                 AlienBloxUtility.Instance.Logger.Info("Msg received!");
 
@@ -36,9 +38,26 @@ namespace AlienBloxUtility.Utilities.NetCode.Packets
             }
             else
             {
-                string message = reader.ReadString();
+                try
+                {
+                    string message = "";
 
-                ConHostRender.Write(message);
+                    var bytes = reader.ReadBytes((int)reader.BaseStream.Length);
+                    List<char> Chars = new List<char>(); 
+
+                    foreach (byte b in bytes)
+                    {
+                        Chars.Add((char)b);
+                    }
+
+                    message = new([.. Chars]);
+                    
+                    ConHostRender.Write(message);
+                }
+                catch
+                {
+                    ConHostRender.Write("Error receiving DM...");
+                }
             }
         }
     }

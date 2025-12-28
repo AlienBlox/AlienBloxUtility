@@ -33,11 +33,21 @@ namespace AlienBloxUtility
         {
             try
             {
-                Messages Msg = 0;
+                //Console.WriteLine("len: " + reader.BaseStream.Length);
+                //Console.WriteLine("pos: " + reader.BaseStream.Position);
+                //Logger.Info("len: " + reader.BaseStream.Length);
+                //Logger.Info("pos: " + reader.BaseStream.Position);
 
-                Msg = (Messages)reader.ReadByte();
+                Messages Msg = (Messages)reader.ReadByte();
 
-                Player PlrNet = Main.player[whoAmI];
+                //Logger.Info("wired " + Msg);
+
+                Player PlrNet = null;// = Main.player[whoAmI];
+
+                if (Main.netMode == NetmodeID.Server)
+                {
+                    PlrNet = Main.player[whoAmI];
+                }
 
                 switch (Msg)
                 {
@@ -184,11 +194,12 @@ namespace AlienBloxUtility
                         }
                         else
                         {
-                            //ConHostRender.Write("Net test done!");
-                            Main.NewText("nettest complete!");
+                            ConHostRender.Write("Net test done!");
                         }
                         break;
                 }
+
+                Logger.Info("wired 3");
             }
             catch (Exception e)
             {
