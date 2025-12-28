@@ -33,7 +33,14 @@ namespace AlienBloxUtility
         {
             try
             {
-                Messages Msg = (Messages)reader.ReadByte();
+                Messages Msg = 0;
+
+                if (Main.netMode != NetmodeID.Server)
+                {
+                    reader.BaseStream.Position = 4;
+                }
+
+                Msg = (Messages)reader.ReadByte();
 
                 Player PlrNet = Main.player[whoAmI];
 
