@@ -192,12 +192,12 @@ namespace AlienBloxUtility
             }
             catch (Exception e)
             {
-                //if (!AlienBloxUtilityConfig.Instance.DumpErrorLogs)
-                //{
-                //    Logger.Warn(e.Message, e);
+                if (!AlienBloxUtilityConfig.Instance.DumpErrorLogs)
+                {
+                    Logger.Warn(e.Message, e);
 
-                //    return;
-                //}
+                    return;
+                }
 
                 reader.BaseStream.Position = 0;
 
