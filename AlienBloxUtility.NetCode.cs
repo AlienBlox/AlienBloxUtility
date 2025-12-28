@@ -20,12 +20,11 @@ namespace AlienBloxUtility
         {
             SpawnNPC,
             ServerLua,
-            OutputTo,
             ServerJavaScript,
             SendSteamID,
             RemoveSteamID,
             RetrieveSteamID,
-            DMUser,
+            AlienBloxPacket,
         }
 
         public override void HandlePacket(BinaryReader reader, int whoAmI)
@@ -98,18 +97,6 @@ namespace AlienBloxUtility
                         }
                     }
                     break;
-                case Messages.OutputTo:
-                    if (Main.netMode == NetmodeID.MultiplayerClient)
-                    {
-                        string msg = reader.ReadString();
-
-                        if (!AlienBloxUtilityConfig.Instance.Noisy)
-                            Main.NewText(msg);
-
-                        Logger.Info(msg);
-                        ConHostRender.Write(msg);
-                    }
-                    break;
                 case Messages.SendSteamID:
                     if (Main.netMode == NetmodeID.Server)
                     {
@@ -120,22 +107,6 @@ namespace AlienBloxUtility
                         {
                             Console.WriteLine($"Added user {Persona}");
                         }
-
-                        /*
-                        ModPacket pkt = GetPacket();
-
-                        pkt.Write((byte)Messages.RetrieveSteamID);
-                        pkt.Write(SteamIDs.Count);
-
-                        foreach (var item in SteamIDs)
-                        {
-                            pkt.Write(item.Key);
-                            pkt.Write(item.Value.Item1);
-                            pkt.Write(item.Value.Item2);
-                        }
-
-                        pkt.Send();
-                        */
 
                         Logger.Info($"Steam ID received! ({steamID}, {Persona})");
                         Console.WriteLine($"Steam ID received! ({steamID}, {Persona})");
@@ -176,32 +147,6 @@ namespace AlienBloxUtility
 
                             Dict.Add(kvp.Key, kvp.Value);
                         }
-                    }
-                    break;
-                case Messages.DMUser:
-                    if (Main.netMode == NetmodeID.Server)
-                    {
-                        string SteamName = reader.ReadString();
-                        string Message = reader.ReadString();
-
-                        try
-                        {
-                            ModPacket pkt = GetPacket();
-
-                            pkt.Write((byte)Messages.DMUser);
-                            pkt.Write(Message);
-                            pkt.Send(SteamNames.GetKeyByValue(SteamName));
-                        }
-                        catch
-                        {
-                            Console.WriteLine("Exception on DM");
-                        }
-                    }
-                    else
-                    {
-                        string messagetype = reader.ReadString();
-
-                        ConHostRender.Write(messagetype);
                     }
                     break;
             }

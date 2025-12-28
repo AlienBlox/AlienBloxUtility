@@ -15,12 +15,7 @@ namespace AlienBloxUtility.Utilities.Commands
             {
                 try
                 {
-                    ModPacket pkt = AlienBloxUtility.Instance.GetPacket();
-
-                    pkt.Write((byte)AlienBloxUtility.Messages.DMUser);
-                    pkt.Write(Params[0]);
-                    pkt.Write($"[{Main.LocalPlayer.name}]:" + Params[1]);
-                    pkt.Send();
+                    
                 }
                 catch
                 {
