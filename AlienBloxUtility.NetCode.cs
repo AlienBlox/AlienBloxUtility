@@ -17,8 +17,6 @@ namespace AlienBloxUtility
 {
     public partial class AlienBloxUtility : Mod
     {
-        public static AlienBloxUtility Instance;
-
         public enum Messages : byte
         {
             SpawnNPC,
@@ -29,11 +27,6 @@ namespace AlienBloxUtility
             RetrieveSteamID,
             AlienBloxPacket,
             MsgTest,
-        }
-
-        public AlienBloxUtility()
-        {
-            Instance = this;
         }
 
         public override void HandlePacket(BinaryReader reader, int whoAmI)
@@ -48,7 +41,6 @@ namespace AlienBloxUtility
 
                 switch (Msg)
                 {
-                    /*
                     case Messages.SpawnNPC:
                         if (Main.netMode == NetmodeID.Server)
                         {
@@ -178,7 +170,6 @@ namespace AlienBloxUtility
                         AlienBloxPacketHandler.HandlePacket(HandledReader, packetName);
 
                         break;
-                    */
                     case Messages.MsgTest:
                         if (Main.netMode == NetmodeID.Server)
                         {
