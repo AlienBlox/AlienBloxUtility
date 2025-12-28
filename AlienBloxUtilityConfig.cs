@@ -20,6 +20,10 @@ namespace AlienBloxUtility
         [BackgroundColor(25, 50, 25)]
         public bool GeneralDebugMessages;
 
+        [DefaultValue(true)]
+        [BackgroundColor(25, 50, 25)]
+        public bool DumpErrorLogs;
+
         [Header("Lua")]
         [DefaultValue(true)]
         [ReloadRequired]

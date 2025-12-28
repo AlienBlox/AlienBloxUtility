@@ -154,6 +154,11 @@ Configs: {
 			Tooltip: Should the mod icon of AlienBlox's Utility be changed to a more advanced one.
 			Label: Reworked icon
 		}
+
+		DumpErrorLogs: {
+			Label: Dump Error Logs
+			Tooltip: ""
+		}
 	}
 
 	AlienBloxUtilityServerConfig: {

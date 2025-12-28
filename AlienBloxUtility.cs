@@ -79,7 +79,7 @@ namespace AlienBloxUtility
 
                 if (Main.netMode == NetmodeID.Server)
                 {
-                    OutputTo(message);
+                    //OutputTo(message);
                 }
                 else
                 {
@@ -358,6 +358,21 @@ namespace AlienBloxUtility
                     Console.WriteLine($"Error deleting subdirectory {subdirectory}: {ex.Message}");
                 }
             }
+        }
+
+        public static byte[] CombineByteArrays(byte[] array1, byte[] array2)
+        {
+            // Create a new array with the combined length of both arrays
+            byte[] combined = new byte[array1.Length + array2.Length];
+
+            // Copy the first array into the combined array
+            Array.Copy(array1, 0, combined, 0, array1.Length);
+
+            // Copy the second array into the combined array after the first array
+            Array.Copy(array2, 0, combined, array1.Length, array2.Length);
+
+            // Return the combined array
+            return combined;
         }
     }
 }
