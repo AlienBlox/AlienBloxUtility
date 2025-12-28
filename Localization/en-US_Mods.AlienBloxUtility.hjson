@@ -158,7 +158,7 @@ Configs: {
 		DumpErrorLogs: {
 			Label: Dump Error Logs
 			Tooltip: ""
-		}s
+		}
 	}
 
 	AlienBloxUtilityServerConfig: {

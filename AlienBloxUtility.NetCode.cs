@@ -1,6 +1,6 @@
-﻿using AlienBloxUtility.Utilities.Helpers;
-using AlienBloxUtility.Utilities.NetCode.AlienBloxPacketSystem;
-using AlienBloxUtility.Utilities.UIUtilities.UIRenderers;
+﻿//using AlienBloxUtility.Utilities.Helpers;
+//using AlienBloxUtility.Utilities.NetCode.AlienBloxPacketSystem;
+//using AlienBloxUtility.Utilities.UIUtilities.UIRenderers;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -15,8 +15,10 @@ using Terraria.ModLoader.IO;
 
 namespace AlienBloxUtility
 {
-    public partial class AlienBloxUtility
+    public partial class AlienBloxUtility : Mod
     {
+        public static AlienBloxUtility Instance;
+
         public enum Messages : byte
         {
             SpawnNPC,
@@ -29,16 +31,16 @@ namespace AlienBloxUtility
             MsgTest,
         }
 
+        public AlienBloxUtility()
+        {
+            Instance = this;
+        }
+
         public override void HandlePacket(BinaryReader reader, int whoAmI)
         {
             try
             {
                 Messages Msg = 0;
-
-                if (Main.netMode != NetmodeID.Server)
-                {
-                    reader.BaseStream.Position = 4;
-                }
 
                 Msg = (Messages)reader.ReadByte();
 
@@ -46,6 +48,7 @@ namespace AlienBloxUtility
 
                 switch (Msg)
                 {
+                    /*
                     case Messages.SpawnNPC:
                         if (Main.netMode == NetmodeID.Server)
                         {
@@ -175,6 +178,7 @@ namespace AlienBloxUtility
                         AlienBloxPacketHandler.HandlePacket(HandledReader, packetName);
 
                         break;
+                    */
                     case Messages.MsgTest:
                         if (Main.netMode == NetmodeID.Server)
                         {
@@ -189,26 +193,27 @@ namespace AlienBloxUtility
                         }
                         else
                         {
-                            ConHostRender.Write("Net test done!");
+                            //ConHostRender.Write("Net test done!");
+                            Main.NewText("nettest complete!");
                         }
                         break;
                 }
             }
             catch (Exception e)
             {
-                if (!AlienBloxUtilityConfig.Instance.DumpErrorLogs)
-                {
-                    Logger.Warn(e.Message, e);
+                //if (!AlienBloxUtilityConfig.Instance.DumpErrorLogs)
+                //{
+                //    Logger.Warn(e.Message, e);
 
-                    return;
-                }
+                //    return;
+                //}
 
                 reader.BaseStream.Position = 0;
 
                 byte[] entirePacket = reader.BaseStream.ReadBytes(reader.BaseStream.Length);
 
-                using var stream = File.Create(LogLocation + $"\\PacketError-{new Guid()}.txt");
-                stream.Write(entirePacket);
+                //using var stream = File.Create(LogLocation + $"\\PacketError-{new Guid()}.txt");
+                //stream.Write(entirePacket);
 
                 Logger.Info("Packet dump.");
                 Logger.Info(ByteArrayToHex(entirePacket));
