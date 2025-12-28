@@ -1,6 +1,6 @@
 ﻿using AlienBloxUtility.Utilities.Helpers;
 using AlienBloxUtility.Utilities.NetCode.AlienBloxPacketSystem;
-using ICSharpCode.Decompiler.Metadata;
+using AlienBloxUtility.Utilities.UIUtilities.UIRenderers;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -26,6 +26,7 @@ namespace AlienBloxUtility
             RemoveSteamID,
             RetrieveSteamID,
             AlienBloxPacket,
+            MsgTest,
         }
 
         public override void HandlePacket(BinaryReader reader, int whoAmI)
@@ -33,6 +34,7 @@ namespace AlienBloxUtility
             try
             {
                 Messages Msg = (Messages)reader.ReadByte();
+
                 Player PlrNet = Main.player[whoAmI];
 
                 switch (Msg)
@@ -96,7 +98,6 @@ namespace AlienBloxUtility
                                 {
                                     ChatHelper.BroadcastChatMessage(NetworkText.FromLiteral($"{e.GetType().Name}: {e.Message}"), Colors.CoinSilver);
                                 }
-
                             }
                         }
                         break;
@@ -167,12 +168,31 @@ namespace AlienBloxUtility
                         AlienBloxPacketHandler.HandlePacket(HandledReader, packetName);
 
                         break;
+                    case Messages.MsgTest:
+                        if (Main.netMode == NetmodeID.Server)
+                        {
+                            Console.WriteLine("Network test began...");
+
+                            ModPacket pkt = GetPacket();
+
+                            pkt.Write((byte)Messages.MsgTest);
+                            pkt.Send(whoAmI);
+
+                            Console.WriteLine("Nettest end...");
+                        }
+                        else
+                        {
+                            ConHostRender.Write("Net test done!");
+                        }
+                        break;
                 }
             }
-            catch
+            catch (Exception e)
             {
                 if (!AlienBloxUtilityConfig.Instance.DumpErrorLogs)
                 {
+                    Logger.Warn(e.Message, e);
+
                     return;
                 }
 
