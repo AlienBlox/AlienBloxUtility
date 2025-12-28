@@ -43,7 +43,7 @@ namespace AlienBloxUtility.Utilities.NetCode.Packets
                     string message = "";
 
                     var bytes = reader.ReadBytes((int)reader.BaseStream.Length);
-                    List<char> Chars = new List<char>(); 
+                    List<char> Chars = [];
 
                     foreach (byte b in bytes)
                     {

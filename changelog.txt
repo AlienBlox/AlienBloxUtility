@@ -1,3 +1,3 @@
-AlienBlox's Utility v0.1.3.4 released!
- * Added special effects to the mod selector panel
- * Credits to the devs of Calamity Fables for providing the code.
+AlienBlox's Utility v0.1.3.5 released!
+ * Fixed a bug which causes clients to attempt to access server-only data
+ * Added the dm command which allows you do direct message players in the server
