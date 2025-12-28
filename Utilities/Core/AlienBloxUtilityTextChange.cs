@@ -6,6 +6,7 @@ using System;
 using System.Reflection;
 using Terraria;
 using Terraria.GameContent.UI.Elements;
+using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.UI;
 //Credits to Calamity Fable for the code.

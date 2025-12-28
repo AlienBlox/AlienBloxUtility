@@ -24,6 +24,9 @@
 		<Reference Include="Jint">
 			<HintPath>lib\Jint.dll</HintPath>
 		</Reference>
+		<Reference Include="BCrypt.Net-Next">
+			<HintPath>lib\BCrypt.Net-Next.dll</HintPath>
+		</Reference>
 	</ItemGroup>
 
 	<!-- References -->

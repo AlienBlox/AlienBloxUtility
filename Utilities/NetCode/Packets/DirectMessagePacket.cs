@@ -28,7 +28,7 @@ namespace AlienBloxUtility.Utilities.NetCode.Packets
 
                 foreach (Player p in Main.ActivePlayers)
                 {
-                    if (p.name == sendTo)
+                    if (p.name == sendTo || p.name == sendTo.Replace('_', ' '))
                     {
                         AlienBloxUtility.SendAlienBloxPacket("DirectMessagePacket", memoryStream.ToArray(), p.whoAmI);
                     }
