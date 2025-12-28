@@ -31,158 +31,183 @@ namespace AlienBloxUtility
 
         public override void HandlePacket(BinaryReader reader, int whoAmI)
         {
-            Messages Msg = (Messages)reader.ReadByte();
-
-            Player PlrNet = Main.player[whoAmI];
-
-            switch (Msg)
+            try
             {
-                case Messages.SpawnNPC:
-                    if (Main.netMode == NetmodeID.Server)
-                    {
-                        int type = reader.ReadInt32();
-                        int X = reader.ReadInt32();
-                        int Y = reader.ReadInt32();
+                Messages Msg = (Messages)reader.ReadByte();
 
-                        NPC.NewNPC(PlrNet.GetSource_Misc("SpawnServer"), X, Y, type);
-                        ChatHelper.BroadcastChatMessage(NetworkText.FromKey("Mods.AlienBloxUtility.Messages.Server.SpawnNPC", PlrNet.name, type, PacketSpyUtility.UnixTime), Colors.CoinSilver);
-                    }
-                    break;
-                case Messages.ServerLua:
-                    if (Main.netMode == NetmodeID.Server)
-                    {
-                        string code = reader.ReadString();
-                        bool file = reader.ReadBoolean();
+                Player PlrNet = Main.player[whoAmI];
 
-                        ChatHelper.BroadcastChatMessage(NetworkText.FromKey("Mods.AlienBloxUtility.Messages.Server.DoLua", PlrNet.name, PacketSpyUtility.UnixTime), Colors.CoinSilver);
-
-                        if (!file)
+                switch (Msg)
+                {
+                    case Messages.SpawnNPC:
+                        if (Main.netMode == NetmodeID.Server)
                         {
-                            Task.Run(() => RunLuaAsync(code, GetToken()));
+                            int type = reader.ReadInt32();
+                            int X = reader.ReadInt32();
+                            int Y = reader.ReadInt32();
+
+                            NPC.NewNPC(PlrNet.GetSource_Misc("SpawnServer"), X, Y, type);
+                            ChatHelper.BroadcastChatMessage(NetworkText.FromKey("Mods.AlienBloxUtility.Messages.Server.SpawnNPC", PlrNet.name, type, PacketSpyUtility.UnixTime), Colors.CoinSilver);
+                        }
+                        break;
+                    case Messages.ServerLua:
+                        if (Main.netMode == NetmodeID.Server)
+                        {
+                            string code = reader.ReadString();
+                            bool file = reader.ReadBoolean();
+
+                            ChatHelper.BroadcastChatMessage(NetworkText.FromKey("Mods.AlienBloxUtility.Messages.Server.DoLua", PlrNet.name, PacketSpyUtility.UnixTime), Colors.CoinSilver);
+
+                            if (!file)
+                            {
+                                Task.Run(() => RunLuaAsync(code, GetToken()));
+                            }
+                            else
+                            {
+                                try
+                                {
+                                    Task.Run(() => RunLuaAsync(File.ReadAllText(LuaStorageLocation + $"\\{code}"), GetToken()));
+                                }
+                                catch (Exception e)
+                                {
+                                    ChatHelper.BroadcastChatMessage(NetworkText.FromLiteral($"{e.GetType().Name}: {e.Message}"), Colors.CoinSilver);
+                                }
+
+                            }
+                        }
+                        break;
+                    case Messages.ServerJavaScript:
+                        if (Main.netMode == NetmodeID.Server)
+                        {
+                            string code = reader.ReadString();
+                            bool file = reader.ReadBoolean();
+
+                            ChatHelper.BroadcastChatMessage(NetworkText.FromKey("Mods.AlienBloxUtility.Messages.Server.DoJS", PlrNet.name, PacketSpyUtility.UnixTime), Colors.CoinSilver);
+
+                            if (!file)
+                            {
+                                Task.Run(() => RunJavaScript(code));
+                            }
+                            else
+                            {
+                                try
+                                {
+                                    Task.Run(() => RunJavaScript(File.ReadAllText(JSStorageLocation + $"\\{code}")));
+                                }
+                                catch (Exception e)
+                                {
+                                    ChatHelper.BroadcastChatMessage(NetworkText.FromLiteral($"{e.GetType().Name}: {e.Message}"), Colors.CoinSilver);
+                                }
+                            }
+                        }
+                        break;
+                    case Messages.SendSteamID:
+                        if (Main.netMode == NetmodeID.Server)
+                        {
+                            ulong steamID = reader.ReadUInt64();
+                            string Persona = reader.ReadString();
+
+                            if (SteamIDs.TryAdd(whoAmI, (steamID, Persona)))
+                            {
+                                Console.WriteLine($"Added user {Persona}");
+                            }
+
+                            Logger.Info($"Steam ID received! ({steamID}, {Persona})");
+                            Console.WriteLine($"Steam ID received! ({steamID}, {Persona})");
+                        }
+                        break;
+                    case Messages.RemoveSteamID:
+                        if (Main.netMode == NetmodeID.Server)
+                        {
+                            SteamIDs.Remove(whoAmI);
+                        }
+                        break;
+                    case Messages.RetrieveSteamID:
+                        if (Main.netMode == NetmodeID.Server)
+                        {
+                            ModPacket pkt = GetPacket();
+
+                            pkt.Write((byte)Messages.RetrieveSteamID);
+                            pkt.Write(SteamIDs.Count);
+
+                            foreach (var item in SteamIDs)
+                            {
+                                pkt.Write(item.Key);
+                                pkt.Write(item.Value.Item1);
+                                pkt.Write(item.Value.Item2);
+                            }
+
+                            pkt.Send(whoAmI);
                         }
                         else
                         {
-                            try
-                            {
-                                Task.Run(() => RunLuaAsync(File.ReadAllText(LuaStorageLocation + $"\\{code}"), GetToken()));
-                            }
-                            catch (Exception e)
-                            {
-                                ChatHelper.BroadcastChatMessage(NetworkText.FromLiteral($"{e.GetType().Name}: {e.Message}"), Colors.CoinSilver);
-                            }
+                            int Count = reader.ReadInt32();
 
+                            Dictionary<int, (ulong, string)> Dict = [];
+
+                            for (int i = 0; i < Count; i++)
+                            {
+                                KeyValuePair<int, (ulong, string)> kvp = new(reader.ReadInt32(), (reader.ReadUInt64(), reader.ReadString()));
+
+                                Dict.Add(kvp.Key, kvp.Value);
+                            }
                         }
-                    }
-                    break;
-                case Messages.ServerJavaScript:
-                    if (Main.netMode == NetmodeID.Server)
-                    {
-                        string code = reader.ReadString();
-                        bool file = reader.ReadBoolean();
+                        break;
+                    case Messages.AlienBloxPacket:
+                        string packetName = reader.ReadString();
+                        int packetSize = reader.ReadInt32();
+                        byte[] data = new byte[packetSize];
 
-                        ChatHelper.BroadcastChatMessage(NetworkText.FromKey("Mods.AlienBloxUtility.Messages.Server.DoJS", PlrNet.name, PacketSpyUtility.UnixTime), Colors.CoinSilver);
-
-                        if (!file)
+                        for (int i = 0; i < packetSize; i++)
                         {
-                            Task.Run(() => RunJavaScript(code));
+                            data[i] = reader.ReadByte();
+                        }
+
+                        BinaryReader HandledReader = new(new MemoryStream(data));
+
+                        AlienBloxPacketHandler.HandlePacket(HandledReader, packetName);
+
+                        break;
+                    case Messages.MsgTest:
+                        if (Main.netMode == NetmodeID.Server)
+                        {
+                            Console.WriteLine("Network test began...");
+
+                            ModPacket pkt = GetPacket();
+
+                            pkt.Write((byte)Messages.MsgTest);
+                            pkt.Send(whoAmI);
+
+                            Console.WriteLine("Nettest end...");
                         }
                         else
                         {
-                            try
-                            {
-                                Task.Run(() => RunJavaScript(File.ReadAllText(JSStorageLocation + $"\\{code}")));
-                            }
-                            catch (Exception e)
-                            {
-                                ChatHelper.BroadcastChatMessage(NetworkText.FromLiteral($"{e.GetType().Name}: {e.Message}"), Colors.CoinSilver);
-                            }
+                            ConHostRender.Write("Net test done!");
                         }
-                    }
-                    break;
-                case Messages.SendSteamID:
-                    if (Main.netMode == NetmodeID.Server)
-                    {
-                        ulong steamID = reader.ReadUInt64();
-                        string Persona = reader.ReadString();
+                        break;
+                }
+            }
+            catch (Exception e)
+            {
+                if (!AlienBloxUtilityConfig.Instance.DumpErrorLogs)
+                {
+                    Logger.Warn(e.Message, e);
 
-                        if (SteamIDs.TryAdd(whoAmI, (steamID, Persona)))
-                        {
-                            Console.WriteLine($"Added user {Persona}");
-                        }
+                    return;
+                }
 
-                        Logger.Info($"Steam ID received! ({steamID}, {Persona})");
-                        Console.WriteLine($"Steam ID received! ({steamID}, {Persona})");
-                    }
-                    break;
-                case Messages.RemoveSteamID:
-                    if (Main.netMode == NetmodeID.Server)
-                    {
-                        SteamIDs.Remove(whoAmI);
-                    }
-                    break;
-                case Messages.RetrieveSteamID:
-                    if (Main.netMode == NetmodeID.Server)
-                    {
-                        ModPacket pkt = GetPacket();
+                reader.BaseStream.Position = 0;
 
-                        pkt.Write((byte)Messages.RetrieveSteamID);
-                        pkt.Write(SteamIDs.Count);
+                byte[] entirePacket = reader.BaseStream.ReadBytes(reader.BaseStream.Length);
 
-                        foreach (var item in SteamIDs)
-                        {
-                            pkt.Write(item.Key);
-                            pkt.Write(item.Value.Item1);
-                            pkt.Write(item.Value.Item2);
-                        }
+                using var stream = File.Create(LogLocation + $"\\PacketError-{new Guid()}.txt");
+                stream.Write(entirePacket);
 
-                        pkt.Send(whoAmI);
-                    }
-                    else
-                    {
-                        int Count = reader.ReadInt32();
+                Logger.Info("Packet dump.");
+                Logger.Info(ByteArrayToHex(entirePacket));
+                Logger.Info("Packet dump end.");
 
-                        Dictionary<int, (ulong, string)> Dict = [];
-
-                        for (int i = 0; i < Count; i++)
-                        {
-                            KeyValuePair<int, (ulong, string)> kvp = new(reader.ReadInt32(), (reader.ReadUInt64(), reader.ReadString()));
-
-                            Dict.Add(kvp.Key, kvp.Value);
-                        }
-                    }
-                    break;
-                case Messages.AlienBloxPacket:
-                    string packetName = reader.ReadString();
-                    int packetSize = reader.ReadInt32();
-                    byte[] data = new byte[packetSize];
-
-                    for (int i = 0; i < packetSize; i++)
-                    {
-                        data[i] = reader.ReadByte();
-                    }
-
-                    BinaryReader HandledReader = new(new MemoryStream(data));
-
-                    AlienBloxPacketHandler.HandlePacket(HandledReader, packetName);
-
-                    break;
-                case Messages.MsgTest:
-                    if (Main.netMode == NetmodeID.Server)
-                    {
-                        Console.WriteLine("Network test began...");
-
-                        ModPacket pkt = GetPacket();
-
-                        pkt.Write((byte)Messages.MsgTest);
-                        pkt.Send(whoAmI);
-
-                        Console.WriteLine("Nettest end...");
-                    }
-                    else
-                    {
-                        ConHostRender.Write("Net test done!");
-                    }
-                    break;
+                throw new();
             }
         }
 
