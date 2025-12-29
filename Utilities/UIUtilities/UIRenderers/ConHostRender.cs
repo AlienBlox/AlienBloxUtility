@@ -14,7 +14,7 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIRenderers
     {
         internal ConHostSystem Element;
 
-        private static ConHostRender Instance;
+        internal static ConHostRender Instance;
 
         private UserInterface _element;
 

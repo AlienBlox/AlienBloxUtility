@@ -37,6 +37,8 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
 
         public List<string> BackingString;
 
+        public List<UIPanel> ExtraButtons;
+
         public bool Fix;
 
         public override void OnInitialize()
@@ -230,6 +232,7 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
             CommandPanel.Append(CommandBox);
             CommandPanel.Append(BackingConSysUI);
 
+            BackingList.AddRange(ExtraButtons);
             BackingList.AddRange([ClearConsole, ExportConsole, StopLuaExecution]);
 
             ClearConsole.Append(ClearConsoleText);
@@ -346,6 +349,46 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
             }
 
             SearchBar.SetText(string.Empty);
+        }
+
+        /// <summary>
+        /// Adds a new panel to the console's easy selection area
+        /// </summary>
+        /// <param name="text">The text to add.</param>
+        /// <param name="bgColor">The background color of the panel</param>
+        /// <returns>The panel for you to edit.</returns>
+        public UIPanel AddConhostPanel(string text, Color bgColor = default)
+        {
+            UIPanel panel = new();
+
+            panel.InsertText(text, .7f);
+            panel.BackgroundColor = bgColor;
+            panel.OnMouseOver += HoverTick;
+            panel.OnMouseOut += Unhover;
+
+            ExtraButtons.Add(panel);
+
+            return panel;
+        }
+
+        /// <summary>
+        /// Adds a new panel to the console's easy selection area
+        /// </summary>
+        /// <param name="text">The text to add.</param>
+        /// <param name="bgColor">The background color of the panel</param>
+        /// <returns>The panel for you to edit.</returns>
+        public static UIPanel StaticAddConhostPanel(string text, Color bgColor = default)
+        {
+            UIPanel panel = new();
+
+            panel.InsertText(text, .7f);
+            panel.BackgroundColor = bgColor;
+            panel.OnMouseOver += HoverTick;
+            panel.OnMouseOut += Unhover;
+
+            ConHostRender.Instance.Element.ExtraButtons.Add(panel);
+
+            return panel;
         }
 
         public static void LeftClick(UIMouseEvent evt, UIElement element)
