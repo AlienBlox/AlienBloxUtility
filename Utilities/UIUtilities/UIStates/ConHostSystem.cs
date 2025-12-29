@@ -258,7 +258,7 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
             base.Update(gameTime);
         }
 
-        public void AddConsoleText(string text)
+        public UIText AddConsoleText(string text)
         {
             SoundEngine.PlaySound(SoundID.MenuTick);
 
@@ -273,6 +273,8 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
             BackingString.Add(text);
 
             AlienBloxUtility.Instance.Logger.Debug(text);
+
+            return ConsoleTextVal;
         }
 
         public void ClearConSysText(UIMouseEvent evt, UIElement element)

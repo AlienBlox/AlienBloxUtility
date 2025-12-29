@@ -3,6 +3,7 @@ using AlienBloxUtility.Utilities.UIUtilities.UIStates;
 using Microsoft.Xna.Framework;
 using System.Collections.Generic;
 using Terraria;
+using Terraria.GameContent.UI.Elements;
 using Terraria.ModLoader;
 using Terraria.UI;
 
@@ -66,14 +67,14 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIRenderers
             }
         }
 
-        public static void Write(string Text)
+        public static UIText Write(string Text)
         {
             if (Instance == null || Instance?.Element == null)
             {
-                return;
+                return null;
             }
 
-            Instance.Element.AddConsoleText(Text);
+            return Instance.Element.AddConsoleText(Text);
         }
     }
 }

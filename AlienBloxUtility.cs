@@ -79,7 +79,16 @@ namespace AlienBloxUtility
 
                 if (Main.netMode == NetmodeID.Server)
                 {
-                    //OutputTo(message);
+                    MemoryStream memoryStream = new();
+                    StreamWriter writer = new(memoryStream);
+
+                    writer.Write(message);
+                    writer.Dispose();
+
+                    SendAlienBloxPacket("ServerOutputPacket", memoryStream.ToArray());
+                    Console.WriteLine(message);
+
+                    memoryStream.Close();
                 }
                 else
                 {

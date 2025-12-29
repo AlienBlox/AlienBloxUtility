@@ -2,6 +2,8 @@
 using AlienBloxUtility.Utilities.NetCode.AlienBloxPacketSystem;
 using System;
 using System.IO;
+using Terraria;
+using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace AlienBloxUtility.Utilities.Abstracts
@@ -28,13 +30,27 @@ namespace AlienBloxUtility.Utilities.Abstracts
             AlienBloxPacketHandler.PacketHandlers.Remove(this);
         }
 
+        /// <summary>
+        /// Safely handles an AlienBloxPacket instance.
+        /// </summary>
+        /// <param name="reader">The binary reader to give</param>
         public void SafePacketHandle(BinaryReader reader)
         {
             //Console.WriteLine("len: " + reader.BaseStream.Length + $"; pos: {reader.BaseStream.Position}");
 
             reader.BaseStream.Position = 0;
 
-            OnPacketHandled(reader);
+            try
+            {
+                OnPacketHandled(reader);
+            }
+            catch (Exception ex)
+            {
+                if (Main.netMode == NetmodeID.Server)
+                {
+                    Console.WriteLine($"Exception on packet handle: {ex.GetType().Name}, {ex.Message}");
+                }
+            }
 
             reader.Close();
         }

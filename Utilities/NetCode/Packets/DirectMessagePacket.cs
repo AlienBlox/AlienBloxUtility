@@ -1,4 +1,5 @@
 ﻿using AlienBloxUtility.Utilities.Abstracts;
+using AlienBloxUtility.Utilities.DataStructures;
 using AlienBloxUtility.Utilities.UIUtilities.UIRenderers;
 using System;
 using System.Collections.Generic;
@@ -52,7 +53,7 @@ namespace AlienBloxUtility.Utilities.NetCode.Packets
 
                     message = new([.. Chars]);
                     
-                    ConHostRender.Write(message);
+                    ConHostRender.Write(LuaStdout.RemoveInvalidCharacters(message));
                 }
                 catch
                 {

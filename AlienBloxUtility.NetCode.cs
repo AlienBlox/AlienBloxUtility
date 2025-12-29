@@ -198,8 +198,6 @@ namespace AlienBloxUtility
                         }
                         break;
                 }
-
-                Logger.Info("wired 3");
             }
             catch (Exception e)
             {
