@@ -12,14 +12,28 @@ namespace AlienBloxUtility.Utilities.Commands
         {
             try
             {
-                string luaTotal = string.Empty;
-
-                foreach (string param in Params)
+                if (!Params[0].Equals("serverrun", StringComparison.CurrentCultureIgnoreCase))
                 {
-                    luaTotal += ' ' + param;
-                }
+                    string luaTotal = string.Empty;
 
-                AlienBloxUtility.Lua(luaTotal);
+                    foreach (string param in Params)
+                    {
+                        luaTotal += ' ' + param;
+                    }
+
+                    AlienBloxUtility.Lua(luaTotal);
+                }
+                else
+                {
+                    string LuaTotal = string.Empty;
+
+                    for (int i = 1; i < Params.Length; i++)
+                    {
+                        LuaTotal += ' ' + Params[1];
+                    }
+
+                    AlienBloxUtility.LuaServer(LuaTotal);
+                }
             }
             catch (Exception E)
             {
