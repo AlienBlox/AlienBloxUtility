@@ -47,6 +47,7 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
             ConsoleText = [];
             BackingString = [];
             CommandsScroll = [];
+            ExtraButtons = [];
 
             SearchButton = new($"Terraria/Images/Item_{ItemID.PaperAirplaneA}", Language.GetText("Mods.AlienBloxUtility.UI.SearchBar"));
             SendCommand = new($"Terraria/Images/Item_{ItemID.PaperAirplaneA}", Language.GetText("Mods.AlienBloxUtility.UI.SendCmd"));
@@ -263,21 +264,28 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
 
         public UIText AddConsoleText(string text)
         {
-            SoundEngine.PlaySound(SoundID.MenuTick);
+            try
+            {
+                SoundEngine.PlaySound(SoundID.MenuTick);
 
-            UIText ConsoleTextVal = new(text, 0.7f);
+                UIText ConsoleTextVal = new(text, 0.7f);
 
-            ConsoleTextVal.Width.Set(0, 1f);
-            ConsoleTextVal.Height.Set(10f, 0f);
-            ConsoleTextVal.TextOriginX = 0f;
+                ConsoleTextVal.Width.Set(0, 1f);
+                ConsoleTextVal.Height.Set(10f, 0f);
+                ConsoleTextVal.TextOriginX = 0f;
 
-            ConsoleText.Add(ConsoleTextVal);
-            BackingConSysUI.Add(ConsoleTextVal);
-            BackingString.Add(text);
+                ConsoleText.Add(ConsoleTextVal);
+                BackingConSysUI.Add(ConsoleTextVal);
+                BackingString.Add(text);
 
-            AlienBloxUtility.Instance.Logger.Debug(text);
+                AlienBloxUtility.Instance.Logger.Debug(text);
 
-            return ConsoleTextVal;
+                return ConsoleTextVal;
+            }
+            catch
+            {
+                return new("");
+            }
         }
 
         public void ClearConSysText(UIMouseEvent evt, UIElement element)
