@@ -36,6 +36,9 @@ UI: {
 	ExecLua: Execute Lua Script (Right-click for info)
 	CommandList: Command List
 	SearchBar: Search...
+	AssetInspector: Open Asset Tool
+	AssetTool: Asset Tool
+	ModalNotice: Double left click modal anywhere to exit!
 
 	Console: {
 		ConWelcome: AlienBlox's Utility V{0} loaded!

@@ -24,7 +24,7 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
 
         public UIElement BackingElement;
 
-        public UIPanel MainPanel, SidePanel, CommandPanel, ClearConsole, ExportConsole, StopLuaExecution, CommandListPanel, CommandScrollBacking;
+        public UIPanel AssetInspectorMenu, MainPanel, SidePanel, CommandPanel, ClearConsole, ExportConsole, StopLuaExecution, CommandListPanel, CommandScrollBacking, ModalMask, AssetInspector;
 
         public SpriteButton SendCommand, CommandList, SearchButton;
 
@@ -41,8 +41,11 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
 
         public bool Fix;
 
+        private bool _hasModal;
+
         public override void OnInitialize()
         {
+            SetAssetTool();
             CommandsScroll = [];
             ConsoleText = [];
             BackingString = [];
@@ -60,7 +63,28 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
             BackingElement = new();
             CommandScrollBacking = new();
             SearchBar = new("Search Command");
+            ModalMask = new();
             
+            AssetInspector = AddConhostPanel(Language.GetText("Mods.AlienBloxUtility.UI.AssetInspector"));
+
+            AssetInspector.OnLeftClick += (_, _) =>
+            {
+                SetModal(true, AssetInspectorMenu);
+            };
+
+            ModalMask.Width.Set(0, 1);
+            ModalMask.Height.Set(0, 1);
+            ModalMask.BackgroundColor = new(0, 0, 0, 128);
+            ModalMask.OnLeftDoubleClick += (_, _) =>
+            {
+                SetModal(false);
+            };
+
+            var text = ModalMask.InsertText(Language.GetText("Mods.AlienBloxUtility.UI.ModalNotice"));
+            text.Height.Set(0, .1f);
+            text.VAlign = 1;
+            text.TextOriginX = 0;
+
             BackingElement.Width.Set(0, 1f);
             BackingElement.Height.Set(0, 1f);
             BackingElement.VAlign = 1;
@@ -233,8 +257,10 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
             CommandPanel.Append(CommandBox);
             CommandPanel.Append(BackingConSysUI);
 
+            ExtraButtons.RemoveRange(0, 1);
+
             BackingList.AddRange(ExtraButtons);
-            BackingList.AddRange([ClearConsole, ExportConsole, StopLuaExecution]);
+            BackingList.AddRange([AssetInspector, ClearConsole, ExportConsole, StopLuaExecution]);
 
             ClearConsole.Append(ClearConsoleText);
             ExportConsole.Append(ExportConsoleText);
@@ -255,11 +281,37 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
                 BackingElement.MaxHeight.Set(-Conhost.Topbar.GetDimensions().Height, 1f);
 
                 Search(null, null);
+                //SetModal(true);
 
                 Fix = true;
             }
 
             base.Update(gameTime);
+        }
+
+        /// <summary>
+        /// Sets a new modal UI to the console.
+        /// </summary>
+        /// <param name="modalSet">Should the modal be enabled</param>
+        /// <param name="elem">The element to add as the modal's main item</param>
+        public void SetModal(bool modalSet, UIElement elem = null)
+        {
+            _hasModal = modalSet;
+
+            if (_hasModal)
+            {
+                BackingElement.Append(ModalMask);
+
+                if (elem != null)
+                {
+                    ModalMask.Append(elem);
+                }
+            }
+            else
+            {
+                ModalMask.RemoveAllChildren();
+                ModalMask.Remove();
+            }
         }
 
         public UIText AddConsoleText(string text)
@@ -301,6 +353,65 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
             }
 
             BackingString.Clear();
+        }
+
+        public void SetAssetTool()
+        {
+            AssetInspectorMenu = new();
+            AssetInspectorMenu.Width.Set(0, .75f);
+            AssetInspectorMenu.Height.Set(0, .75f);
+            AssetInspectorMenu.VAlign = AssetInspectorMenu.HAlign = .5f;
+            AssetInspectorMenu.BackgroundColor.A = 255;
+            AssetInspectorMenu.SetPadding(0);  
+
+            var AssetInspectorTopBar = new UIPanel
+            {
+                VAlign = 0,
+                HAlign = .5f
+            };
+
+            AssetInspectorTopBar.Width.Set(0, 1);
+            AssetInspectorTopBar.Height.Set(0, .1f);
+            AssetInspectorTopBar.BackgroundColor.A = 255;
+            AssetInspectorTopBar.BackgroundColor.R -= 30;
+            AssetInspectorTopBar.BackgroundColor.G -= 30;
+            AssetInspectorTopBar.BackgroundColor.B -= 30;
+            AssetInspectorTopBar.InsertText(Language.GetText("Mods.AlienBloxUtility.UI.AssetTool"));
+
+            AssetInspectorMenu.Append(AssetInspectorTopBar);
+
+            var SideBar = new UIPanel()
+            {
+                VAlign = 1,
+                HAlign = 0
+            };
+
+            var SidePanel = new UIPanel()
+            {
+                VAlign = 1,
+                HAlign = 1
+            };
+
+            SideBar.Width.Set(0, .3f);
+            SideBar.Height.Set(0, .9f);
+            SideBar.SetPadding(0);
+
+            UIList backer = [];
+            FixedUIScrollbar scroll = new(UserInterface.ActiveInstance);
+
+            scroll.VAlign = .5f;
+
+            backer.Width.Set(0, 1);
+            backer.Height.Set(0, 1);
+            backer.Append(scroll);
+            backer.SetScrollbar(scroll);
+            SideBar.Append(backer);
+
+            SidePanel.Width.Set(0, .7f);
+            SidePanel.Height.Set(0, .9f);
+
+            AssetInspectorMenu.Append(SideBar);
+            AssetInspectorMenu.Append(SidePanel);
         }
 
         public void ExportConSysText(UIMouseEvent evt, UIElement element)
@@ -365,14 +476,48 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
         /// <param name="text">The text to add.</param>
         /// <param name="bgColor">The background color of the panel</param>
         /// <returns>The panel for you to edit.</returns>
-        public UIPanel AddConhostPanel(string text, Color bgColor = default)
+        public UIPanel AddConhostPanel(string text, Color? bgColor = default)
         {
             UIPanel panel = new();
 
             panel.InsertText(text, .7f);
-            panel.BackgroundColor = bgColor;
+
+            if (bgColor != null)
+            {
+                panel.BackgroundColor = bgColor.Value;
+            }
+            
             panel.OnMouseOver += HoverTick;
             panel.OnMouseOut += Unhover;
+            panel.Width.Set(0, 1);
+            panel.Height.Set(30, 0);
+
+            ExtraButtons.Add(panel);
+
+            return panel;
+        }
+
+        /// <summary>
+        /// Adds a new panel to the console's easy selection area
+        /// </summary>
+        /// <param name="text">The text to add.</param>
+        /// <param name="bgColor">The background color of the panel</param>
+        /// <returns>The panel for you to edit.</returns>
+        public UIPanel AddConhostPanel(LocalizedText text, Color? bgColor = default)
+        {
+            UIPanel panel = new();
+
+            panel.InsertText(text, .7f);
+
+            if (bgColor != null)
+            {
+                panel.BackgroundColor = bgColor.Value;
+            }
+
+            panel.OnMouseOver += HoverTick;
+            panel.OnMouseOut += Unhover;
+            panel.Width.Set(0, 1);
+            panel.Height.Set(30, 0);
 
             ExtraButtons.Add(panel);
 
@@ -393,6 +538,8 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
             panel.BackgroundColor = bgColor;
             panel.OnMouseOver += HoverTick;
             panel.OnMouseOut += Unhover;
+            panel.Width.Set(0, 1);
+            panel.Height.Set(30, 0);
 
             ConHostRender.Instance.Element.ExtraButtons.Add(panel);
 
