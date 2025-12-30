@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using AlienBloxUtility.Utilities.UIUtilities.UIElements;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoMod.RuntimeDetour;
 using ReLogic.Content;
@@ -9,6 +10,7 @@ using Terraria.GameContent.UI.Elements;
 using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.UI;
+using static System.Net.Mime.MediaTypeNames;
 //Credits to Calamity Fable for the code.
 namespace AlienBloxUtility.Utilities.Core
 {
@@ -76,6 +78,8 @@ namespace AlienBloxUtility.Utilities.Core
     {
         public UIText ModName;
 
+        public bool Test = false;
+
         public CustomNameBar(UIText nameUI)
         {
             Width.Set(80, 0f);
@@ -109,6 +113,44 @@ namespace AlienBloxUtility.Utilities.Core
             ModName.SetText(AlienBloxUtility.Instance.DisplayNameClean + $" v{AlienBloxUtility.Instance.Version}");
             ModName.TextColor = Color.Black;
             ModName.ShadowColor = Main.DiscoColor;
+
+            ModName.SetText(AlienBloxUtility.Instance.DisplayNameClean + $" v{AlienBloxUtility.Instance.Version}");
+            ModName.TextColor = Main.DiscoColor;
+            ModName.ShadowColor = Color.Black;
+
+            if (Parent.Parent is UIPanel panel)
+            {
+                panel.BorderColor = Main.DiscoColor;
+                panel.BackgroundColor = Color.Black;
+
+                if (!Test)
+                {
+                    foreach (UIElement E in panel.Children)
+                    {
+                        AlienBloxUtility.Instance.Logger.Info(E.GetType().Name);
+
+                        panel.GetType().GetField("_configButton")?.SetValue(panel, null);
+                        panel.GetType().GetField("_moreInfoButton")?.SetValue(panel, null);
+                    }
+
+                    Test = true;
+                }
+
+                foreach (UIElement E in panel.Children)
+                {
+                    if (E.GetType() == typeof(ModItem).Assembly.GetType("Terraria.ModLoader.UI.UIModStateText"))
+                    {
+                        UIModStateText Text = new();
+
+                        Text.Left = E.Left;
+                        Text.Top = E.Top;
+
+                        panel.Append(Text);
+
+                        E.Remove();
+                    }
+                }
+            }
         }
 
         protected override void DrawSelf(SpriteBatch spriteBatch)

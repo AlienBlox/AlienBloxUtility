@@ -397,9 +397,10 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
             SideBar.SetPadding(0);
 
             UIList backer = [];
-            FixedUIScrollbar scroll = new(UserInterface.ActiveInstance);
-
-            scroll.VAlign = .5f;
+            FixedUIScrollbar scroll = new(UserInterface.ActiveInstance)
+            {
+                VAlign = .5f
+            };
 
             backer.Width.Set(0, 1);
             backer.Height.Set(0, 1);
