@@ -39,6 +39,16 @@ namespace AlienBloxUtility.Utilities.Core
             UtilityModName = Mod.Name;
         }
 
+        public override void Unload()
+        {
+            if (InitializeModItemUIMethod == null || ModIconField == null || NameplateChanger == null)
+                return;
+
+            NameplateChanger.Undo();
+            NameplateChanger.Dispose();
+            NameplateChanger = null;
+        }
+
         public void ChangeTextToFunnyOne(orig_OnInitialize orig, UIElement element)
         {
             orig(element);
