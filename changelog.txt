@@ -1,3 +1,3 @@
-AlienBlox's Utility v0.1.3.7 released!
- * Changed the nameplate of AlienBlox's Utilities to be more fancy (RGB)
- * Added the new asset inspector feature (unfinished)
+AlienBlox's Utility v0.1.3.8 released!
+ * Added the ability to inspect tMod files (unused right now, use loadfiletest to test)
+ * A new legals section in the description
