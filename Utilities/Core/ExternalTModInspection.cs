@@ -116,14 +116,11 @@ namespace AlienBloxUtility.Utilities.Core
                         }
                     }
 
-                    if (Directory.GetFiles(pathToExport + $"\\{file.Name}").Contains("Info"))
+                    if (!Directory.GetFiles(pathToExport + $"\\{file.Name}").Contains($"{file.Name}.cs"))
                     {
-                        if (!File.ReadAllText(pathToExport + $"\\{file.Name}\\Info").Contains("includeSource"))
-                        {
-                            TModInspector.AddMod(file);
-                            TModInspector.DumpMod(file);
-                            await TModInspector.DecompileAssembly(file.Name);
-                        }
+                        TModInspector.AddMod(file);
+                        TModInspector.DumpMod(file);
+                        await TModInspector.DecompileAssembly(file.Name);
                     }
 
                     UrlEngine.OpenURL(pathToExport + $"\\{file.Name}");
