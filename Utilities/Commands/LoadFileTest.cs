@@ -17,6 +17,8 @@ namespace AlienBloxUtility.Utilities.Commands
 
                 if (file != null)
                 {
+                    ExternalTModInspection.ExportToLocation(AlienBloxUtility.DecompLocation + "\\", file);
+
                     Conhost.AddConsoleText("Test complete!");
 
                     if (TModInspector.GetFESet(file) == null)
