@@ -1,7 +1,9 @@
-﻿using AlienBloxUtility.Utilities.UIUtilities.UIRenderers;
+﻿using AlienBloxUtility.Utilities.Helpers;
+using AlienBloxUtility.Utilities.UIUtilities.UIRenderers;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using Terraria;
 using Terraria.ModLoader;
@@ -113,6 +115,18 @@ namespace AlienBloxUtility.Utilities.Core
                             }
                         }
                     }
+
+                    if (Directory.GetFiles(pathToExport + $"\\{file.Name}").Contains("Info"))
+                    {
+                        if (!File.ReadAllText(pathToExport + $"\\{file.Name}\\Info").Contains("includeSource"))
+                        {
+                            TModInspector.AddMod(file);
+                            TModInspector.DumpMod(file);
+                            await TModInspector.DecompileAssembly(file.Name);
+                        }
+                    }
+
+                    UrlEngine.OpenURL(pathToExport + $"\\{file.Name}");
                 }
                 catch
                 {

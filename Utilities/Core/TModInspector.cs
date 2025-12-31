@@ -336,6 +336,27 @@ namespace AlienBloxUtility.Utilities.Core
                 }
             }
         }
+
+        public static void DumpMod(TmodFile TmodFile)
+        {
+            try
+            {
+                Directory.CreateDirectory(AlienBloxUtility.ModDumpLocation + $"\\{TmodFile.Name}");
+
+                TmodFile.FileEntry[] FESet = GetFESet(TmodFile);
+
+                byte[] Assembly = TmodFile.GetModAssembly();
+                byte[] PDB = TmodFile.GetModPdb();
+                File.WriteAllBytes(AlienBloxUtility.ModDumpLocation + $"\\{TmodFile.Name}\\{TmodFile}.dll", Assembly);
+                File.WriteAllBytes(AlienBloxUtility.ModDumpLocation + $"\\{TmodFile}\\{TmodFile}.pdb", PDB);
+                File.WriteAllBytes(AlienBloxUtility.ModDumpLocation + $"\\{TmodFile}\\{TmodFile}.tmod", File.ReadAllBytes(TmodFile.path));
+                AlienBloxUtility.Instance.Logger.Info($"Mod Path: {TmodFile.path}");
+            }
+            catch (Exception ex)
+            {
+                AlienBloxUtility.Instance.Logger.Warn("Can't dump mod due to exception:" + ex.Message);
+            }
+        }
         
         /// <summary>
         /// Gets the file entry set for this TmodFile
@@ -396,6 +417,22 @@ namespace AlienBloxUtility.Utilities.Core
             catch (Exception ex)
             {
                 AlienBloxUtility.Instance.Logger.Error($"Can't set mod named '{ModName}':" + ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// Adds the following mod to the Mod file data list
+        /// </summary>
+        /// <param name="File">The mod to add</param>
+        public static void AddMod(TmodFile File)
+        {
+            try
+            {
+                ModFileData.TryAdd(File.Name, (File, null));
+            }
+            catch (Exception ex)
+            {
+                AlienBloxUtility.Instance.Logger.Error($"Can't set mod named '{File.Name}':" + ex.Message);
             }
         }
 
