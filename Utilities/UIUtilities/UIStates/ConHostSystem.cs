@@ -41,6 +41,8 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
 
         public bool Fix;
 
+        private bool _canDoubleClickDisable;
+
         private bool _hasModal;
 
         public override void OnInitialize()
@@ -69,7 +71,10 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
 
             AssetInspector.OnLeftClick += (_, _) =>
             {
-                SetModal(true, AssetInspectorMenu);
+                if (!_canDoubleClickDisable)
+                {
+                    SetModal(true, false, AssetInspectorMenu);
+                }
             };
 
             ModalMask.Width.Set(0, 1);
@@ -294,7 +299,7 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
         /// </summary>
         /// <param name="modalSet">Should the modal be enabled</param>
         /// <param name="elem">The element to add as the modal's main item</param>
-        public void SetModal(bool modalSet, UIElement elem = null)
+        public void SetModal(bool modalSet, bool doubleClickDisable = false, UIElement elem = null)
         {
             _hasModal = modalSet;
 
@@ -305,6 +310,14 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
                 if (elem != null)
                 {
                     ModalMask.Append(elem);
+                }
+
+                if (!doubleClickDisable)
+                {
+                    var text = ModalMask.InsertText(Language.GetText("Mods.AlienBloxUtility.UI.ModalNotice"));
+                    text.Height.Set(0, .1f);
+                    text.VAlign = 1;
+                    text.TextOriginX = 0;
                 }
             }
             else

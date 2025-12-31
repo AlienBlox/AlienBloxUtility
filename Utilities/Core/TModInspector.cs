@@ -1,10 +1,11 @@
-﻿using AlienBloxTools.Utilities;
-using AlienBloxUtility.Utilities.Helpers;
+﻿using AlienBloxUtility.Utilities.Helpers;
 using AlienBloxUtility.Utilities.UIUtilities.UIElements;
 using AlienBloxUtility.Utilities.UIUtilities.UIRenderers;
 using ICSharpCode.Decompiler;
 using ICSharpCode.Decompiler.CSharp;
+using ICSharpCode.Decompiler.IL;
 using ICSharpCode.Decompiler.Metadata;
+using Steamworks;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -12,10 +13,10 @@ using System.Reflection;
 using System.Threading.Tasks;
 using Terraria;
 using Terraria.ID;
-using Terraria.IO;
 using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.ModLoader.Core;
+using Version = System.Version;
 
 namespace AlienBloxUtility.Utilities.Core
 {
@@ -25,14 +26,114 @@ namespace AlienBloxUtility.Utilities.Core
 
         public static Assembly[] LoadedAssemblies => AppDomain.CurrentDomain.GetAssemblies();
 
-        public override void PostSetupContent()
+        public static string WorkshopSearch => GetWorkshopInstall();
+
+        public static string LocalSearch => $"{Main.SavePath}\\Mods\\";
+
+        public override void OnModLoad()
         {
             ModFileData = [];
+            SearchAllTMods();
         }
 
         public override void OnModUnload()
         {
             ModFileData = null;
+        }
+
+        private static void SearchAllTMods()
+        {
+            try
+            {
+                Task.Run(async () =>
+                {
+                    foreach (var localMod in GetFilesWithExtension(LocalSearch, ".tmod"))
+                    {
+                        LoadFile(localMod);
+
+                        AlienBloxUtility.Instance.Logger.Debug($"Found mod in scan: {localMod}");
+                    }
+
+                    foreach (var workshopMod in GetFilesWithExtension(WorkshopSearch, ".tmod"))
+                    {
+                        LoadFile(WorkshopSearch);
+
+                        AlienBloxUtility.Instance.Logger.Debug($"Found mod in scan: {workshopMod}");
+                    }
+                });
+            }
+            catch 
+            {
+
+            }
+        }
+
+        private static string GetWorkshopInstall()
+        {
+            SteamApps.GetAppInstallDir((AppId_t)1281930, out string steamInstallPath, 512);
+
+            string workshopFolder = Path.Combine(steamInstallPath, "steamapps", "workshop", "content", "105600");
+
+            if (Directory.Exists(workshopFolder))
+            {
+                Console.WriteLine("tModLoader Workshop Path: " + workshopFolder);
+
+                return workshopFolder;
+            }
+            else
+            {
+                Console.WriteLine("Workshop directory not found.");
+
+                return "";
+            }
+        }
+
+        static string[] GetFilesWithExtension(string path, string fileExtension)
+        {
+            List<string> fileList = new List<string>();  // List to store the file paths
+
+            try
+            {
+                // Check if the directory exists before attempting to get files or directories
+                if (string.IsNullOrWhiteSpace(path))  // Check if the path is empty or just whitespace
+                {
+                    Console.WriteLine("The provided directory path is empty or whitespace.");
+                    return new string[0];  // Return an empty array if the path is invalid
+                }
+
+                if (!Directory.Exists(path))
+                {
+                    Console.WriteLine($"The directory {path} does not exist.");
+                    return new string[0];  // Return an empty array if the directory doesn't exist
+                }
+
+                // Search for files with the specific extension in the current directory
+                string[] files = Directory.GetFiles(path, fileExtension);
+                fileList.AddRange(files);  // Add found files to the list
+
+                // Recursively search in all subdirectories
+                string[] directories = Directory.GetDirectories(path);
+                foreach (var directory in directories)
+                {
+                    // Recursively add files from subdirectories
+                    fileList.AddRange(GetFilesWithExtension(directory, fileExtension));
+                }
+            }
+            catch (UnauthorizedAccessException e)
+            {
+                Console.WriteLine($"Access denied: {e.Message}");
+            }
+            catch (DirectoryNotFoundException e)
+            {
+                Console.WriteLine($"Directory not found: {e.Message}");
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"An unexpected error occurred: {e.Message}");
+            }
+
+            // Return the list as an array
+            return [.. fileList];
         }
 
         /// <summary>
@@ -41,8 +142,39 @@ namespace AlienBloxUtility.Utilities.Core
         /// <param name="ModName">The mod to decompile</param>
         public static void DecompileModThreadSafe(string ModName = "AlienBloxUtility")
         {
-            MessWithMod(ModName);
+            MessWithMod(ModName, false);
             Task.Run(async () => DecompileAssembly(ModName));
+        }
+
+        /// <summary>
+        /// Loads a new tMod file from the path
+        /// </summary>
+        /// <param name="path">The file path to load</param>
+        /// <returns>The tMod File</returns>
+        public static TmodFile LoadFile(string path, string name = null, Version version = null)
+        {
+            // 1) Get the Type
+            Type tmodFileType = typeof(TmodFile);
+
+            // 2) Find the constructor
+            ConstructorInfo ctor = tmodFileType.GetConstructor(
+                BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public,
+                binder: null,
+                types: [typeof(string), typeof(string), typeof(Version)],
+                modifiers: null
+            ) ?? throw new Exception("Constructor not found on TmodFile");
+
+            // 3) Invoke it
+            var file = (TmodFile)ctor.Invoke([path, name, version]);
+
+            using (file.Open())
+            {
+                //Ensure proper opening for compatibility
+            }
+
+            ExternalTModInspection.LoadedFiles.Add(file);
+
+            return file;
         }
 
         /// <summary>

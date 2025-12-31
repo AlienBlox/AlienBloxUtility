@@ -1,4 +1,5 @@
 using AlienBloxTools.Utilities;
+using AlienBloxUtility.Utilities.Core;
 using AlienBloxUtility.Utilities.DataStructures;
 using AlienBloxUtility.Utilities.Helpers;
 using AlienBloxUtility.Utilities.Scripting;
@@ -177,51 +178,51 @@ namespace AlienBloxUtility
 
         public override void Unload()
         {
-            CancelAll();
-
             try
             {
+                CancelAll();
+
                 GlobalLua.Dispose();
                 GlobalCts.Cancel();
                 GlobalCts.Dispose();
+
+                if (LuaScriptingEnv.Envs != null)
+                {
+                    foreach (var element in LuaScriptingEnv.Envs)
+                    {
+                        element.Dispose();
+                    }
+                }
+
+                if (JavaScriptScriptingEnv.Envs != null)
+                {
+                    foreach (var element in JavaScriptScriptingEnv.Envs)
+                    {
+                        element.Dispose();
+                    }
+                }
+
+                SteamIDs = null;
+                LuaUnifiedEnv.Dispose();
+                engineLock = null;
+                JavaScriptUnifiedEnv.Dispose();
+                JavaScriptUnifiedEnv = null;
+                LuaStdout.Flush();
+                LuaStdout.Close();
+                GlobalCts = null;
+                Instance = null;
+                CentralTokenStorage = null;
+                MainThreadQueue.Clear();
+                MainThreadQueue = null;
+
+                if (Directory.Exists(Path.Combine(Main.SavePath, "AlienBloxUtility", "Cache")) && AlienBloxUtilityServerConfig.Instance.ClearCache)
+                {
+                    ClearDirectory(Path.Combine(Main.SavePath, "AlienBloxUtility", "Cache"));
+                }
             }
             catch
             {
 
-            }
-
-            if (LuaScriptingEnv.Envs != null)
-            {
-                foreach (var element in LuaScriptingEnv.Envs)
-                {
-                    element.Dispose();
-                }
-            }
-
-            if (JavaScriptScriptingEnv.Envs != null)
-            {
-                foreach (var element in JavaScriptScriptingEnv.Envs)
-                {
-                    element.Dispose();
-                }
-            }
-
-            SteamIDs = null;
-            LuaUnifiedEnv.Dispose();
-            engineLock = null;
-            JavaScriptUnifiedEnv.Dispose();
-            JavaScriptUnifiedEnv = null;
-            LuaStdout.Flush();
-            LuaStdout.Close();
-            GlobalCts = null;
-            Instance = null;
-            CentralTokenStorage = null;
-            MainThreadQueue.Clear();
-            MainThreadQueue = null;
-
-            if (Directory.Exists(Path.Combine(Main.SavePath, "AlienBloxUtility", "Cache")) && AlienBloxUtilityServerConfig.Instance.ClearCache)
-            {
-                ClearDirectory(Path.Combine(Main.SavePath, "AlienBloxUtility", "Cache"));
             }
         }
 

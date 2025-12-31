@@ -7,10 +7,9 @@ using System;
 using System.Reflection;
 using Terraria;
 using Terraria.GameContent.UI.Elements;
-using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.UI;
-using static System.Net.Mime.MediaTypeNames;
+
 //Credits to Calamity Fable for the code.
 namespace AlienBloxUtility.Utilities.Core
 {
@@ -140,10 +139,11 @@ namespace AlienBloxUtility.Utilities.Core
                 {
                     if (E.GetType() == typeof(ModItem).Assembly.GetType("Terraria.ModLoader.UI.UIModStateText"))
                     {
-                        UIModStateText Text = new();
-
-                        Text.Left = E.Left;
-                        Text.Top = E.Top;
+                        UIModStateText Text = new()
+                        {
+                            Left = E.Left,
+                            Top = E.Top
+                        };
 
                         panel.Append(Text);
 
