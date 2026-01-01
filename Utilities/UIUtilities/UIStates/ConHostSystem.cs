@@ -13,6 +13,7 @@ using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.ModLoader.Core;
+using Terraria.ModLoader.IO;
 using Terraria.UI;
 
 namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
@@ -459,6 +460,12 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
         {
             try
             {
+                // Get the path to the user's profile folder
+                string userProfile = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+
+                // Combine it with "Downloads" to get the Downloads folder path
+                string downloadsFolder = Path.Combine(userProfile, "Downloads");
+
                 if (AlienBloxUtility.AlienBloxLogger == null)
                 {
                     return;
@@ -511,7 +518,43 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
 
                                 for (int i = 0; i < UIs.Length; i++)
                                 {
-                                    UIs[i].InsertText(FESet[i].Name);
+                                    var txt = UIs[i].InsertText(FESet[i].Name);
+
+                                    UIs[i].OnLeftClick += async (_, _) =>
+                                    {
+                                        using (file.Open())
+                                        {
+                                            byte[] fileContent = file.GetBytes(txt.Text);
+
+                                            /*
+                                            if (Path.GetExtension(txt.Text) == ".rawimg")
+                                            {
+                                                var result = await ExternalTModInspection.RawToPng(fileContent);
+                                                var stream = new MemoryStream();
+
+                                                result.SaveAsPng(stream, result.Width, result.Height);
+
+                                                fileContent = stream.ReadBytes(stream.Length);
+
+                                                stream.Dispose();
+                                            }
+                                            */
+
+                                            string path = downloadsFolder + $"\\{Path.GetFileName(txt.Text)}";
+
+                                            if (Path.GetExtension(path) == ".rawimg")
+                                            {
+                                                path = Path.ChangeExtension(path, ".png");
+                                            }
+
+                                            using var fs = File.Create(path);
+
+                                            for (int i = 0; i < fileContent.Length; i++)
+                                            {
+                                                fs.WriteByte(fileContent[i]);
+                                            }
+                                        }
+                                    };
                                 }
 
                                 AlienBloxUtility.AlienBloxLogger.Info(UIs.Length.ToString());
