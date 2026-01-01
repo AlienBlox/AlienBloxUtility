@@ -1,3 +1,3 @@
-AlienBlox's Utility v0.1.3.8 released!
- * Added the ability to inspect tMod files (unused right now, use loadfiletest to test)
- * A new legals section in the description
+AlienBlox's Utility v0.1.3.9 released!
+ * Added the ability to inspect tMod files (full)
+ * Added the Asset Inspector button to the Debug Console UI
