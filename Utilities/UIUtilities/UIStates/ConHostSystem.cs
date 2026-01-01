@@ -478,6 +478,14 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
 
                     var txt = UI[i].InsertText(mods[i].Name + $" (v{mods[i].Version})");
 
+                    UI[i].OnMiddleClick += (_, menu) =>
+                    {
+                        if (E.TryGetValue((UIPanel)menu, out var file))
+                        {
+                            AddConsoleText(file.DeriveProperty());
+                        }
+                    };
+
                     UI[i].OnRightClick += (_, menu) =>
                     {
                         if (E.TryGetValue((UIPanel)menu, out var file))

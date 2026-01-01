@@ -126,18 +126,36 @@ namespace AlienBloxUtility.Utilities.DataStructures
             {
                 foreach (var obj in ExternalTModInspection.AllTModLoaderDetectedMods)
                 {
-                    if (obj.GetType() == typeof(TmodFile).Assembly.GetType("Terraria.ModLoader.Core.LocalMod") && obj.GetType().GetField("modFile", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(obj) == AssociatedFile)
+                    if (obj.GetType() == typeof(TmodFile).Assembly.GetType("Terraria.ModLoader.Core.LocalMod"))
                     {
-                        var props = obj.GetType().GetField("properties", BindingFlags.Instance | BindingFlags.NonPublic)?.GetValue(obj);
-
-                        if (props != null)
+                        foreach (var field in obj.GetType().GetFields())
                         {
-                            dllReferences = (string[])props.GetType().GetField("dllReferences", BindingFlags.Instance | BindingFlags.NonPublic)?.GetValue(props);
-                            author = (string)props.GetType().GetField("author", BindingFlags.Instance | BindingFlags.NonPublic)?.GetValue(props);
-                            displayName = (string)props.GetType().GetField("displayName", BindingFlags.Instance | BindingFlags.NonPublic)?.GetValue(props);
-                            hideCode = (bool)props.GetType().GetField("dllReferences", BindingFlags.Instance | BindingFlags.NonPublic)?.GetValue(props);
-                            includeSource = (bool)props.GetType().GetField("includeSource", BindingFlags.Instance | BindingFlags.NonPublic)?.GetValue(props);
-                            hideResources = (bool)props.GetType().GetField("hideResources", BindingFlags.Instance | BindingFlags.NonPublic)?.GetValue(props);
+                            if (field.Name == "modFile" && field.GetValue(obj) == file)
+                            {
+                                AlienBloxUtility.AlienBloxLogger.Info("Fieldscan OK");
+
+                                foreach (var propsAttempt in obj.GetType().GetFields())
+                                {
+                                    if (propsAttempt.Name == "properties")
+                                    {
+                                        var props = propsAttempt.GetValue(obj);
+
+                                        if (props != null)
+                                        {
+                                            AlienBloxUtility.AlienBloxLogger.Info("Start property table data structure...");
+
+                                            dllReferences = (string[])props.GetType().GetField("dllReferences", BindingFlags.Instance | BindingFlags.NonPublic)?.GetValue(props);
+                                            author = (string)props.GetType().GetField("author", BindingFlags.Instance | BindingFlags.NonPublic)?.GetValue(props);
+                                            displayName = (string)props.GetType().GetField("displayName", BindingFlags.Instance | BindingFlags.NonPublic)?.GetValue(props);
+                                            hideCode = (bool)props.GetType().GetField("hideCode", BindingFlags.Instance | BindingFlags.NonPublic)?.GetValue(props);
+                                            includeSource = (bool)props.GetType().GetField("includeSource", BindingFlags.Instance | BindingFlags.NonPublic)?.GetValue(props);
+                                            hideResources = (bool)props.GetType().GetField("hideResources", BindingFlags.Instance | BindingFlags.NonPublic)?.GetValue(props);
+
+                                            AlienBloxUtility.AlienBloxLogger.Info("Complete...");
+                                        }
+                                    }
+                                }
+                            }
                         }
                     }
                 }

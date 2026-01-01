@@ -1,4 +1,5 @@
 ﻿using AlienBloxUtility.Utilities.Core;
+using AlienBloxUtility.Utilities.DataStructures;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -8,12 +9,23 @@ using Terraria;
 using Terraria.GameContent.UI.Elements;
 using Terraria.GameInput;
 using Terraria.Localization;
+using Terraria.ModLoader.Core;
 using Terraria.UI;
 
 namespace AlienBloxUtility
 {
     public static class AlienBloxUtilitySpecials
     {
+        public static ValueModProperties DeriveProperty(this TmodFile f)
+        {
+            return new(f); 
+        }
+
+        public static ModProperties DerivePropertyRef(this TmodFile f)
+        {
+            return new(new(f));
+        }
+
         public static TKey GetKeyByValue<TKey, TValue>(this Dictionary<TKey, TValue> dict, TValue value, bool exceptionOnFailure = true)
         {
             // Loop through each key-value pair
