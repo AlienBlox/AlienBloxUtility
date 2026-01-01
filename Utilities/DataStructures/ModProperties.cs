@@ -1,5 +1,6 @@
 ﻿using AlienBloxUtility.Utilities.Core;
 using System;
+using System.IO;
 using System.Reflection;
 using Terraria.ModLoader.Core;
 
@@ -57,6 +58,15 @@ namespace AlienBloxUtility.Utilities.DataStructures
         /// </summary>
         public bool IncludePDB => _internalProperty.includePDB;
 
+        /// <summary>
+        /// Dumps an entire build.txt file of the connected mod
+        /// </summary>
+        /// <param name="Path">The path to dump at.</param>
+        public void DumpBuildTxt(string Path)
+        {
+            _internalProperty.DumpBuildTxt(Path);
+        }
+
         public override string ToString() => _internalProperty.ToString();
 
         /// <summary>
@@ -66,6 +76,15 @@ namespace AlienBloxUtility.Utilities.DataStructures
         public static implicit operator string(ModProperties instance)
         {
             return instance.ToString();
+        }
+
+        //// <summary>
+        /// Converts the Mod Property to its Value type counterpart
+        /// </summary>
+        /// <param name="instance">The instance to convert.</param>
+        public static implicit operator ValueModProperties(ModProperties instance)
+        {
+            return instance._internalProperty;
         }
     }
 
@@ -148,8 +167,6 @@ namespace AlienBloxUtility.Utilities.DataStructures
 
                                         if (props != null)
                                         {
-                                            AlienBloxUtility.AlienBloxLogger.Info("Start property table data structure...");
-
                                             dllReferences = (string[])props.GetType().GetField("dllReferences", BindingFlags.Instance | BindingFlags.NonPublic)?.GetValue(props);
                                             author = (string)props.GetType().GetField("author", BindingFlags.Instance | BindingFlags.NonPublic)?.GetValue(props);
                                             displayName = (string)props.GetType().GetField("displayName", BindingFlags.Instance | BindingFlags.NonPublic)?.GetValue(props);
@@ -171,6 +188,20 @@ namespace AlienBloxUtility.Utilities.DataStructures
             }
         }
 
+        /// <summary>
+        /// Dumps an entire build.txt file of the connected mod
+        /// </summary>
+        /// <param name="Path">The path to dump at.</param>
+        public void DumpBuildTxt(string Path)
+        {
+            using var f = File.Create(Path);
+
+            for (int i = 0; i < buildTxtFile.Length; i++)
+            {
+                f.WriteByte(buildTxtFile[i]);
+            }
+        }
+
         public override string ToString()
         {
             return $"Properties: hideCode: {hideCode}, hideResources: {hideResources}, includeSource: {includeSource}, Mod Version: {ModVersion}, tModLoader Version: {TModLoaderVersion}, Filename: {AssociatedFile.Name}";
@@ -183,6 +214,16 @@ namespace AlienBloxUtility.Utilities.DataStructures
         public static implicit operator string(ValueModProperties instance)
         {
             return instance.ToString();
+        }
+
+
+        //// <summary>
+        /// Converts the Value type Mod Property to its reference type counterpart
+        /// </summary>
+        /// <param name="instance">The instance to convert.</param>
+        public static implicit operator ModProperties(ValueModProperties instance)
+        {
+            return new(instance);
         }
     }
 }
