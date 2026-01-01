@@ -524,21 +524,7 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
                                     {
                                         using (file.Open())
                                         {
-                                            byte[] fileContent = file.GetBytes(txt.Text);
-
-                                            /*
-                                            if (Path.GetExtension(txt.Text) == ".rawimg")
-                                            {
-                                                var result = await ExternalTModInspection.RawToPng(fileContent);
-                                                var stream = new MemoryStream();
-
-                                                result.SaveAsPng(stream, result.Width, result.Height);
-
-                                                fileContent = stream.ReadBytes(stream.Length);
-
-                                                stream.Dispose();
-                                            }
-                                            */
+                                            byte[] fileContent = file.GetBytes(txt.Text);                                     
 
                                             string path = downloadsFolder + $"\\{Path.GetFileName(txt.Text)}";
 
@@ -548,6 +534,13 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
                                             }
 
                                             using var fs = File.Create(path);
+
+                                            if (Path.GetExtension(txt.Text) == ".rawimg")
+                                            {
+                                                var result = await ExternalTModInspection.RawToPng(fileContent);
+
+                                                result.SaveAsPng(fs, result.Width, result.Height);
+                                            }
 
                                             for (int i = 0; i < fileContent.Length; i++)
                                             {
