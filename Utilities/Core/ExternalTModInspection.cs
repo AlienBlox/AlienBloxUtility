@@ -45,27 +45,38 @@ namespace AlienBloxUtility.Utilities.Core
             {
                 foreach(var obj in objs)
                 {
-                    AlienBloxUtility.Instance.Logger.Info("Try to add mod...");
+                    //AlienBloxUtility.Instance.Logger.Info("Try to add mod...");
 
                     if (obj.GetType() == typeof(ModItem).Assembly.GetType("Terraria.ModLoader.Core.LocalMod"))
                     {
-                        var tModF = (TmodFile)obj.GetType().GetFields()[1]?.GetValue(obj);
+                        //AlienBloxUtility.Instance.Logger.Info("Type scan done!");
 
-                        AlienBloxUtility.Instance.Logger.Info("Scan done!");
-
-                        if (tModF != null && tModF.Version == ModLoader.GetMod("ModLoader").Version)
+                        foreach (var type in obj.GetType().GetFields())
                         {
-                            tMods.Add(tModF);
+                            if (type.Name == "modFile")
+                            {
+                                //AlienBloxUtility.Instance.Logger.Info("Found modFile!");
 
-                            AlienBloxUtility.Instance.Logger.Info($"Added mod named '{tModF.Name}'.");
+                                var tModF = (TmodFile)type.GetValue(obj);
+
+                                //if (tModF != null)
+                                    //AlienBloxUtility.Instance.Logger.Info("Passed nullcheck");
+
+                                if (tModF != null)
+                                {
+                                    tMods.Add(tModF);
+
+                                    //AlienBloxUtility.Instance.Logger.Info($"Added mod named '{tModF.Name}' with tML version {tModF.TModLoaderVersion}.");
+                                }
+                            }
                         }
                     }
                 }
             }
-            else
-            {
-                AlienBloxUtility.Instance.Logger.Warn("No tMods found.");
-            }
+            //else
+            //{
+            //    AlienBloxUtility.Instance.Logger.Warn("No tMods found.");
+            //}
 
             return [.. tMods];
         }
