@@ -178,15 +178,6 @@ namespace AlienBloxUtility.Utilities.Core
                         }
                     }
 
-                    var props = new ValueModProperties(file);
-
-                    if (!props.includeSource)
-                    {
-                        TModInspector.AddMod(file);
-                        TModInspector.DumpMod(file);
-                        await TModInspector.DecompileAssembly(file.Name, false);
-                    }
-
                     UrlEngine.OpenURL(pathToExport + $"\\{file.Name}");
                 }
                 catch
@@ -194,6 +185,19 @@ namespace AlienBloxUtility.Utilities.Core
                     ConHostRender.Write("Exception on extraction.");
                 }
             });
+
+            var props = new ValueModProperties(file);
+
+            if (!props.includeSource)
+            {
+                using (file.Open())
+                {
+                    TModInspector.AddMod(file);
+                    TModInspector.DumpMod(file);
+
+                    Task.Run(async () => TModInspector.DecompileAssembly(file.Name, false));
+                }
+            }
         }
     }
 }
