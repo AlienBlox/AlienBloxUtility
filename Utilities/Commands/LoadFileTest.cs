@@ -17,9 +17,10 @@ namespace AlienBloxUtility.Utilities.Commands
 
                 if (file != null)
                 {
-                    ExternalTModInspection.ExportToLocation(AlienBloxUtility.DecompLocation + "\\", file);
-
                     Conhost.AddConsoleText("Test complete!");
+
+                    /*
+                    ExternalTModInspection.ExportToLocation(AlienBloxUtility.DecompLocation + "\\", file);
 
                     if (TModInspector.GetFESet(file) == null)
                     {
@@ -30,6 +31,7 @@ namespace AlienBloxUtility.Utilities.Commands
                     {
                         Conhost.AddConsoleText($"{val.Name}");
                     }
+                    */
                 }
                 else
                 {

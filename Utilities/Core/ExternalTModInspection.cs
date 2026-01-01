@@ -1,9 +1,11 @@
 ﻿using AlienBloxUtility.Utilities.Helpers;
 using AlienBloxUtility.Utilities.UIUtilities.UIRenderers;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using Terraria;
 using Terraria.ModLoader;
@@ -27,6 +29,30 @@ namespace AlienBloxUtility.Utilities.Core
         {
             LoadedFiles?.Clear();
             LoadedFiles = null;
+        }
+
+        /// <summary>
+        /// Gets every tModLoader mods loaded
+        /// </summary>
+        /// <returns>The list of mods loaded as an array of tMods</returns>
+        public static TmodFile[] GetAllModsLoaded()
+        {
+            List<TmodFile> tMods = [];
+
+            Array objs = (Array)typeof(ModItem).Assembly.GetType("Terraria.ModLoader.Core.ModOrganizer", true)?.GetProperty("AllFoundMods", BindingFlags.Static | BindingFlags.NonPublic)?.GetValue(null);
+
+            if (objs != null)
+            {
+                foreach(var obj in objs)
+                {
+                    if (obj.GetType() == typeof(ModItem).Assembly.GetType("Terraria.ModLoader.Core.LocalMod"))
+                    {
+                        tMods.Add((TmodFile)obj.GetType().GetField("modFile", BindingFlags.Instance | BindingFlags.NonPublic)?.GetValue(obj));
+                    }
+                }
+            }
+
+            return [.. tMods];
         }
 
         /// <summary>
