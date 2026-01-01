@@ -482,7 +482,11 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
                     {
                         if (E.TryGetValue((UIPanel)menu, out var file))
                         {
-                            AddConsoleText(file.DeriveProperty());
+                            var props = file.DeriveProperty();
+
+                            props.DumpBuildTxt(AlienBloxUtility.LogLocation + $"\\{file.Name}-build.txt");
+
+                            AddConsoleText(props);
                         }
                     };
 
