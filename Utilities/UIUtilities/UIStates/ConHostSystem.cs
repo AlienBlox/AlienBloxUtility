@@ -442,6 +442,7 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
             BackerScroll.Height.Set(0, 1);
             PanelBacking.Append(BackerScroll);
             PanelBacking.SetScrollbar(BackerScroll);
+            SidePanel.Append(PanelBacking);
             SidePanel.Append(BackerScroll);
             SidePanel.SetPadding(10);
 
@@ -477,6 +478,14 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
 
                     var txt = UI[i].InsertText(mods[i].Name + $" (v{mods[i].Version})");
 
+                    UI[i].OnRightClick += (_, menu) =>
+                    {
+                        if (E.TryGetValue((UIPanel)menu, out var file))
+                        {
+                            ExternalTModInspection.ExportToLocation(AlienBloxUtility.DecompLocation, file);
+                        }
+                    };
+
                     UI[i].OnLeftClick += (_, menu) =>
                     {
                         try
@@ -501,7 +510,7 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
                         {
                             menu.Remove();
 
-                            AssetInspectorMenuThingy.Recalculate();
+                            AssetInspectorBacker.Recalculate();
                         }
                     };
                 }

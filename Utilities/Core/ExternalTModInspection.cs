@@ -1,4 +1,5 @@
-﻿using AlienBloxUtility.Utilities.Helpers;
+﻿using AlienBloxUtility.Utilities.DataStructures;
+using AlienBloxUtility.Utilities.Helpers;
 using AlienBloxUtility.Utilities.UIUtilities.UIRenderers;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -24,6 +25,10 @@ namespace AlienBloxUtility.Utilities.Core
         /// A list of all tMod files
         /// </summary>
         public static TmodFile[] ListedFiles => GetAllModsLoaded();
+        /// <summary>
+        /// A list of all detected mods in tModLoader
+        /// </summary>
+        public static Array AllTModLoaderDetectedMods => (Array)typeof(ModItem).Assembly.GetType("Terraria.ModLoader.Core.ModOrganizer", true)?.GetProperty("AllFoundMods", BindingFlags.Static | BindingFlags.NonPublic)?.GetValue(null);
 
         public override void Load()
         {
@@ -128,7 +133,7 @@ namespace AlienBloxUtility.Utilities.Core
         }
 
         /// <summary>
-        /// Exports and dumps a tMod file.
+        /// Exports and dumps a tMod file and decompiles it if includeSource is false.
         /// </summary>
         /// <param name="pathToExport">The path to export</param>
         /// <param name="file">The file to export</param>
@@ -173,7 +178,9 @@ namespace AlienBloxUtility.Utilities.Core
                         }
                     }
 
-                    if (!Directory.GetFiles(pathToExport + $"\\{file.Name}").Contains($"{file.Name}.cs"))
+                    var props = new ValueModProperties(file);
+
+                    if (!props.includeSource)
                     {
                         TModInspector.AddMod(file);
                         TModInspector.DumpMod(file);
