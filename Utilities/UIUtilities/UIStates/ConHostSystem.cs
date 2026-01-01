@@ -12,6 +12,7 @@ using Terraria.GameContent.UI.Elements;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
+using Terraria.ModLoader.Core;
 using Terraria.UI;
 
 namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
@@ -466,28 +467,38 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
                 var UIE = mods.EnumerateToMenu();
                 var UI = UIE.EnumerateToMenu();
 
+                Dictionary<UIPanel, TmodFile> E = [];
+
                 AlienBloxUtility.AlienBloxLogger?.Info(UI.Length.ToString());
 
                 for (int i = 0; i < mods.Length; i++)
                 {
+                    E.Add(UI[i], mods[i]);
+
                     var txt = UI[i].InsertText(mods[i].Name + $" (v{mods[i].Version})");
-                    UI[i].OnLeftClick += (_, elem) =>
+
+                    UI[i].OnLeftClick += (_, menu) =>
                     {
                         try
-                        {
-                            foreach (var m in mods)
-                            {
-                                string[] wee = txt.Text.Split(' ');
+                        {   
+                            AssetInspectorMenuThingy.Clear();
 
-                                if (wee[0] == m.Name && m.Version.ToString().Contains(wee[1]))
+                            if (E.TryGetValue((UIPanel)menu, out var file))
+                            {
+                                var UIs = file.EnumerateToMenu();
+                                var FESet = TModInspector.GetFESet(file);
+
+                                for (int i = 0; i < UIs.Length; i++)
                                 {
-                                    AlienBloxUtility.AlienBloxLogger.Info(m.Name);
+                                    UIs[i].InsertText(FESet[i].Name);
                                 }
-                            }
+
+                                AssetInspectorMenuThingy.AddRange(UIs);
+                            } 
                         }
                         catch
                         {
-                            elem.Remove();
+                            menu.Remove();
 
                             AssetInspectorMenuThingy.Recalculate();
                         }
