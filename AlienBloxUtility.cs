@@ -1,10 +1,9 @@
 using AlienBloxTools.Utilities;
-using AlienBloxUtility.Utilities.Core;
 using AlienBloxUtility.Utilities.DataStructures;
 using AlienBloxUtility.Utilities.Helpers;
-using AlienBloxUtility.Utilities.Scripting;
 using AlienBloxUtility.Utilities.UIUtilities.UIRenderers;
 using Jint;
+using log4net;
 using Neo.IronLua;
 using System;
 using System.Collections.Generic;
@@ -60,6 +59,21 @@ namespace AlienBloxUtility
         public static string LuaStorageLocation { get; private set; }
 
         public static string JSStorageLocation { get; private set; }
+
+        public static ILog AlienBloxLogger
+        {
+            get
+            {
+                if (Instance.Logger == null)
+                {
+                    return new DummyLogger();
+                }
+                else 
+                {
+                    return Instance.Logger;
+                }
+            }
+        }
 
         public override void Load()
         {

@@ -28,6 +28,8 @@ namespace AlienBloxUtility.Utilities.Core
                 panel.Height.Set(30, 0);
                 panel.OnMouseOver += ConHostSystem.HoverTick;
                 panel.OnMouseOut += ConHostSystem.Unhover;
+
+                Panels.Add(panel);
             }
 
             return [.. Panels];
@@ -51,6 +53,8 @@ namespace AlienBloxUtility.Utilities.Core
                 panel.Height.Set(30, 0);
                 panel.OnMouseOver += ConHostSystem.HoverTick;
                 panel.OnMouseOut += ConHostSystem.Unhover;
+
+                Panels.Add(panel);
             }
 
             return [.. Panels];

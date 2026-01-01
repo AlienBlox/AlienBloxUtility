@@ -445,6 +445,7 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
             SidePanel.SetPadding(10);
 
             AssetInspectorMenuThingy = PanelBacking;
+            //AssetInspectorMenuThingy.ManualSortMethod = (_) => { };
 
             SetupAssetThing();
 
@@ -454,41 +455,43 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
 
         public void SetupAssetThing()
         {
-            var UI = ExternalTModInspection.ListedFiles.EnumerateToMenu();
-
-            for (int i = 0; i < UI.Length; i++)
+            try
             {
-                UI[i].InsertText(ExternalTModInspection.ListedFiles[i].Name + $"(v{ExternalTModInspection.ListedFiles[i].Version})");
-                UI[i].OnLeftClick += (_, elem) =>
+                if (AlienBloxUtility.AlienBloxLogger == null)
                 {
-                    try
-                    {   
-                        var f = ExternalTModInspection.ListedFiles[i];
+                    return;
+                }
 
-                        if (f == null)
+                var mods = ExternalTModInspection.GetAllModsLoaded();
+                var UIE = mods.EnumerateToMenu();
+                var UI = UIE.EnumerateToMenu();
+
+                AlienBloxUtility.AlienBloxLogger?.Info(UI.Length.ToString());
+
+                for (int i = 0; i < mods.Length; i++)
+                {
+                    UI[i].InsertText(mods[i].Name + $" (v{mods[i].Version})");
+                    UI[i].OnLeftClick += (_, elem) =>
+                    {
+                        try
+                        {
+                            
+                        }
+                        catch
                         {
                             elem.Remove();
+
+                            AssetInspectorMenuThingy.Recalculate();
                         }
+                    };
+                }
 
-                        AssetInspectorMenuThingy.Clear();  
-
-                        var menus = f.EnumerateToMenu();
-
-                        for (int j = 0; j < menus.Length; j++)
-                        {
-                            menus[j].InsertText(Path.GetFileName(TModInspector.GetFESet(f)[j].Name));
-                        }
-
-                        AssetInspectorMenuThingy.AddRange(menus);
-                    }
-                    catch
-                    {
-                        elem.Remove();
-                    }
-                };
+                AssetInspectorBacker.AddRange(UI);
             }
+            catch
+            {
 
-            AssetInspectorBacker.AddRange(UI);
+            }
         }
 
         public void ExportConSysText(UIMouseEvent evt, UIElement element)
