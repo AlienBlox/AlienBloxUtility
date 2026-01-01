@@ -29,6 +29,10 @@ namespace AlienBloxUtility.Utilities.DataStructures
         /// </summary>
         public string[] DllReferences => _internalProperty.dllReferences;
         /// <summary>
+        /// The build.txt of the mod as a byte array
+        /// </summary>
+        public byte[] BuildTxtFile => _internalProperty.buildTxtFile;
+        /// <summary>
         /// The author of the associated mod
         /// </summary>
         public string Author => _internalProperty.author;
@@ -87,6 +91,10 @@ namespace AlienBloxUtility.Utilities.DataStructures
         /// </summary>
         public readonly string[] dllReferences;
         /// <summary>
+        /// The build.txt of the mod as a byte array
+        /// </summary>
+        public readonly byte[] buildTxtFile;
+        /// <summary>
         /// The author of the associated mod
         /// </summary>
         public readonly string author;
@@ -132,8 +140,6 @@ namespace AlienBloxUtility.Utilities.DataStructures
                         {
                             if (field.Name == "modFile" && field.GetValue(obj) == file)
                             {
-                                AlienBloxUtility.AlienBloxLogger.Info("Fieldscan OK");
-
                                 foreach (var propsAttempt in obj.GetType().GetFields())
                                 {
                                     if (propsAttempt.Name == "properties")
@@ -150,8 +156,7 @@ namespace AlienBloxUtility.Utilities.DataStructures
                                             hideCode = (bool)props.GetType().GetField("hideCode", BindingFlags.Instance | BindingFlags.NonPublic)?.GetValue(props);
                                             includeSource = (bool)props.GetType().GetField("includeSource", BindingFlags.Instance | BindingFlags.NonPublic)?.GetValue(props);
                                             hideResources = (bool)props.GetType().GetField("hideResources", BindingFlags.Instance | BindingFlags.NonPublic)?.GetValue(props);
-
-                                            AlienBloxUtility.AlienBloxLogger.Info("Complete...");
+                                            buildTxtFile = (byte[])props.GetType().GetMethod("ToBytes", BindingFlags.Instance | BindingFlags.NonPublic)?.Invoke(props, null);
                                         }
                                     }
                                 }
