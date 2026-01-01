@@ -180,7 +180,7 @@ namespace AlienBloxUtility.Utilities.Core
         /// Decompiles an assembly of the selected mod
         /// </summary>
         /// <param name="ModName">The mod name to try to find</param>
-        public static async Task DecompileAssembly(string ModName)
+        public static async Task DecompileAssembly(string ModName, bool unpackAssets = true)
         {
             if (!Directory.Exists(AlienBloxUtility.ModDumpLocation + $"\\{ModName}") || !ModFileData.TryGetValue(ModName, out var ModContents))
             {
@@ -272,7 +272,7 @@ namespace AlienBloxUtility.Utilities.Core
                 File.WriteAllBytes(DecompModPath + $"{ModName}.pdb", ModContents.Item1.GetModPdb());
                 File.WriteAllBytes($"{AlienBloxUtility.DecompLocation}\\{ModName}.tmod", File.ReadAllBytes(ModContents.Item1.path));
 
-                if (Environment.OSVersion.Platform == PlatformID.Win32NT && File.Exists($"{AlienBloxUtility.CacheLocation}\\tModUnpacker.exe"))
+                if (Environment.OSVersion.Platform == PlatformID.Win32NT && File.Exists($"{AlienBloxUtility.CacheLocation}\\tModUnpacker.exe") && unpackAssets)
                 {
                     await AlienBloxUtility.ExtractTmodFile($"{AlienBloxUtility.DecompLocation}\\{ModName}", $"{AlienBloxUtility.CacheLocation}\\tModUnpacker.exe");
                 }

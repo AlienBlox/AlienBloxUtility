@@ -184,7 +184,7 @@ namespace AlienBloxUtility.Utilities.Core
                     {
                         TModInspector.AddMod(file);
                         TModInspector.DumpMod(file);
-                        await TModInspector.DecompileAssembly(file.Name);
+                        await TModInspector.DecompileAssembly(file.Name, false);
                     }
 
                     UrlEngine.OpenURL(pathToExport + $"\\{file.Name}");

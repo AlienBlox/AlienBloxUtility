@@ -490,7 +490,7 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
                     {
                         if (E.TryGetValue((UIPanel)menu, out var file))
                         {
-                            ExternalTModInspection.ExportToLocation(AlienBloxUtility.DecompLocation, file);
+                            ExternalTModInspection.ExportToLocation(AlienBloxUtility.DecompLocation + "\\", file);
                         }
                     };
 
