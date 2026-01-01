@@ -470,12 +470,20 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
 
                 for (int i = 0; i < mods.Length; i++)
                 {
-                    UI[i].InsertText(mods[i].Name + $" (v{mods[i].Version})");
+                    var txt = UI[i].InsertText(mods[i].Name + $" (v{mods[i].Version})");
                     UI[i].OnLeftClick += (_, elem) =>
                     {
                         try
                         {
-                            
+                            foreach (var m in mods)
+                            {
+                                string[] wee = txt.Text.Split(' ');
+
+                                if (wee[0] == m.Name && m.Version.ToString().Contains(wee[1]))
+                                {
+                                    AlienBloxUtility.AlienBloxLogger.Info(m.Name);
+                                }
+                            }
                         }
                         catch
                         {
