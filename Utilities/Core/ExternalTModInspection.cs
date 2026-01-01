@@ -138,6 +138,8 @@ namespace AlienBloxUtility.Utilities.Core
         /// <param name="file">The file to export</param>
         public static void ExportToLocation(string pathToExport, TmodFile file)
         {
+            TModInspector.DumpMod(file);
+
             Main.QueueMainThreadAction( async () =>
             {
                 try
@@ -189,13 +191,10 @@ namespace AlienBloxUtility.Utilities.Core
 
             if (!props.includeSource)
             {
-                using (file.Open())
-                {
-                    TModInspector.AddMod(file);
-                    TModInspector.DumpMod(file);
+                TModInspector.AddMod(file);
+                //TModInspector.DumpMod(file);
 
-                    Task.Run(async () => TModInspector.DecompileAssembly(file.Name, false));
-                }
+                Task.Run(async () => TModInspector.DecompileAssembly(file.Name, false, true));
             }
         }
     }

@@ -1,4 +1,5 @@
 ﻿using AlienBloxUtility.Utilities.Helpers;
+using AlienBloxUtility.Utilities.IO;
 using AlienBloxUtility.Utilities.UIUtilities.UIElements;
 using AlienBloxUtility.Utilities.UIUtilities.UIRenderers;
 using ICSharpCode.Decompiler;
@@ -180,7 +181,7 @@ namespace AlienBloxUtility.Utilities.Core
         /// Decompiles an assembly of the selected mod
         /// </summary>
         /// <param name="ModName">The mod name to try to find</param>
-        public static async Task DecompileAssembly(string ModName, bool unpackAssets = true)
+        public static async Task DecompileAssembly(string ModName, bool unpackAssets = true, bool usingVal = false)
         {
             if (!Directory.Exists(AlienBloxUtility.ModDumpLocation + $"\\{ModName}") || !ModFileData.TryGetValue(ModName, out var ModContents))
             {
@@ -195,89 +196,182 @@ namespace AlienBloxUtility.Utilities.Core
                     AlienBloxUtility.Instance.Logger.Info(Language.GetTextValue("Mods.AlienBloxUtility.Messages.Decompiler.DecompilerStart"));
                 }
 
-                byte[] dllBytes = ModContents.Item1.GetModAssembly();
-                byte[] pdbBytes = ModContents.Item1.GetModPdb();
-
-                string outputRoot = AlienBloxUtility.DecompLocation;
-
-                // Step 1: Create a temp folder
-                string tempDir = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
-                Directory.CreateDirectory(tempDir);
-
-                string tempDllPath = Path.Combine(tempDir, "MainAssembly.dll");
-                File.WriteAllBytes(tempDllPath, dllBytes);
-
-                string tempPdbPath = null;
-                if (pdbBytes != null && pdbBytes.Length > 0)
+                if (usingVal)
                 {
-                    tempPdbPath = Path.Combine(tempDir, "MainAssembly.pdb");
-                    File.WriteAllBytes(tempPdbPath, pdbBytes);
-                }
-
-                // 2. Create the resolver using the temp folder
-                var resolver = new UniversalAssemblyResolver(
-                    mainAssemblyFileName: tempDllPath,
-                    throwOnError: false,
-                    targetFramework: null
-                );
-
-                resolver.AddSearchDirectory(tempDir); // ensure dependencies in temp folder are found
-
-                foreach (var asm in LoadedAssemblies)
-                {
-                    if (!string.IsNullOrEmpty(asm.Location) && File.Exists(asm.Location))
+                    using (ModContents.Item1.Open())
                     {
-                        string dir = Path.GetDirectoryName(asm.Location);
-                        resolver.AddSearchDirectory(dir);
+                        byte[] dllBytes = ModContents.Item1.GetModAssembly();
+                        byte[] pdbBytes = ModContents.Item1.GetModPdb();
+
+                        string outputRoot = AlienBloxUtility.DecompLocation;
+
+                        // Step 1: Create a temp folder
+                        string tempDir = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+                        Directory.CreateDirectory(tempDir);
+
+                        string tempDllPath = Path.Combine(tempDir, "MainAssembly.dll");
+                        File.WriteAllBytes(tempDllPath, dllBytes);
+
+                        string tempPdbPath = null;
+                        if (pdbBytes != null && pdbBytes.Length > 0)
+                        {
+                            tempPdbPath = Path.Combine(tempDir, "MainAssembly.pdb");
+                            File.WriteAllBytes(tempPdbPath, pdbBytes);
+                        }
+
+                        // 2. Create the resolver using the temp folder
+                        var resolver = new UniversalAssemblyResolver(
+                            mainAssemblyFileName: tempDllPath,
+                            throwOnError: false,
+                            targetFramework: null
+                        );
+
+                        resolver.AddSearchDirectory(tempDir); // ensure dependencies in temp folder are found
+
+                        foreach (var asm in LoadedAssemblies)
+                        {
+                            if (!string.IsNullOrEmpty(asm.Location) && File.Exists(asm.Location))
+                            {
+                                string dir = Path.GetDirectoryName(asm.Location);
+                                resolver.AddSearchDirectory(dir);
+                            }
+                        }
+
+                        // 3. Initialize decompiler
+                        var settings = new DecompilerSettings();
+                        var decompiler = new CSharpDecompiler(tempDllPath, resolver, settings);
+
+                        // 4. Decompile all types
+                        foreach (var type in decompiler.TypeSystem.MainModule.TypeDefinitions)
+                        {
+                            string code = decompiler.DecompileTypeAsString(type.FullTypeName);
+
+                            // Map namespace to folder
+                            string nsPath = string.IsNullOrEmpty(type.Namespace)
+                                ? ""
+                                : type.Namespace.Replace('.', Path.DirectorySeparatorChar);
+                            string fullDir = Path.Combine(outputRoot, nsPath);
+                            Directory.CreateDirectory(fullDir);
+
+                            string filePath = Path.Combine(fullDir, type.Name.SanitizeFileName() + ".cs");
+                            File.WriteAllText(filePath, code);
+
+                            if (AlienBloxUtilityConfig.Instance.DecompilerMessages)
+                            {
+                                string Content = Language.GetText("Mods.AlienBloxUtility.Messages.Decompiler.DecompilerFile").Format(type.Name.SanitizeFileName() + ".cs", PacketSpyUtility.UnixTime);
+
+                                Main.NewText(Content);
+                                AlienBloxUtility.Instance.Logger.Info(Content);
+                            }
+                        }
+
+                        if (AlienBloxUtilityConfig.Instance.DecompilerMessages)
+                        {
+                            Main.NewText(Language.GetTextValue("Mods.AlienBloxUtility.Messages.Decompiler.DecompilerEnd"));
+                            AlienBloxUtility.Instance.Logger.Info(Language.GetTextValue("Mods.AlienBloxUtility.Messages.Decompiler.DecompilerEnd"));
+                        }
+
+                        string DecompModPath = $"{AlienBloxUtility.DecompLocation}\\{ModName}\\";
+
+                        File.WriteAllBytes(DecompModPath + $"{ModName}.dll", ModContents.Item1.GetModAssembly());
+                        File.WriteAllBytes(DecompModPath + $"{ModName}.pdb", ModContents.Item1.GetModPdb());
+                        File.WriteAllBytes($"{AlienBloxUtility.DecompLocation}\\{ModName}.tmod", File.ReadAllBytes(ModContents.Item1.path));
+
+                        if (Environment.OSVersion.Platform == PlatformID.Win32NT && File.Exists($"{AlienBloxUtility.CacheLocation}\\tModUnpacker.exe") && unpackAssets)
+                        {
+                            await AlienBloxUtility.ExtractTmodFile($"{AlienBloxUtility.DecompLocation}\\{ModName}", $"{AlienBloxUtility.CacheLocation}\\tModUnpacker.exe");
+                        }
+
+                        Directory.Delete(tempDir, true);
                     }
                 }
-
-                // 3. Initialize decompiler
-                var settings = new DecompilerSettings();
-                var decompiler = new CSharpDecompiler(tempDllPath, resolver, settings);
-
-                // 4. Decompile all types
-                foreach (var type in decompiler.TypeSystem.MainModule.TypeDefinitions)
+                else
                 {
-                    string code = decompiler.DecompileTypeAsString(type.FullTypeName);
+                    byte[] dllBytes = ModContents.Item1.GetModAssembly();
+                    byte[] pdbBytes = ModContents.Item1.GetModPdb();
 
-                    // Map namespace to folder
-                    string nsPath = string.IsNullOrEmpty(type.Namespace)
-                        ? ""
-                        : type.Namespace.Replace('.', Path.DirectorySeparatorChar);
-                    string fullDir = Path.Combine(outputRoot, nsPath);
-                    Directory.CreateDirectory(fullDir);
+                    string outputRoot = AlienBloxUtility.DecompLocation;
 
-                    string filePath = Path.Combine(fullDir, type.Name.SanitizeFileName() + ".cs");
-                    File.WriteAllText(filePath, code);
+                    // Step 1: Create a temp folder
+                    string tempDir = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+                    Directory.CreateDirectory(tempDir);
+
+                    string tempDllPath = Path.Combine(tempDir, "MainAssembly.dll");
+                    File.WriteAllBytes(tempDllPath, dllBytes);
+
+                    string tempPdbPath = null;
+                    if (pdbBytes != null && pdbBytes.Length > 0)
+                    {
+                        tempPdbPath = Path.Combine(tempDir, "MainAssembly.pdb");
+                        File.WriteAllBytes(tempPdbPath, pdbBytes);
+                    }
+
+                    // 2. Create the resolver using the temp folder
+                    var resolver = new UniversalAssemblyResolver(
+                        mainAssemblyFileName: tempDllPath,
+                        throwOnError: false,
+                        targetFramework: null
+                    );
+
+                    resolver.AddSearchDirectory(tempDir); // ensure dependencies in temp folder are found
+
+                    foreach (var asm in LoadedAssemblies)
+                    {
+                        if (!string.IsNullOrEmpty(asm.Location) && File.Exists(asm.Location))
+                        {
+                            string dir = Path.GetDirectoryName(asm.Location);
+                            resolver.AddSearchDirectory(dir);
+                        }
+                    }
+
+                    // 3. Initialize decompiler
+                    var settings = new DecompilerSettings();
+                    var decompiler = new CSharpDecompiler(tempDllPath, resolver, settings);
+
+                    // 4. Decompile all types
+                    foreach (var type in decompiler.TypeSystem.MainModule.TypeDefinitions)
+                    {
+                        string code = decompiler.DecompileTypeAsString(type.FullTypeName);
+
+                        // Map namespace to folder
+                        string nsPath = string.IsNullOrEmpty(type.Namespace)
+                            ? ""
+                            : type.Namespace.Replace('.', Path.DirectorySeparatorChar);
+                        string fullDir = Path.Combine(outputRoot, nsPath);
+                        Directory.CreateDirectory(fullDir);
+
+                        string filePath = Path.Combine(fullDir, type.Name.SanitizeFileName() + ".cs");
+                        File.WriteAllText(filePath, code);
+
+                        if (AlienBloxUtilityConfig.Instance.DecompilerMessages)
+                        {
+                            string Content = Language.GetText("Mods.AlienBloxUtility.Messages.Decompiler.DecompilerFile").Format(type.Name.SanitizeFileName() + ".cs", PacketSpyUtility.UnixTime);
+
+                            Main.NewText(Content);
+                            AlienBloxUtility.Instance.Logger.Info(Content);
+                        }
+                    }
 
                     if (AlienBloxUtilityConfig.Instance.DecompilerMessages)
                     {
-                        string Content = Language.GetText("Mods.AlienBloxUtility.Messages.Decompiler.DecompilerFile").Format(type.Name.SanitizeFileName() + ".cs", PacketSpyUtility.UnixTime);
-
-                        Main.NewText(Content);
-                        AlienBloxUtility.Instance.Logger.Info(Content);
+                        Main.NewText(Language.GetTextValue("Mods.AlienBloxUtility.Messages.Decompiler.DecompilerEnd"));
+                        AlienBloxUtility.Instance.Logger.Info(Language.GetTextValue("Mods.AlienBloxUtility.Messages.Decompiler.DecompilerEnd"));
                     }
+
+                    string DecompModPath = $"{AlienBloxUtility.DecompLocation}\\{ModName}\\";
+
+                    File.WriteAllBytes(DecompModPath + $"{ModName}.dll", ModContents.Item1.GetModAssembly());
+                    File.WriteAllBytes(DecompModPath + $"{ModName}.pdb", ModContents.Item1.GetModPdb());
+                    File.WriteAllBytes($"{AlienBloxUtility.DecompLocation}\\{ModName}.tmod", File.ReadAllBytes(ModContents.Item1.path));
+
+                    if (Environment.OSVersion.Platform == PlatformID.Win32NT && File.Exists($"{AlienBloxUtility.CacheLocation}\\tModUnpacker.exe") && unpackAssets)
+                    {
+                        await AlienBloxUtility.ExtractTmodFile($"{AlienBloxUtility.DecompLocation}\\{ModName}", $"{AlienBloxUtility.CacheLocation}\\tModUnpacker.exe");
+                    }
+
+                    Directory.Delete(tempDir, true);
                 }
-
-                if (AlienBloxUtilityConfig.Instance.DecompilerMessages)
-                {
-                    Main.NewText(Language.GetTextValue("Mods.AlienBloxUtility.Messages.Decompiler.DecompilerEnd"));
-                    AlienBloxUtility.Instance.Logger.Info(Language.GetTextValue("Mods.AlienBloxUtility.Messages.Decompiler.DecompilerEnd"));
-                }
-
-                string DecompModPath = $"{AlienBloxUtility.DecompLocation}\\{ModName}\\";
-
-                File.WriteAllBytes(DecompModPath + $"{ModName}.dll", ModContents.Item1.GetModAssembly());
-                File.WriteAllBytes(DecompModPath + $"{ModName}.pdb", ModContents.Item1.GetModPdb());
-                File.WriteAllBytes($"{AlienBloxUtility.DecompLocation}\\{ModName}.tmod", File.ReadAllBytes(ModContents.Item1.path));
-
-                if (Environment.OSVersion.Platform == PlatformID.Win32NT && File.Exists($"{AlienBloxUtility.CacheLocation}\\tModUnpacker.exe") && unpackAssets)
-                {
-                    await AlienBloxUtility.ExtractTmodFile($"{AlienBloxUtility.DecompLocation}\\{ModName}", $"{AlienBloxUtility.CacheLocation}\\tModUnpacker.exe");
-                }
-
-                Directory.Delete(tempDir, true);
+                
             }
             catch (Exception ex)
             {
@@ -341,15 +435,19 @@ namespace AlienBloxUtility.Utilities.Core
         {
             try
             {
-                Directory.CreateDirectory(AlienBloxUtility.ModDumpLocation + $"\\{TmodFile.Name}");
+                using (TmodFile.Open())
+                {
+                    Directory.CreateDirectory(AlienBloxUtility.ModDumpLocation + $"\\{TmodFile.Name}");
 
-                TmodFile.FileEntry[] FESet = GetFESet(TmodFile);
+                    TmodFile.FileEntry[] FESet = GetFESet(TmodFile);
 
-                byte[] Assembly = TmodFile.GetModAssembly();
-                byte[] PDB = TmodFile.GetModPdb();
-                File.WriteAllBytes(AlienBloxUtility.ModDumpLocation + $"\\{TmodFile.Name}\\{TmodFile}.dll", Assembly);
-                File.WriteAllBytes(AlienBloxUtility.ModDumpLocation + $"\\{TmodFile}\\{TmodFile}.pdb", PDB);
-                File.WriteAllBytes(AlienBloxUtility.ModDumpLocation + $"\\{TmodFile}\\{TmodFile}.tmod", File.ReadAllBytes(TmodFile.path));
+                    byte[] Assembly = TmodFile.GetModAssembly();
+                    byte[] PDB = TmodFile.GetModPdb();
+                    File.WriteAllBytes(AlienBloxUtility.ModDumpLocation + $"\\{TmodFile.Name}\\{TmodFile.Name}.dll", Assembly);
+                    File.WriteAllBytes(AlienBloxUtility.ModDumpLocation + $"\\{TmodFile.Name}\\{TmodFile.Name}.pdb", PDB);
+                    File.WriteAllBytes(AlienBloxUtility.ModDumpLocation + $"\\{TmodFile.Name}\\{TmodFile.Name}.tmod", AlienBloxFileHandler.ReadAllBytes(TmodFile.path));
+                }
+
                 AlienBloxUtility.Instance.Logger.Info($"Mod Path: {TmodFile.path}");
             }
             catch (Exception ex)
