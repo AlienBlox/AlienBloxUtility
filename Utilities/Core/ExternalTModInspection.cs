@@ -18,7 +18,12 @@ namespace AlienBloxUtility.Utilities.Core
     {
         #pragma warning disable CA2211 // Non-constant fields should not be visible
         public static List<TmodFile> LoadedFiles;
-        #pragma warning restore CA2211 // Non-constant fields should not be visible
+#pragma warning restore CA2211 // Non-constant fields should not be visible
+
+        /// <summary>
+        /// A list of all tMod files
+        /// </summary>
+        public static TmodFile[] ListedFiles => GetAllModsLoaded();
 
         public override void Load()
         {

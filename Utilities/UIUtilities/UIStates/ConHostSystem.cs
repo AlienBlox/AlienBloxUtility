@@ -29,7 +29,7 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
         public SpriteButton SendCommand, CommandList, SearchButton;
 
         public UIScrollbar PanelScroll, ConSysScroll, CommandsMenuScroll;
-        public UIList BackingList, BackingConSysUI, CommandsScroll;
+        public UIList BackingList, BackingConSysUI, CommandsScroll, AssetInspectorBacker, AssetInspectorMenuThingy;
 
         public UITextBoxImproved CommandBox, SearchBar;
 
@@ -288,6 +288,8 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
                 Search(null, null);
                 //SetModal(true);
 
+                SetupAssetThing();
+
                 Fix = true;
             }
 
@@ -419,13 +421,74 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
             backer.Height.Set(0, 1);
             backer.Append(scroll);
             backer.SetScrollbar(scroll);
+            AssetInspectorBacker = backer;
             SideBar.Append(backer);
 
             SidePanel.Width.Set(0, .7f);
             SidePanel.Height.Set(0, .9f);
 
+            var PanelBacking = new UIList();
+
+            PanelBacking.VAlign = PanelBacking.HAlign = .5f;
+            PanelBacking.Width.Set(0, 1);
+            PanelBacking.Height.Set(0, 1);
+
+            FixedUIScrollbar BackerScroll = new(UserInterface.ActiveInstance)
+            {
+                VAlign = .5f
+            };
+
+            BackerScroll.Height.Set(0, 1);
+            PanelBacking.Append(BackerScroll);
+            PanelBacking.SetScrollbar(BackerScroll);
+            SidePanel.Append(BackerScroll);
+            SidePanel.SetPadding(10);
+
+            AssetInspectorMenuThingy = PanelBacking;
+
+            SetupAssetThing();
+
             AssetInspectorMenu.Append(SideBar);
             AssetInspectorMenu.Append(SidePanel);
+        }
+
+        public void SetupAssetThing()
+        {
+            var UI = ExternalTModInspection.ListedFiles.EnumerateToMenu();
+
+            for (int i = 0; i < UI.Length; i++)
+            {
+                UI[i].InsertText(ExternalTModInspection.ListedFiles[i].Name + $"(v{ExternalTModInspection.ListedFiles[i].Version})");
+                UI[i].OnLeftClick += (_, elem) =>
+                {
+                    try
+                    {   
+                        var f = ExternalTModInspection.ListedFiles[i];
+
+                        if (f == null)
+                        {
+                            elem.Remove();
+                        }
+
+                        AssetInspectorMenuThingy.Clear();  
+
+                        var menus = f.EnumerateToMenu();
+
+                        for (int j = 0; j < menus.Length; j++)
+                        {
+                            menus[j].InsertText(Path.GetFileName(TModInspector.GetFESet(f)[j].Name));
+                        }
+
+                        AssetInspectorMenuThingy.AddRange(menus);
+                    }
+                    catch
+                    {
+                        elem.Remove();
+                    }
+                };
+            }
+
+            AssetInspectorBacker.AddRange(UI);
         }
 
         public void ExportConSysText(UIMouseEvent evt, UIElement element)
