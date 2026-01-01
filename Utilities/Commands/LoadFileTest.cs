@@ -19,6 +19,8 @@ namespace AlienBloxUtility.Utilities.Commands
                 {
                     Conhost.AddConsoleText("Test complete!");
 
+                    Conhost.AddConsoleText(ExternalTModInspection.GetAllModsLoaded().Length.ToString());
+
                     /*
                     ExternalTModInspection.ExportToLocation(AlienBloxUtility.DecompLocation + "\\", file);
 

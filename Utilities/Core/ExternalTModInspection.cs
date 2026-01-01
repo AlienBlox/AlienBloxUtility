@@ -45,11 +45,26 @@ namespace AlienBloxUtility.Utilities.Core
             {
                 foreach(var obj in objs)
                 {
+                    AlienBloxUtility.Instance.Logger.Info("Try to add mod...");
+
                     if (obj.GetType() == typeof(ModItem).Assembly.GetType("Terraria.ModLoader.Core.LocalMod"))
                     {
-                        tMods.Add((TmodFile)obj.GetType().GetField("modFile", BindingFlags.Instance | BindingFlags.NonPublic)?.GetValue(obj));
+                        var tModF = (TmodFile)obj.GetType().GetFields()[1]?.GetValue(obj);
+
+                        AlienBloxUtility.Instance.Logger.Info("Scan done!");
+
+                        if (tModF != null && tModF.Version == ModLoader.GetMod("ModLoader").Version)
+                        {
+                            tMods.Add(tModF);
+
+                            AlienBloxUtility.Instance.Logger.Info($"Added mod named '{tModF.Name}'.");
+                        }
                     }
                 }
+            }
+            else
+            {
+                AlienBloxUtility.Instance.Logger.Warn("No tMods found.");
             }
 
             return [.. tMods];
