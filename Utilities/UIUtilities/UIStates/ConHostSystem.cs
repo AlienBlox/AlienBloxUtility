@@ -493,6 +493,7 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
                                     UIs[i].InsertText(FESet[i].Name);
                                 }
 
+                                AlienBloxUtility.AlienBloxLogger.Info(UIs.Length.ToString());
                                 AssetInspectorMenuThingy.AddRange(UIs);
                             } 
                         }
