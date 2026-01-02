@@ -1,3 +1,3 @@
-AlienBlox's Utility v0.1.3.9 released!
- * Added the ability to inspect tMod files (full)
- * Added the Asset Inspector button to the Debug Console UI
+AlienBlox's Utility v0.1.4.1 released!
+ * Fixed the asset inspector being broken for pngs
+ * Added a hidden new game somewhere in the console menu...

@@ -73,10 +73,7 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
 
             AssetInspector.OnLeftClick += (_, _) =>
             {
-                if (!_canDoubleClickDisable)
-                {
-                    SetModal(true, false, AssetInspectorMenu);
-                }
+                SetModal(true, false, AssetInspectorMenu);
             };
 
             ModalMask.Width.Set(0, 1);
@@ -84,7 +81,10 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
             ModalMask.BackgroundColor = new(0, 0, 0, 128);
             ModalMask.OnLeftDoubleClick += (_, _) =>
             {
-                SetModal(false);
+                if (!_canDoubleClickDisable)
+                {
+                    SetModal(false);
+                } 
             };
 
             var text = ModalMask.InsertText(Language.GetText("Mods.AlienBloxUtility.UI.ModalNotice"));
@@ -298,6 +298,13 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
             base.Update(gameTime);
         }
 
+        public SlimeRainGame SlimeGameLaunch()
+        {
+            AddConsoleText(Language.GetText("Mods.AlienBloxUtility.Messages.SlimeGame").Value);
+
+            return new();
+        }
+
         /// <summary>
         /// Sets a new modal UI to the console.
         /// </summary>
@@ -310,11 +317,9 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
             if (_hasModal)
             {
                 BackingElement.Append(ModalMask);
+                BackingElement.SetPadding(0);
 
-                if (elem != null)
-                {
-                    ModalMask.Append(elem);
-                }
+                _canDoubleClickDisable = doubleClickDisable;
 
                 if (!doubleClickDisable)
                 {
@@ -322,6 +327,11 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
                     text.Height.Set(0, .1f);
                     text.VAlign = 1;
                     text.TextOriginX = 0;
+                }
+
+                if (elem != null)
+                {
+                    ModalMask.Append(elem);
                 }
             }
             else
@@ -541,11 +551,13 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
 
                                                 result.SaveAsPng(fs, result.Width, result.Height);
                                             }
-
-                                            for (int i = 0; i < fileContent.Length; i++)
+                                            else
                                             {
-                                                fs.WriteByte(fileContent[i]);
-                                            }
+                                                for (int i = 0; i < fileContent.Length; i++)
+                                                {
+                                                    fs.WriteByte(fileContent[i]);
+                                                }
+                                            }   
                                         }
                                     };
                                 }

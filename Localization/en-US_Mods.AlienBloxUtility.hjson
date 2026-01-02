@@ -39,6 +39,7 @@ UI: {
 	AssetInspector: Open Asset Tool
 	AssetTool: Asset Tool
 	ModalNotice: Double left click modal anywhere to exit!
+	SlimeGameText: Slime Score: {0} (Double right-click to exit!)
 
 	Console: {
 		ConWelcome: AlienBlox's Utility V{0} loaded!
@@ -82,6 +83,8 @@ Messages: {
 		DoLua: "{0} ran a lua script at {1} (Unix Time)!"
 		DoJS: "{0} ran a JavaScript at {1} (Unix Time)!"
 	}
+
+	SlimeGame: Slime Game activated!
 
 	PacketSpy: {
 		NotOnMP: Not on multiplayer, Packet Spy disabled

@@ -67,6 +67,17 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIRenderers
             }
         }
 
+        /// <summary>
+        /// Sets the modal for the conhost UI
+        /// </summary>
+        /// <param name="modal"></param>
+        /// <param name="doubleclickDisable"></param>
+        /// <param name="elementToAdd"></param>
+        public static void SetModal(bool modal, bool doubleclickDisable = false, UIElement elementToAdd = null)
+        {
+            Instance.Element.SetModal(modal, doubleclickDisable, elementToAdd);
+        }
+
         public static UIText Write(string Text)
         {
             if (Instance == null || Instance?.Element == null)
