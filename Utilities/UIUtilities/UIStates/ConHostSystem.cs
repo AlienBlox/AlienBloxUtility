@@ -298,11 +298,11 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
             base.Update(gameTime);
         }
 
-        public SlimeRainGame SlimeGameLaunch()
+        public SlimeRainGame SlimeGameLaunch(bool dg = false)
         {
             AddConsoleText(Language.GetText("Mods.AlienBloxUtility.Messages.SlimeGame").Value);
 
-            return new();
+            return new(dg);
         }
 
         /// <summary>

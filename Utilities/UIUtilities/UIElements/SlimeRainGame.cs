@@ -25,7 +25,9 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIElements
 
         public int Score = 0;
 
-        public SlimeRainGame()
+        public bool DungeonGuardians;
+
+        public SlimeRainGame(bool dungeonGuardians = false)
         {
             SetPadding(0);
 
@@ -39,6 +41,8 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIElements
             Slimes = [];
 
             ConHostRender.SetModal(true, true, this);
+
+            DungeonGuardians = dungeonGuardians;
         }
 
         public override void RightDoubleClick(UIMouseEvent evt)
@@ -73,6 +77,30 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIElements
                     Slimes.Add(slime);
 
                     Append(slime);
+                }
+                else if (Main.rand.NextBool(25) && DungeonGuardians)
+                {
+                    var dg = new NPCDisplay(NPCID.DungeonGuardian, Color.DarkRed)
+                    {
+                        VAlign = 0,
+                        HAlign = Main.rand.NextFloat(0, 1f)
+                    };
+
+                    dg.OnLeftClick += (_, _) =>
+                    {
+                        Score -= 25;
+                        dg.Remove();
+                        SoundEngine.PlaySound(SoundID.Roar);
+
+                        if (Score < 0)
+                        {
+                            Score = 0; 
+                        }
+                    };
+
+                    Slimes.Add(dg);
+
+                    Append(dg);
                 }
                 else
                 {

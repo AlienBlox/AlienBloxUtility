@@ -9,7 +9,14 @@ namespace AlienBloxUtility.Utilities.Commands
 
         public override void LaunchCommand(ConHostSystem Conhost, params string[] Params)
         {
-            Conhost.SlimeGameLaunch();
+            bool dg = false;
+
+            if (Params.Length > 0 && Params[0] == "dungeonguardian")
+            {
+                dg = true;
+            }
+
+            Conhost.SlimeGameLaunch(dg);
         }
     }
 }
