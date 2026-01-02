@@ -1,4 +1,5 @@
-﻿using AlienBloxUtility.Utilities.UIUtilities.UIRenderers;
+﻿using AlienBloxUtility.Utilities.Core;
+using AlienBloxUtility.Utilities.UIUtilities.UIRenderers;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
@@ -54,22 +55,44 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIElements
 
             if (Main.rand.NextBool(10))
             {
-                var slime = new NPCDisplay(NPCID.BlueSlime, new(Main.rand.Next(0, 255), Main.rand.Next(0, 255), Main.rand.Next(0, 255)))
+                if (Main.rand.NextBool(100))
                 {
-                    VAlign = 0,
-                    HAlign = Main.rand.NextFloat(0, 1.1f)
-                };
+                    var slime = new NPCDisplay(NPCID.RainbowSlime, Color.Wheat, true)
+                    {
+                        VAlign = 0,
+                        HAlign = Main.rand.NextFloat(0, 1f)
+                    };
 
-                slime.OnLeftClick += (_, _) =>
+                    slime.OnLeftClick += (_, _) =>
+                    {
+                        Score += 25;
+                        slime.Remove();
+                        SoundEngine.PlaySound(AlienBloxAudio.ExoDeathSound);
+                    };
+
+                    Slimes.Add(slime);
+
+                    Append(slime);
+                }
+                else
                 {
-                    Score += Main.rand.Next(1, 4);
-                    slime.Remove();
-                    SoundEngine.PlaySound(SoundID.NPCDeath1);
-                };
+                    var slime = new NPCDisplay(NPCID.BlueSlime, new(Main.rand.Next(0, 255), Main.rand.Next(0, 255), Main.rand.Next(0, 255)))
+                    {
+                        VAlign = 0,
+                        HAlign = Main.rand.NextFloat(0, 1f)
+                    };
 
-                Slimes.Add(slime);
+                    slime.OnLeftClick += (_, _) =>
+                    {
+                        Score += Main.rand.Next(1, 4);
+                        slime.Remove();
+                        SoundEngine.PlaySound(SoundID.NPCDeath1);
+                    };
 
-                Append(slime);
+                    Slimes.Add(slime);
+
+                    Append(slime);
+                }
             }
 
             foreach (NPCDisplay display in Slimes)
@@ -95,18 +118,21 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIElements
 
         public readonly int ID;
 
-        public readonly Color Color;
+        public readonly bool Rainbow;
 
-        public Asset<Texture2D> NPCTexture;
+        public readonly Asset<Texture2D> NPCTexture;
+
+        public Color Color;
 
         private int currentFrame = 0;
         private readonly float frameSpeed = 0.1f; // Speed at which to cycle through frames (lower = faster)
         private float frameTimer = 0f;  // Timer for frame change
 
-        public NPCDisplay(int id, Color color)
+        public NPCDisplay(int id, Color color, bool rainbow = false)
         {
             ID = id;
             Color = color;
+            Rainbow = rainbow;
 
             if (ID <= NPCID.Count)
             {
@@ -148,12 +174,15 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIElements
 
         protected override void DrawSelf(SpriteBatch spriteBatch)
         {
-            int high = NPCTexture.Value.Height / FrameCount - 2;
+            int high = NPCTexture.Value.Height / FrameCount;
 
             Rectangle sourceRectangle = new(0, currentFrame * high, NPCTexture.Value.Width, high);
 
+            if (Rainbow)
+                Color = Main.DiscoColor;
+
             // Draw the sprite with SpriteBatch
-            spriteBatch.Draw(NPCTexture.Value, (GetDimensions().Position() + GetDimensions().Size() / 2) - new Vector2(NPCTexture.Value.Width / 2, ((NPCTexture.Value.Height / FrameCount) - 2) / 2), sourceRectangle, Color);
+            spriteBatch.Draw(NPCTexture.Value, (GetDimensions().Position() + GetDimensions().Size() / 2) - new Vector2(NPCTexture.Value.Width / 2, (NPCTexture.Value.Height / FrameCount) / 2), sourceRectangle, Color);
 
             base.DrawSelf(spriteBatch);
         }
