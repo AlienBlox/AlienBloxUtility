@@ -12,7 +12,7 @@ Features includes these abilities:
  * A quick launch tModLoader utility that allows you to launch multiple tModLoader instances
  * A documentation page for every feature!
  * The ability to run JavaScript and Lua right in tModLoader
- * An asset extractor used to inspect tMod files
+ * An asset extractor used to inspect tMod files (Right-click to decompile, left-click to inspect and middle click for build.txt of the mod.)
 [h1]Upcoming Features[/h1]
  * A console chat feature that allows you to chat directly from the debug console
 [h1]Legals[/h1]

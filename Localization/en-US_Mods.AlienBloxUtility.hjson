@@ -40,6 +40,12 @@ UI: {
 	AssetTool: Asset Tool
 	ModalNotice: Double left click modal anywhere to exit!
 	SlimeGameText: Slime Score: {0} (Double right-click to exit!)
+	AssetExtractorInfo:
+		'''
+		Right-click to decompile mod.
+		Left-click to inspect mod.
+		Middle-click for mod info.
+		'''
 
 	Console: {
 		ConWelcome: AlienBlox's Utility V{0} loaded!

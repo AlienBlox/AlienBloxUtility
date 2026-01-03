@@ -1,3 +1,2 @@
-AlienBlox's Utility v0.1.4.1 released!
- * Fixed the asset inspector being broken for pngs
- * Added a hidden new game somewhere in the console menu...
+AlienBlox's Utility v0.1.4.2 released!
+ * Made the Asset Inspector have proper async to decompile items (prevents tModLoader from hanging)
