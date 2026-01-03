@@ -285,7 +285,7 @@ namespace AlienBloxUtility
                 ModPacket pkt = Instance.GetPacket();
 
                 //Console.WriteLine(data.Length);
-                //nstance.Logger.Info(data.Length + $" is packet size");
+                //Instance.Logger.Info(data.Length + $" is packet size");
 
                 pkt.Write((byte)Messages.AlienBloxPacket);
                 pkt.Write(packetName);

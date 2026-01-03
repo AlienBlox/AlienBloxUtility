@@ -85,6 +85,7 @@ Messages: {
 	}
 
 	SlimeGame: Slime Game activated!
+	SlimeGameAnnouncement: "{0} completed the Slime Game at score: {1}"
 
 	PacketSpy: {
 		NotOnMP: Not on multiplayer, Packet Spy disabled

@@ -4,12 +4,14 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System.Collections.Generic;
+using System.IO;
 using Terraria;
 using Terraria.Audio;
 using Terraria.GameContent;
 using Terraria.GameContent.UI.Elements;
 using Terraria.ID;
 using Terraria.Localization;
+using Terraria.ModLoader.IO;
 using Terraria.UI;
 
 namespace AlienBloxUtility.Utilities.UIUtilities.UIElements
@@ -48,6 +50,16 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIElements
         public override void RightDoubleClick(UIMouseEvent evt)
         {
             ConHostRender.SetModal(false, false, null);
+
+            if (Main.netMode != NetmodeID.SinglePlayer)
+            {
+                using var ms = new MemoryStream();
+                using var writer = new BinaryWriter(ms);
+
+                writer.Write(Language.GetText("Mods.AlienBloxUtility.Messages.SlimeGameAnnouncement").Format(Main.LocalPlayer.name, Score));
+
+                AlienBloxUtility.SendAlienBloxPacket("AnnouncementPacket", ms.ToArray());
+            }
 
             base.RightDoubleClick(evt);
         }
