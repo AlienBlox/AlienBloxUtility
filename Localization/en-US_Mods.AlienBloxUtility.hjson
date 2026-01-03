@@ -172,6 +172,11 @@ Configs: {
 			Label: Dump Error Logs
 			Tooltip: ""
 		}
+
+		DeveloperMode: {
+			Tooltip: ""
+			Label: Developer Mode
+		}
 	}
 
 	AlienBloxUtilityServerConfig: {

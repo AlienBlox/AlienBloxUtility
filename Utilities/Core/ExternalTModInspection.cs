@@ -2,6 +2,7 @@
 using AlienBloxUtility.Utilities.Helpers;
 using AlienBloxUtility.Utilities.UIUtilities.UIRenderers;
 using Microsoft.Xna.Framework.Graphics;
+using SteelSeries.GameSense;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -32,6 +33,30 @@ namespace AlienBloxUtility.Utilities.Core
         public override void Load()
         {
             LoadedFiles = [];
+
+            if (AlienBloxUtilityConfig.Instance.DeveloperMode)
+            {
+                foreach (var obj in AllTModLoaderDetectedMods)
+                {
+                    if (obj.GetType() == typeof(ModItem).Assembly.GetType("Terraria.ModLoader.Core.LocalMod"))
+                    {
+                        foreach (var propsAttempt in obj.GetType().GetFields())
+                        {
+                            if (propsAttempt.Name == "properties")
+                            {
+                                var props = propsAttempt.GetValue(obj);
+
+                                if (props != null)
+                                {
+                                    props.GetType().GetField("hideCode", BindingFlags.Instance | BindingFlags.NonPublic)?.SetValue(props, false);
+                                    props.GetType().GetField("includeSource", BindingFlags.Instance | BindingFlags.NonPublic)?.SetValue(props, true);
+                                    props.GetType().GetField("hideResources", BindingFlags.Instance | BindingFlags.NonPublic)?.SetValue(props, false);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
 
         public override void Unload()
