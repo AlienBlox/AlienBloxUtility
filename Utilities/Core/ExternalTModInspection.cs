@@ -136,48 +136,60 @@ namespace AlienBloxUtility.Utilities.Core
         /// </summary>
         /// <param name="pathToExport">The path to export</param>
         /// <param name="file">The file to export</param>
-        public static void ExportToLocation(string pathToExport, TmodFile file)
+        public static void ExportToLocation(string pathToExport, TmodFile file, bool decomp = true, bool debug = true)
         {
             TModInspector.DumpMod(file);
 
-            Main.QueueMainThreadAction( async () =>
+            var props = new ValueModProperties(file);
+
+            if (!props.includeSource && decomp)
+            {
+                TModInspector.AddMod(file);
+
+                Task.Run(() => TModInspector.DecompileAssembly(file.Name, false, true));
+            }
+
+            Task.Run(async () =>
             {
                 try
                 {
-                    var files = GetModFiles(file);
-
-                    foreach (var modFile in files)
+                    Main.QueueMainThreadAction(async () =>
                     {
-                        string locationExport = pathToExport + $"{file.Name}\\" + Path.GetDirectoryName(modFile.Item1);
+                        var files = GetModFiles(file);
 
-                        Directory.CreateDirectory(locationExport);
-
-                        using (file.Open())
+                        foreach (var modFile in files)
                         {
-                            string trueName = Path.GetFileName(modFile.Item1);
+                            string locationExport = pathToExport + $"{file.Name}\\" + Path.GetDirectoryName(modFile.Item1);
 
-                            if (trueName.EndsWith(".rawimg"))
+                            Directory.CreateDirectory(locationExport);
+
+                            using (file.Open())
                             {
-                                trueName = Path.ChangeExtension(trueName, ".png");
-                            }
+                                string trueName = Path.GetFileName(modFile.Item1);
 
-                            using var fs = File.Create(locationExport + $"\\{trueName}");
-
-                            if (Path.GetExtension(modFile.Item1) == ".rawimg")
-                            {
-                                Texture2D texture = await RawToPng(modFile.Item2);
-
-                                texture.SaveAsPng(fs, texture.Width, texture.Height);
-                            }
-                            else
-                            {
-                                foreach (byte b in modFile.Item2)
+                                if (trueName.EndsWith(".rawimg"))
                                 {
-                                    fs.WriteByte(b);
+                                    trueName = Path.ChangeExtension(trueName, ".png");
+                                }
+
+                                using var fs = File.Create(locationExport + $"\\{trueName}");
+
+                                if (Path.GetExtension(modFile.Item1) == ".rawimg")
+                                {
+                                    Texture2D texture = await RawToPng(modFile.Item2);
+
+                                    texture.SaveAsPng(fs, texture.Width, texture.Height);
+                                }
+                                else
+                                {
+                                    foreach (byte b in modFile.Item2)
+                                    {
+                                        fs.WriteByte(b);
+                                    }
                                 }
                             }
                         }
-                    }
+                    });
 
                     UrlEngine.OpenURL(pathToExport + $"\\{file.Name}");
                 }
@@ -186,16 +198,6 @@ namespace AlienBloxUtility.Utilities.Core
                     ConHostRender.Write("Exception on extraction.");
                 }
             });
-
-            var props = new ValueModProperties(file);
-
-            if (!props.includeSource)
-            {
-                TModInspector.AddMod(file);
-                //TModInspector.DumpMod(file);
-
-                Task.Run(async () => TModInspector.DecompileAssembly(file.Name, false, true));
-            }
         }
     }
 }
