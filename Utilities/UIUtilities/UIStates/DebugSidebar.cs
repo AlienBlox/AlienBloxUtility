@@ -3,6 +3,7 @@ using AlienBloxUtility.Utilities.UIUtilities.UIElements;
 using Microsoft.Xna.Framework;
 using Terraria.GameContent.UI.Elements;
 using Terraria.ID;
+using Terraria.Localization;
 using Terraria.UI;
 
 namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
@@ -51,6 +52,10 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
                 Sidebar.Top.Set(-70f, 0);
                 Sidebar.Left.Set(10f, 0);
                 //Sidebar.BackgroundColor = new(150, 0, 0, 128);
+
+                SidebarList.MaxWidth = Sidebar.MaxHeight = new(0, 1);
+                SidebarList.Width = Sidebar.MaxWidth;
+                SidebarList.Height = Sidebar.MaxHeight;
 
                 Sidebar.Append(SidebarList);
                 Append(Sidebar);
