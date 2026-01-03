@@ -2,7 +2,6 @@
 using AlienBloxUtility.Utilities.Helpers;
 using AlienBloxUtility.Utilities.UIUtilities.UIRenderers;
 using Microsoft.Xna.Framework.Graphics;
-using SteelSeries.GameSense;
 using System;
 using System.Collections.Generic;
 using System.IO;
