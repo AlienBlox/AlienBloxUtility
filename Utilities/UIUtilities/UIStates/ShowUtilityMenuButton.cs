@@ -1,20 +1,17 @@
 ﻿using AlienBloxUtility.Utilities.Core;
 using AlienBloxUtility.Utilities.UIUtilities.UIElements;
 using AlienBloxUtility.Utilities.UIUtilities.UIRenderers;
-using Microsoft.Xna.Framework.Graphics;
-using System.Threading.Tasks;
-using Terraria;
 using Terraria.Audio;
-using Terraria.GameContent.UI.Elements;
 using Terraria.ID;
-using Terraria.ModLoader;
 using Terraria.UI;
 
 namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
 {
     public class ShowUtilityMenuButton : UIState
     {
-        private AlienBloxUtilityButton _UI;
+        internal AlienBloxUtilityButton _UI;
+
+        public static ShowUtilityMenuButton Instance { get; private set; }
 
         public override void OnInitialize()
         {
@@ -28,8 +25,11 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
 
             _UI.OnLeftClick += ToggleDebugPanel;
             _UI.OnRightClick += ToggleDocumentationUI;
+            _UI.OnMiddleClick += ToggleDebugSidebar;
 
             Append(_UI);
+
+            Instance = this;
         }
 
         public static void ToggleDebugPanel(UIMouseEvent evt, UIElement listeningElement)
@@ -42,6 +42,12 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
         {
             SoundEngine.PlaySound(SoundID.MenuTick);
             DocumentationRender.DocumentationEnabled = !DocumentationRender.DocumentationEnabled;
+        }
+
+        public static void ToggleDebugSidebar(UIMouseEvent evt, UIElement listeningElement)
+        {
+            SoundEngine.PlaySound(SoundID.MenuTick);
+            DebugSidebarRender.ShowSidebar = !DebugSidebarRender.ShowSidebar;
         }
     }
 }

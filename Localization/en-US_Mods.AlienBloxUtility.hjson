@@ -9,7 +9,7 @@ Buttons: {
 }
 
 UI: {
-	ToggleUtilityBar: Toggle Utility Bar (Right click for documentation)
+	ToggleUtilityBar: Toggle Utility Bar (right-click for documentation, middle-click for Sidebar)
 	DecompUI: Decompiler
 	Conhost: Console Menu
 	ConTypeLine: Command Input...
@@ -81,6 +81,14 @@ UI: {
 		decompilation of mods and general debugging, the mod is open source and its info can be found
 		in the links below.
 		'''
+
+	SidebarTools: {
+		Scripting: Toggle Scripting Tool
+		BlackHole: Toggle Black Hole Tool
+		Hitbox: Toggle Hitbox Tool
+		Noclip: Toggle Wallclip Tool
+		SlimeGame: Start Slime Game
+	}
 }
 
 Messages: {
