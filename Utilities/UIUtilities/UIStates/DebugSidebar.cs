@@ -1,9 +1,8 @@
-﻿using AlienBloxUtility.Utilities.UIUtilities.UIElements;
+﻿using AlienBloxUtility.Utilities.Core;
+using AlienBloxUtility.Utilities.UIUtilities.UIElements;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using Terraria.GameContent.UI.Elements;
 using Terraria.ID;
-using Terraria.Localization;
 using Terraria.UI;
 
 namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
@@ -14,14 +13,19 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
 
         public UIList SidebarList;
 
-        public FixedUIScrollbar Scrollbar;
-
         public ButtonIcon NoclipTool, HitboxTool, BlackHoleTool, ScriptingTool, SlimeGame;
 
         public bool Fix;
 
         public override void OnInitialize()
         {
+            Sidebar = new()
+            {
+                Width = new(0, 0)
+            };
+
+            SidebarList = Sidebar.InsertList();
+
             NoclipTool = new("Mods.AlienBloxUtility.UI.SidebarTools.Noclip", ItemID.CreativeWings, Color.MintCream);
             HitboxTool = new("Mods.AlienBloxUtility.UI.SidebarTools.Hitbox", ItemID.Wood, Color.SandyBrown);
             BlackHoleTool = new("Mods.AlienBloxUtility.UI.SidebarTools.BlackHole", ItemID.BlackDye, Color.Black);
@@ -30,33 +34,16 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
 
             NoclipTool.HAlign = HitboxTool.HAlign = BlackHoleTool.HAlign = ScriptingTool.HAlign = SlimeGame.HAlign = .5f; //Noice
 
-            SidebarList = [];
-            Scrollbar = new(UserInterface.ActiveInstance);
-
-            Scrollbar.Height.Set(0, 1);
-
-            SidebarList.VAlign = SidebarList.HAlign = .5f;
-            SidebarList.Height.Set(0, 1);
-            SidebarList.Width.Set(0, 1);
-            SidebarList.SetScrollbar(Scrollbar); 
-            SidebarList.Append(Scrollbar);
-
-            SidebarList.ManualSortMethod = (_) =>
-            {
-
-            };
-
             SidebarList.AddRange([NoclipTool, HitboxTool, BlackHoleTool, ScriptingTool, SlimeGame]);
+
+            Sidebar.Append(SidebarList);
         }
 
         public override void Update(GameTime gameTime)
         {
             if (!Fix)
             {
-                Sidebar = new()
-                {
-                    Width = ShowUtilityMenuButton.Instance._UI.Width
-                };
+                Sidebar.Width = ShowUtilityMenuButton.Instance._UI.Width;
 
                 Sidebar.SetPadding(0);
                 Sidebar.VAlign = ShowUtilityMenuButton.Instance._UI.VAlign;

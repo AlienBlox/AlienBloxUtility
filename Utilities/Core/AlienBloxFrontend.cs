@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Terraria.GameContent.UI.Elements;
+using Terraria.UI;
 
 namespace AlienBloxUtility.Utilities.Core
 {
@@ -10,6 +11,28 @@ namespace AlienBloxUtility.Utilities.Core
     /// </summary>
     public static class AlienBloxFrontend
     {
+        /// <summary>
+        /// Creates a new UIList quickly.
+        /// </summary>
+        /// <param name="elem">the element to insert into.</param>
+        /// <returns>The UI list itself</returns>
+        public static UIList InsertList(this UIElement elem)
+        {
+            var list = new UIList();
+            var scroll = new FixedUIScrollbar(UserInterface.ActiveInstance);
+
+            scroll.Height.Set(0, 1);
+
+            list.VAlign = list.HAlign = .5f;
+            list.Width = list.Height = new(0, 1);
+
+            list.Append(scroll);
+            list.SetScrollbar(scroll);
+            elem.Append(list);
+
+            return list;
+        }
+
         /// <summary>
         /// Turns a list of objects into UI panels
         /// </summary>
