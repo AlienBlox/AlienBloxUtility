@@ -43,11 +43,10 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
         {
             if (!Fix)
             {
-                Sidebar.Width = ShowUtilityMenuButton.Instance._UI.Width;
-
                 Sidebar.SetPadding(0);
                 Sidebar.VAlign = ShowUtilityMenuButton.Instance._UI.VAlign;
                 Sidebar.HAlign = ShowUtilityMenuButton.Instance._UI.HAlign;
+                Sidebar.Width = ShowUtilityMenuButton.Instance._UI.Width;
                 Sidebar.Height.Set(500, 0);
                 Sidebar.Top.Set(-70f, 0);
                 Sidebar.Left.Set(10f, 0);
