@@ -136,23 +136,22 @@ namespace AlienBloxUtility.Utilities.Core
         /// </summary>
         /// <param name="pathToExport">The path to export</param>
         /// <param name="file">The file to export</param>
-        public static void ExportToLocation(string pathToExport, TmodFile file, bool decomp = true, bool debug = true)
+        public static void ExportToLocation(string pathToExport, TmodFile file, bool decomp = true)
         {
             TModInspector.DumpMod(file);
-
-            var props = new ValueModProperties(file);
-
-            if (!props.includeSource && decomp)
-            {
-                TModInspector.AddMod(file);
-
-                Task.Run(() => TModInspector.DecompileAssembly(file.Name, false, true));
-            }
 
             Task.Run(async () =>
             {
                 try
                 {
+                    var props = new ValueModProperties(file);
+
+                    if (!props.includeSource && decomp)
+                    {
+                        TModInspector.AddMod(file);
+                        await TModInspector.DecompileAssembly(file.Name, false, true);
+                    }                
+
                     Main.QueueMainThreadAction(async () =>
                     {
                         var files = GetModFiles(file);
