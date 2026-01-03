@@ -3,7 +3,6 @@ using AlienBloxUtility.Utilities.UIUtilities.UIElements;
 using Microsoft.Xna.Framework;
 using Terraria.GameContent.UI.Elements;
 using Terraria.ID;
-using Terraria.Localization;
 using Terraria.UI;
 
 namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
