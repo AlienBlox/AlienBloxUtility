@@ -174,7 +174,13 @@ Configs: {
 		}
 
 		DeveloperMode: {
-			Tooltip: ""
+			Tooltip:
+				'''
+				[c/FF0000:USE ONLY IF YOU KNOW WHAT YOU ARE DOING]
+				Developer mode allows you to access tModLoader internals
+				that are normally off-limits, it is useful for debugging
+				edge cases and other situations.
+				'''
 			Label: Developer Mode
 		}
 	}
