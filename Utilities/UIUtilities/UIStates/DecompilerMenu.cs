@@ -48,8 +48,7 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
 
             modList = [];
 
-            modList.HAlign = 0.5f;
-            modList.VAlign = 0.5f;
+            modList.HAlign = modList.VAlign = 0.5f;
 
             modList.Width.Set(0, 1);
             modList.Height.Set(0, 1);
