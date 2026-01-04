@@ -97,11 +97,14 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
 
         public static void WallClip(UIEvent evt, UIElement elem)
         {
-            Main.LocalPlayer.AlienBloxUtility().noClipHack = !Main.LocalPlayer.AlienBloxUtility().noClipHack;
-
-            if (!Main.LocalPlayer.AlienBloxUtility().noClipHack)
+            if (elem is ButtonIcon icon)
             {
-                AlienBloxUtility.SendNoclipHack(Main.LocalPlayer.position, false);
+                Main.LocalPlayer.AlienBloxUtility().noClipHack = icon.Toggle;
+
+                if (!Main.LocalPlayer.AlienBloxUtility().noClipHack)
+                {
+                    AlienBloxUtility.SendNoclipHack(Main.LocalPlayer.position, false);
+                }
             }
         }
 
