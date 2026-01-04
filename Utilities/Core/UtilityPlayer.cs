@@ -65,6 +65,8 @@ namespace AlienBloxUtility.Utilities.Core
 
         public override void PlayerConnect()
         {
+            noClipHack = false;
+
             if (Main.myPlayer == Player.whoAmI)
                 AlienBloxUtility.SendNoclipHack(noClipHackPos, noClipHack);
         }
