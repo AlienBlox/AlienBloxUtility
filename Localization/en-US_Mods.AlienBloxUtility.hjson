@@ -88,6 +88,8 @@ UI: {
 		Hitbox: Toggle Hitbox Tool
 		Noclip: Toggle Wallclip Tool
 		SlimeGame: Start Slime Game
+		NPCImmortality: Toggle Town NPC Immortality
+		PlayerImmortality: Toggle Player Immortality
 	}
 }
 

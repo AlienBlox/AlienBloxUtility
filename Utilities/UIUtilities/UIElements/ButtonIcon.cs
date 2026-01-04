@@ -23,7 +23,7 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIElements
         private bool _Locked = false;
         private Color SelectorColor;
 
-        public ButtonIcon(string Key, int itemID, Color selectorColor)
+        public ButtonIcon(string Key, int itemID, Color selectorColor, bool click = false)
         {
             ItemID = itemID;
             Localization = Language.GetOrRegister(Key);
@@ -38,9 +38,18 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIElements
             _textureSecondary = TextureAssets.Item[itemID].Value;
 
             SelectorColor = selectorColor;
+
+            if (click)
+            {
+                OnLeftClick += (_, _) =>
+                {
+                    SoundEngine.PlaySound(SoundID.MenuTick);
+                    Toggle = !Toggle;
+                };
+            }
         }
 
-        public ButtonIcon(string Key, string texture, Color selectorColor)
+        public ButtonIcon(string Key, string texture, Color selectorColor, bool click)
         {
             Localization = Language.GetOrRegister(Key);
             _textureLocation = texture;
@@ -49,6 +58,15 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIElements
             _textureSecondary = ModContent.Request<Texture2D>(texture).Value;
 
             SelectorColor = selectorColor;
+
+            if (click)
+            {
+                OnLeftClick += (_, _) =>
+                {
+                    SoundEngine.PlaySound(SoundID.MenuTick);
+                    Toggle = !Toggle;
+                };
+            }
         }
 
         public override void Draw(SpriteBatch spriteBatch)
