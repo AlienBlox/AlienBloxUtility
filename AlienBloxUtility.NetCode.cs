@@ -242,6 +242,7 @@ namespace AlienBloxUtility
 
                             for (int i = 0; i < Main.maxPlayers; i++)
                             {
+                                /*
                                 if (Main.player[i].active)
                                 {
                                     pkt.Write(Main.player[i].AlienBloxUtility().noClipHackPos.X);
@@ -254,6 +255,7 @@ namespace AlienBloxUtility
                                     pkt.Write((int)0);
                                     pkt.Write(false);
                                 }
+                                */
                             }
 
                             pkt.Send(whoAmI);
@@ -262,6 +264,7 @@ namespace AlienBloxUtility
                         {
                             for (int i = 0; i < Main.maxPlayers; i++)
                             {
+                                /*
                                 float X = reader.ReadSingle();
                                 float Y = reader.ReadSingle();
                                 bool Wallhack = reader.ReadBoolean();
@@ -275,6 +278,7 @@ namespace AlienBloxUtility
 
                                 Logger.Warn(Main.player[i].position);
                                 Logger.Warn(Main.player[i].AlienBloxUtility().noClipHack);
+                                */
                             }
                         }
                         break;
