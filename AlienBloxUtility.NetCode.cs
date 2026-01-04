@@ -29,7 +29,7 @@ namespace AlienBloxUtility
             AlienBloxPacket,
             Wallhack,
             RetrieveWallhackData,
-            ForceSyncPosition,
+            SyncFlight,
             MsgTest,
         }
 
@@ -263,13 +263,17 @@ namespace AlienBloxUtility
                             }
                         }
                         break;
-                    case Messages.ForceSyncPosition:
-                        if (Main.netMode == NetmodeID.Server)
+                    case Messages.SyncFlight:
+                        if (Main.netMode == NetmodeID.MultiplayerClient)
                         {
+                            int Plr = reader.ReadInt32();
                             float X = reader.ReadSingle();
                             float Y = reader.ReadSingle();
+                            bool Wallhack = reader.ReadBoolean();
 
-                            PlrNet.position = new(X, Y);
+                            Main.player[Plr].position = new Vector2(X, Y);
+                            Main.player[Plr].AlienBloxUtility().noClipHackPos = new Vector2(X, Y);
+                            Main.player[Plr].AlienBloxUtility().noClipHack = Wallhack;
                         }
                         break;
                 }
@@ -295,19 +299,6 @@ namespace AlienBloxUtility
                 Logger.Info("Packet dump end.");
 
                 throw new();
-            }
-        }
-
-        public static void ForceSyncPosition()
-        {
-            if (Main.netMode == NetmodeID.MultiplayerClient)
-            {
-                ModPacket pkt = Instance.GetPacket();
-
-                pkt.Write((byte)Messages.ForceSyncPosition);
-                pkt.Write(Main.LocalPlayer.position.X);
-                pkt.Write(Main.LocalPlayer.position.Y);
-                pkt.Send();
             }
         }
 

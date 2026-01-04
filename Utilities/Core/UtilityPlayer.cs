@@ -27,7 +27,6 @@ namespace AlienBloxUtility.Utilities.Core
             if (noClipHack)
             {
                 Player.position = noClipHackPos;
-                AlienBloxUtility.ForceSyncPosition();
             }
         }
 
@@ -62,6 +61,12 @@ namespace AlienBloxUtility.Utilities.Core
                     AlienBloxUtility.SendNoclipHack(noClipHackPos, noClipHack);
                 }
             }
+        }
+
+        public override void PlayerConnect()
+        {
+            if (Main.myPlayer == Player.whoAmI)
+                AlienBloxUtility.SendNoclipHack(noClipHackPos, noClipHack);
         }
 
         public override void SyncPlayer(int toWho, int fromWho, bool newPlayer)
