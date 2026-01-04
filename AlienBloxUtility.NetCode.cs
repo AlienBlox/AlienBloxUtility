@@ -241,9 +241,12 @@ namespace AlienBloxUtility
                             
                             for (int i = 0; i < Main.maxPlayers; i++)
                             {
-                                pkt.Write(Main.player[i].AlienBloxUtility().noClipHackPos.X);
-                                pkt.Write(Main.player[i].AlienBloxUtility().noClipHackPos.Y);
-                                pkt.Write(Main.player[i].AlienBloxUtility().noClipHack);
+                                if (Main.player[i].active)
+                                {
+                                    pkt.Write(Main.player[i].AlienBloxUtility().noClipHackPos.X);
+                                    pkt.Write(Main.player[i].AlienBloxUtility().noClipHackPos.Y);
+                                    pkt.Write(Main.player[i].AlienBloxUtility().noClipHack);
+                                }
                             }
 
                             pkt.Send(whoAmI);
@@ -370,7 +373,7 @@ namespace AlienBloxUtility
         /// Sends a packet to AlienBlox's Packet Handler
         /// </summary>
         /// <param name="packetName">The name of the packet.</param>
-        /// <param name="data">The data to send.</param>
+        /// <param name="data">The data to send.</param> 
         public static void SendAlienBloxPacket(string packetName, byte[] data, int toPlayer = -1)
         {
             if (Main.netMode != NetmodeID.SinglePlayer)
