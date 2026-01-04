@@ -238,7 +238,8 @@ namespace AlienBloxUtility
                             ModPacket pkt = GetPacket();
 
                             pkt.Write((byte)Messages.RetrieveWallhackData);
-                            
+                            pkt.Write();
+
                             for (int i = 0; i < Main.maxPlayers; i++)
                             {
                                 if (Main.player[i].active)
@@ -246,6 +247,12 @@ namespace AlienBloxUtility
                                     pkt.Write(Main.player[i].AlienBloxUtility().noClipHackPos.X);
                                     pkt.Write(Main.player[i].AlienBloxUtility().noClipHackPos.Y);
                                     pkt.Write(Main.player[i].AlienBloxUtility().noClipHack);
+                                }
+                                else
+                                {
+                                    pkt.Write((int)0);
+                                    pkt.Write((int)0);
+                                    pkt.Write(false);
                                 }
                             }
 
@@ -259,9 +266,12 @@ namespace AlienBloxUtility
                                 float Y = reader.ReadSingle();
                                 bool Wallhack = reader.ReadBoolean();
 
-                                Main.player[i].position = new(X, Y);
-                                Main.player[i].AlienBloxUtility().noClipHackPos = new(X, Y);
-                                Main.player[i].AlienBloxUtility().noClipHack = Wallhack;
+                                if (Main.player[i].active)
+                                {
+                                    Main.player[i].position = new(X, Y);
+                                    Main.player[i].AlienBloxUtility().noClipHackPos = new(X, Y);
+                                    Main.player[i].AlienBloxUtility().noClipHack = Wallhack;
+                                }
 
                                 Logger.Warn(Main.player[i].position);
                                 Logger.Warn(Main.player[i].AlienBloxUtility().noClipHack);
