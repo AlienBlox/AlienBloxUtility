@@ -34,6 +34,8 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
 
             NoclipTool.HAlign = HitboxTool.HAlign = BlackHoleTool.HAlign = ScriptingTool.HAlign = SlimeGame.HAlign = .5f; //Noice
 
+            SidebarList.ManualSortMethod = (_) => { };
+
             SidebarList.AddRange([NoclipTool, HitboxTool, BlackHoleTool, ScriptingTool, SlimeGame]);
 
             Sidebar.Append(SidebarList);
@@ -58,6 +60,8 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
 
                 Sidebar.Append(SidebarList);
                 Append(Sidebar);
+
+                SidebarList.Recalculate();
 
                 Fix = true;
             }
