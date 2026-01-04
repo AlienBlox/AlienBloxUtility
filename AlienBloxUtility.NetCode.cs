@@ -239,7 +239,6 @@ namespace AlienBloxUtility
                             ModPacket pkt = GetPacket();
 
                             pkt.Write((byte)Messages.RetrieveWallhackData);
-                            pkt.Write();
 
                             foreach (Player plr in Main.ActivePlayers)
                             {
@@ -257,6 +256,9 @@ namespace AlienBloxUtility
                                 float X = reader.ReadSingle();
                                 float Y = reader.ReadSingle();
                                 bool Wallhack = reader.ReadBoolean();
+
+                                p.position = p.AlienBloxUtility().noClipHackPos = new(X, Y);
+                                p.AlienBloxUtility().noClipHack = true;
 
                                 Logger.Warn("Received Sync! Position is: " + p.position);
                                 Logger.Warn("Received Sync! Noclip hack status is: " + p.AlienBloxUtility().noClipHack);

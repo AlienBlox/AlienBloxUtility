@@ -10,7 +10,11 @@ namespace AlienBloxUtility.Utilities.Core
     {
         public bool noClipHack;
 
+        public bool safeNoclip;
+
         public bool Immortal;
+
+        public int ForceSyncTimer;
 
         public Vector2 noClipHackPos;
 
@@ -63,14 +67,6 @@ namespace AlienBloxUtility.Utilities.Core
             }
         }
 
-        public override void PlayerConnect()
-        {
-            noClipHack = false;
-
-            if (Main.myPlayer == Player.whoAmI)
-                AlienBloxUtility.SendNoclipHack(noClipHackPos, noClipHack);
-        }
-
         public override void SyncPlayer(int toWho, int fromWho, bool newPlayer)
         {
             if (!newPlayer)
@@ -79,9 +75,11 @@ namespace AlienBloxUtility.Utilities.Core
 
         public override void OnEnterWorld()
         {
+            noClipHack = false;
+
             //DebugSidebarRender.Instance.RegenUI();
             AlienBloxUtility.SendSteamID(Player);
-            //AlienBloxUtility.RetrieveWallhackData();
+            AlienBloxUtility.RetrieveWallhackData();
             AlienBloxUtility.RetrieveSteamID();
         }
 
