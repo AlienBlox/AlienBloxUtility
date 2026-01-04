@@ -29,6 +29,7 @@ namespace AlienBloxUtility
             AlienBloxPacket,
             Wallhack,
             RetrieveWallhackData,
+            ForceSyncPosition,
             MsgTest,
         }
 
@@ -240,46 +241,35 @@ namespace AlienBloxUtility
                             pkt.Write((byte)Messages.RetrieveWallhackData);
                             pkt.Write();
 
-                            for (int i = 0; i < Main.maxPlayers; i++)
+                            foreach (Player plr in Main.ActivePlayers)
                             {
-                                /*
-                                if (Main.player[i].active)
-                                {
-                                    pkt.Write(Main.player[i].AlienBloxUtility().noClipHackPos.X);
-                                    pkt.Write(Main.player[i].AlienBloxUtility().noClipHackPos.Y);
-                                    pkt.Write(Main.player[i].AlienBloxUtility().noClipHack);
-                                }
-                                else
-                                {
-                                    pkt.Write((int)0);
-                                    pkt.Write((int)0);
-                                    pkt.Write(false);
-                                }
-                                */
+                                pkt.Write(plr.position.X);
+                                pkt.Write(plr.position.Y);
+                                pkt.Write(plr.AlienBloxUtility().noClipHack);
                             }
 
                             pkt.Send(whoAmI);
                         }
                         else
                         {
-                            for (int i = 0; i < Main.maxPlayers; i++)
+                            foreach (Player p in Main.ActivePlayers)
                             {
-                                /*
                                 float X = reader.ReadSingle();
                                 float Y = reader.ReadSingle();
                                 bool Wallhack = reader.ReadBoolean();
 
-                                if (Main.player[i].active)
-                                {
-                                    Main.player[i].position = new(X, Y);
-                                    Main.player[i].AlienBloxUtility().noClipHackPos = new(X, Y);
-                                    Main.player[i].AlienBloxUtility().noClipHack = Wallhack;
-                                }
-
-                                Logger.Warn(Main.player[i].position);
-                                Logger.Warn(Main.player[i].AlienBloxUtility().noClipHack);
-                                */
+                                Logger.Warn("Received Sync! Position is: " + p.position);
+                                Logger.Warn("Received Sync! Noclip hack status is: " + p.AlienBloxUtility().noClipHack);
                             }
+                        }
+                        break;
+                    case Messages.ForceSyncPosition:
+                        if (Main.netMode == NetmodeID.Server)
+                        {
+                            float X = reader.ReadSingle();
+                            float Y = reader.ReadSingle();
+
+                            PlrNet.position = new(X, Y);
                         }
                         break;
                 }
@@ -305,6 +295,19 @@ namespace AlienBloxUtility
                 Logger.Info("Packet dump end.");
 
                 throw new();
+            }
+        }
+
+        public static void ForceSyncPosition()
+        {
+            if (Main.netMode == NetmodeID.MultiplayerClient)
+            {
+                ModPacket pkt = Instance.GetPacket();
+
+                pkt.Write((byte)Messages.ForceSyncPosition);
+                pkt.Write(Main.LocalPlayer.position.X);
+                pkt.Write(Main.LocalPlayer.position.Y);
+                pkt.Send();
             }
         }
 

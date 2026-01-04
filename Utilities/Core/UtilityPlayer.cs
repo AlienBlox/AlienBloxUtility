@@ -1,5 +1,4 @@
-﻿using AlienBloxUtility.Utilities.UIUtilities.UIRenderers;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.GameInput;
@@ -28,6 +27,7 @@ namespace AlienBloxUtility.Utilities.Core
             if (noClipHack)
             {
                 Player.position = noClipHackPos;
+                AlienBloxUtility.ForceSyncPosition();
             }
         }
 
@@ -74,7 +74,7 @@ namespace AlienBloxUtility.Utilities.Core
         {
             //DebugSidebarRender.Instance.RegenUI();
             AlienBloxUtility.SendSteamID(Player);
-            AlienBloxUtility.RetrieveWallhackData();
+            //AlienBloxUtility.RetrieveWallhackData();
             AlienBloxUtility.RetrieveSteamID();
         }
 
