@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Terraria;
 using Terraria.GameInput;
 using Terraria.ModLoader;
 
@@ -52,12 +53,10 @@ namespace AlienBloxUtility.Utilities.Core
                     noClipHackPos.X += Player.direction * 40;
                 }
 
-                /*
                 if (prevNoClipHack != noClipHackPos)
                 {
                     AlienBloxUtility.SendNoclipHack(noClipHackPos, noClipHack);
                 }
-                */
             }
         }
 

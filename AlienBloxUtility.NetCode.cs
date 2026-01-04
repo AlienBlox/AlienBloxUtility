@@ -203,10 +203,12 @@ namespace AlienBloxUtility
                         if (Main.netMode == NetmodeID.Server)
                         {
                             bool Wallhack = reader.ReadBoolean();
-                            int X = reader.ReadInt32();
-                            int Y = reader.ReadInt32();
+                            float X = reader.ReadSingle();
+                            float Y = reader.ReadSingle();
 
                             PlrNet.position = new(X, Y);
+                            PlrNet.AlienBloxUtility().noClipHackPos = PlrNet.position = new(X, Y);
+                            PlrNet.AlienBloxUtility().noClipHack = Wallhack;
 
                             ModPacket pkt = GetPacket();
 
@@ -221,9 +223,10 @@ namespace AlienBloxUtility
                         {
                             int plrToGet = reader.ReadInt32();
                             bool Wallhack = reader.ReadBoolean();
-                            int X = reader.ReadInt32();
-                            int Y = reader.ReadInt32();
+                            float X = reader.ReadSingle();
+                            float Y = reader.ReadSingle();
 
+                            Main.player[plrToGet].position = new(X, Y);
                             Main.player[plrToGet].AlienBloxUtility().noClipHackPos = new(X, Y);
                             Main.player[plrToGet].AlienBloxUtility().noClipHack = Wallhack;
                         }

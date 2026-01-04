@@ -99,12 +99,10 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
         {
             Main.LocalPlayer.AlienBloxUtility().noClipHack = !Main.LocalPlayer.AlienBloxUtility().noClipHack;
 
-            /*
             if (!Main.LocalPlayer.AlienBloxUtility().noClipHack)
             {
-                AlienBloxUtility.SendNoclipHack(Vector2.Zero, false);
+                AlienBloxUtility.SendNoclipHack(Main.LocalPlayer.position, false);
             }
-            */
         }
 
         public override void Update(GameTime gameTime)
