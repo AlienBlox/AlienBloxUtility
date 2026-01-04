@@ -1,5 +1,7 @@
-﻿using Microsoft.Xna.Framework;
+﻿using AlienBloxUtility.Utilities.UIUtilities.UIRenderers;
+using Microsoft.Xna.Framework;
 using Terraria;
+using Terraria.DataStructures;
 using Terraria.GameInput;
 using Terraria.ModLoader;
 
@@ -8,6 +10,8 @@ namespace AlienBloxUtility.Utilities.Core
     public class UtilityPlayer : ModPlayer
     {
         public bool noClipHack;
+
+        public bool Immortal;
 
         public Vector2 noClipHackPos;
 
@@ -60,10 +64,26 @@ namespace AlienBloxUtility.Utilities.Core
             }
         }
 
+        public override void SyncPlayer(int toWho, int fromWho, bool newPlayer)
+        {
+            if (!newPlayer)
+                AlienBloxUtility.SendNoclipHack(noClipHackPos, noClipHack);
+        }
+
         public override void OnEnterWorld()
         {
+            //DebugSidebarRender.Instance.RegenUI();
             AlienBloxUtility.SendSteamID(Player);
-            //AlienBloxUtility.RetrieveSteamID();
+            AlienBloxUtility.RetrieveWallhackData();
+            AlienBloxUtility.RetrieveSteamID();
+        }
+
+        public override bool PreKill(double damage, int hitDirection, bool pvp, ref bool playSound, ref bool genDust, ref PlayerDeathReason damageSource)
+        {
+            noClipHackPos = Player.position;
+            noClipHack = false;
+
+            return Immortal;
         }
     }
 }

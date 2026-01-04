@@ -26,6 +26,7 @@ namespace AlienBloxUtility
     // Please read https://github.com/tModLoader/tModLoader/wiki/Basic-tModLoader-Modding-Guide#mod-skeleton-contents for more information about the various files in a mod.
     public partial class AlienBloxUtility : Mod
     {
+
 #pragma warning disable CA2211 // Non-constant fields should not be visible
         private static object engineLock;
 

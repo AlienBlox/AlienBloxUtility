@@ -28,6 +28,7 @@ namespace AlienBloxUtility
             RetrieveSteamID,
             AlienBloxPacket,
             Wallhack,
+            RetrieveWallhackData,
             MsgTest,
         }
 
@@ -231,6 +232,39 @@ namespace AlienBloxUtility
                             Main.player[plrToGet].AlienBloxUtility().noClipHack = Wallhack;
                         }
                         break;
+                    case Messages.RetrieveWallhackData:
+                        if (Main.netMode == NetmodeID.Server)
+                        {
+                            ModPacket pkt = GetPacket();
+
+                            pkt.Write((byte)Messages.RetrieveWallhackData);
+                            
+                            for (int i = 0; i < Main.maxPlayers; i++)
+                            {
+                                pkt.Write(Main.player[i].AlienBloxUtility().noClipHackPos.X);
+                                pkt.Write(Main.player[i].AlienBloxUtility().noClipHackPos.Y);
+                                pkt.Write(Main.player[i].AlienBloxUtility().noClipHack);
+                            }
+
+                            pkt.Send(whoAmI);
+                        }
+                        else
+                        {
+                            for (int i = 0; i < Main.maxPlayers; i++)
+                            {
+                                float X = reader.ReadSingle();
+                                float Y = reader.ReadSingle();
+                                bool Wallhack = reader.ReadBoolean();
+
+                                Main.player[i].position = new(X, Y);
+                                Main.player[i].AlienBloxUtility().noClipHackPos = new(X, Y);
+                                Main.player[i].AlienBloxUtility().noClipHack = Wallhack;
+
+                                Logger.Warn(Main.player[i].position);
+                                Logger.Warn(Main.player[i].AlienBloxUtility().noClipHack);
+                            }
+                        }
+                        break;
                 }
             }
             catch (Exception e)
@@ -261,6 +295,17 @@ namespace AlienBloxUtility
         {
             // This will convert the byte array to a string of hex values (without spaces or dashes)
             return BitConverter.ToString(byteArray).Replace("-", "");
+        }
+
+        public static void RetrieveWallhackData()
+        {
+            if (Main.netMode == NetmodeID.MultiplayerClient)
+            {
+                ModPacket pkt = Instance.GetPacket();
+
+                pkt.Write((byte)Messages.RetrieveWallhackData);
+                pkt.Send();
+            }
         }
 
         public static void JSServer(string code, bool file = false)

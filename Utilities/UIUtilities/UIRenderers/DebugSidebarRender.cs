@@ -12,9 +12,30 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIRenderers
     {
         public static bool ShowSidebar = false;
 
+        public static DebugSidebarRender Instance;
+
         internal DebugSidebar Element;
 
         private UserInterface _element;
+
+        public void RegenUI()
+        {
+            Instance = this;
+
+            _element = null;
+            Element = null;
+
+            Main.LocalPlayer.AlienBloxUtility().Immortal = false;
+            Main.LocalPlayer.AlienBloxUtility().noClipHack = false;
+            Main.LocalPlayer.AlienBloxUtility().noClipHackPos = Main.LocalPlayer.position;
+            
+            AlienBloxUtility.SendNoclipHack(Main.LocalPlayer.position, false);
+
+            Element = new();
+            Element.Activate();
+            _element = new();
+            _element.SetState(Element);
+        }
 
         public override void Load()
         {
