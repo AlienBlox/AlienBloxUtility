@@ -7,6 +7,7 @@ using Terraria.UI;
 
 namespace AlienBloxUtility.Utilities.UIUtilities.UIRenderers
 {
+    [Autoload(Side = ModSide.Client)]
     public class DebugSidebarRender : ModSystem
     {
         public static bool ShowSidebar = false;

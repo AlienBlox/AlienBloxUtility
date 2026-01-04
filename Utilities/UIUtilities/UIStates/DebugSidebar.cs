@@ -1,6 +1,10 @@
-﻿using AlienBloxUtility.Utilities.UIUtilities.UIElements;
+﻿using AlienBloxUtility.Utilities.Core;
+using AlienBloxUtility.Utilities.UIUtilities.UIElements;
+using AlienBloxUtility.Utilities.UIUtilities.UIRenderers;
 using Microsoft.Xna.Framework;
 using System.Collections.Generic;
+using System.Linq;
+using Terraria;
 using Terraria.GameContent.UI.Elements;
 using Terraria.ID;
 using Terraria.UI;
@@ -13,7 +17,7 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
 
         //public UIList SidebarList;
 
-        public ButtonIcon NoclipTool, HitboxTool, BlackHoleTool, ScriptingTool, NPCImmortalityTool, PlayerImmortalityTool, SlimeGame;
+        public ButtonIcon NoclipTool, HitboxTool, BlackHoleTool, ScriptingTool, NPCImmortalityTool, PlayerImmortalityTool, SpawningTool, SlimeGame;
 
         public List<ButtonIcon> Buttons;
 
@@ -36,7 +40,8 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
             ScriptingTool = new("Mods.AlienBloxUtility.UI.SidebarTools.Scripting", ItemID.Amber, Color.Yellow, true);
             NPCImmortalityTool = new("Mods.AlienBloxUtility.UI.SidebarTools.NPCImmortality", ItemID.SpectreBar, Color.MediumPurple, true);
             PlayerImmortalityTool = new("Mods.AlienBloxUtility.UI.SidebarTools.PlayerImmortality", ItemID.GuideVoodooDoll, Colors.RarityRed, true);
-            SlimeGame = new("Mods.AlienBloxUtility.UI.SidebarTools.SlimeGame", ItemID.PinkGel, Color.LightPink, true);
+            SpawningTool = new("Mods.AlienBloxUtility.UI.SidebarTools.SpawnEntity", ItemID.SuspiciousLookingEye, Colors.RarityOrange, true);
+            SlimeGame = new("Mods.AlienBloxUtility.UI.SidebarTools.SlimeGame", ItemID.PinkGel, Color.LightPink);
 
             NoclipTool.Width.Set(0, 1);
             NoclipTool.Height.Set(60, 0);
@@ -56,6 +61,9 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
             PlayerImmortalityTool.Width.Set(0, 1);
             PlayerImmortalityTool.Height.Set(60, 0);
 
+            SpawningTool.Width.Set(0, 1);
+            SpawningTool.Height.Set(60, 0);
+
             SlimeGame.Width.Set(0, 1);
             SlimeGame.Height.Set(60, 0);
 
@@ -73,7 +81,30 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
             AddToSidebar(ScriptingTool);
             AddToSidebar(NPCImmortalityTool);
             AddToSidebar(PlayerImmortalityTool);
+            AddToSidebar(SpawningTool);
             AddToSidebar(SlimeGame);
+
+            NoclipTool.OnLeftClick += WallClip;
+            SlimeGame.OnLeftClick += SlimeGameToggle;
+        }
+
+        public static void SlimeGameToggle(UIEvent evt, UIElement elem)
+        {
+            DebugUtilityList.ConsoleWindowEnabled = true;
+
+            ConHostRender.SetModal(true, true, new SlimeRainGame());
+        }
+
+        public static void WallClip(UIEvent evt, UIElement elem)
+        {
+            Main.LocalPlayer.AlienBloxUtility().noClipHack = !Main.LocalPlayer.AlienBloxUtility().noClipHack;
+
+            /*
+            if (!Main.LocalPlayer.AlienBloxUtility().noClipHack)
+            {
+                AlienBloxUtility.SendNoclipHack(Vector2.Zero, false);
+            }
+            */
         }
 
         public override void Update(GameTime gameTime)
@@ -84,7 +115,7 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
                 Sidebar.VAlign = ShowUtilityMenuButton.Instance._UI.VAlign;
                 Sidebar.HAlign = ShowUtilityMenuButton.Instance._UI.HAlign;
                 Sidebar.Width = ShowUtilityMenuButton.Instance._UI.Width;
-                Sidebar.Height.Set(60 * 7, 0);
+                Sidebar.Height.Set(60 * Sidebar.Children.Count(), 0);
                 Sidebar.Top.Set(-70f, 0);
                 Sidebar.Left.Set(10f, 0);
                 Sidebar.BackgroundColor = new(150, 0, 0, 128);

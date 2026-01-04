@@ -90,6 +90,7 @@ UI: {
 		SlimeGame: Start Slime Game
 		NPCImmortality: Toggle Town NPC Immortality
 		PlayerImmortality: Toggle Player Immortality
+		SpawnEntity: Toggle Spawn Menu
 	}
 }
 

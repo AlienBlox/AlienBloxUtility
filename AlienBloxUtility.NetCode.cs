@@ -1,6 +1,7 @@
 ﻿using AlienBloxUtility.Utilities.Helpers;
 using AlienBloxUtility.Utilities.NetCode.AlienBloxPacketSystem;
 using AlienBloxUtility.Utilities.UIUtilities.UIRenderers;
+using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -26,6 +27,7 @@ namespace AlienBloxUtility
             RemoveSteamID,
             RetrieveSteamID,
             AlienBloxPacket,
+            Wallhack,
             MsgTest,
         }
 
@@ -197,6 +199,35 @@ namespace AlienBloxUtility
                             ConHostRender.Write("Net test done!");
                         }
                         break;
+                    case Messages.Wallhack:
+                        if (Main.netMode == NetmodeID.Server)
+                        {
+                            bool Wallhack = reader.ReadBoolean();
+                            int X = reader.ReadInt32();
+                            int Y = reader.ReadInt32();
+
+                            PlrNet.position = new(X, Y);
+
+                            ModPacket pkt = GetPacket();
+
+                            pkt.Write((byte)Messages.Wallhack);
+                            pkt.Write(whoAmI);
+                            pkt.Write(Wallhack);
+                            pkt.Write(X);
+                            pkt.Write(Y);
+                            pkt.Send(-1, whoAmI);
+                        }
+                        else
+                        {
+                            int plrToGet = reader.ReadInt32();
+                            bool Wallhack = reader.ReadBoolean();
+                            int X = reader.ReadInt32();
+                            int Y = reader.ReadInt32();
+
+                            Main.player[plrToGet].AlienBloxUtility().noClipHackPos = new(X, Y);
+                            Main.player[plrToGet].AlienBloxUtility().noClipHack = Wallhack;
+                        }
+                        break;
                 }
             }
             catch (Exception e)
@@ -270,6 +301,20 @@ namespace AlienBloxUtility
             else
             {
                 NPC.NewNPC(new EntitySource_Misc("SpawnServer"), x, y, type);
+            }
+        }
+
+        public static void SendNoclipHack(Vector2 pos, bool Wallhack)
+        {
+            if (Main.netMode == NetmodeID.MultiplayerClient)
+            {
+                ModPacket pkt = Instance.GetPacket();
+
+                pkt.Write((byte)Messages.Wallhack);
+                pkt.Write(Wallhack);
+                pkt.Write(pos.X);
+                pkt.Write(pos.Y);
+                pkt.Send();
             }
         }
 

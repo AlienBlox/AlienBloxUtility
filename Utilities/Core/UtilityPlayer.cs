@@ -10,15 +10,16 @@ namespace AlienBloxUtility.Utilities.Core
 
         public Vector2 noClipHackPos;
 
-        public override void PostUpdate()
+        public override void PreUpdate()
         {
-            bool hack = noClipHack;
-
-            if (hack != noClipHack)
+            if (!noClipHack)
             {
                 noClipHackPos = Player.position;
             }
+        }
 
+        public override void PostUpdate()
+        {
             if (noClipHack)
             {
                 Player.position = noClipHackPos;
@@ -29,6 +30,8 @@ namespace AlienBloxUtility.Utilities.Core
         {
             if (noClipHack)
             {
+                Vector2 prevNoClipHack = noClipHackPos;
+
                 if (triggersSet.Up)
                 {
                     noClipHackPos.Y -= 40;
@@ -41,13 +44,20 @@ namespace AlienBloxUtility.Utilities.Core
 
                 if (triggersSet.Left)
                 {
-                    noClipHackPos.X += (Player.direction * 40);
+                    noClipHackPos.X += Player.direction * 40;
                 }
 
                 if (triggersSet.Right)
                 {
-                    noClipHackPos.X += (Player.direction * 40);
+                    noClipHackPos.X += Player.direction * 40;
                 }
+
+                /*
+                if (prevNoClipHack != noClipHackPos)
+                {
+                    AlienBloxUtility.SendNoclipHack(noClipHackPos, noClipHack);
+                }
+                */
             }
         }
 
