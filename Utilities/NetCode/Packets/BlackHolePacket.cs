@@ -1,5 +1,6 @@
 ﻿using AlienBloxUtility.Utilities.Abstracts;
 using Microsoft.Xna.Framework;
+using System;
 using System.IO;
 using Terraria;
 using Terraria.ID;
@@ -11,8 +12,11 @@ namespace AlienBloxUtility.Utilities.NetCode.Packets
         public override void OnPacketHandled(BinaryReader reader)
         {
             byte blackHoleType = reader.ReadByte();
-            int PosX = reader.ReadInt32();
-            int PosY = reader.ReadInt32();
+            float PosX = reader.ReadSingle();
+            float PosY = reader.ReadSingle();
+
+            Console.WriteLine("Black hole action: " + blackHoleType);
+            Console.WriteLine("Position of Black Hole: " + new Vector2(PosX, PosY));
 
             if (Main.netMode == NetmodeID.Server)
             {
