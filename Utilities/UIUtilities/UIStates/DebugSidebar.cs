@@ -8,17 +8,20 @@ using System.Linq;
 using Terraria;
 using Terraria.GameContent.UI.Elements;
 using Terraria.ID;
+using Terraria.Localization;
 using Terraria.UI;
 
 namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
 {
     public class DebugSidebar : UIState
     {
-        public UIPanel Sidebar;
+        public UIPanel Sidebar, ScriptBar;
+
+        public UITextBoxImproved ScriptBox;
 
         //public UIList SidebarList;
 
-        public ButtonIcon NoclipTool, HitboxTool, BlackHoleTool, ScriptingTool, NPCImmortalityTool, PlayerImmortalityTool, SpawningTool, SlimeGame;
+        public ButtonIcon NoclipTool, HitboxTool, BlackHoleTool, ScriptingTool, NPCImmortalityTool, PlayerImmortalityTool, SpawningTool, SlimeGame, SendLua, SendJS;
 
         public List<ButtonIcon> Buttons;
 
@@ -28,16 +31,48 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
         {
             Buttons = [];
 
+            ScriptBar = new();
+
             Sidebar = new()
             {
                 Width = new(0, 0)
             };
 
+            SendJS = new("Mods.AlienBloxUtility.UI.SidebarTools.JSSend", ItemID.Book, Color.MintCream);
+            SendLua = new("Mods.AlienBloxUtility.UI.SidebarTools.LuaSend", ItemID.MoonCharm, Color.Blue);
+
+            SendLua.Height.Set(0, 1);
+            SendLua.Width.Set(0, .05f);
+            SendLua.VAlign = .5f;
+            SendLua.HAlign = 1f;
+
+            SendJS.Height.Set(0, 1);
+            SendJS.Width.Set(0, .05f);
+            SendJS.VAlign = .5f;
+            SendJS.HAlign = .95f;
+
             //SidebarList = Sidebar.InsertList();
+
+            ScriptBox = new("Enter a script...");
+            ScriptBox.VAlign = ScriptBox.HAlign = .5f;
+            ScriptBox.Width.Set(0, 1);
+            ScriptBox.Height.Set(0, 1);
+            ScriptBox.SetUnfocusKeys(true, true);
+            ScriptBox.SetTextMaxLength(160);
+            ScriptBox.Append(SendLua); 
+            ScriptBox.Append(SendJS);
+
+            ScriptBar.Width.Set(0, 1);
+            ScriptBar.Height.Set(0, .05f);
+            ScriptBar.VAlign = 0;
+            ScriptBar.HAlign = .5f;
+            ScriptBar.BackgroundColor.A = 255;
+
+            ScriptBar.Append(ScriptBox);
 
             NoclipTool = new("Mods.AlienBloxUtility.UI.SidebarTools.Noclip", ItemID.CreativeWings, Color.MintCream, true);
             HitboxTool = new("Mods.AlienBloxUtility.UI.SidebarTools.Hitbox", ItemID.Wood, Color.SandyBrown, true);
-            BlackHoleTool = new("Mods.AlienBloxUtility.UI.SidebarTools.BlackHole", ItemID.BlackDye, Color.Black, false);
+            BlackHoleTool = new("Mods.AlienBloxUtility.UI.SidebarTools.BlackHole", ItemID.BlackDye, Color.Black);
             ScriptingTool = new("Mods.AlienBloxUtility.UI.SidebarTools.Scripting", ItemID.Amber, Color.Yellow, true);
             NPCImmortalityTool = new("Mods.AlienBloxUtility.UI.SidebarTools.NPCImmortality", ItemID.SpectreBar, Color.MediumPurple, true);
             PlayerImmortalityTool = new("Mods.AlienBloxUtility.UI.SidebarTools.PlayerImmortality", ItemID.GuideVoodooDoll, Colors.RarityRed, true);
@@ -76,6 +111,12 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
 
             //Sidebar.Append(SidebarList);
 
+            SendLua.OnLeftClick += LuaSend;
+            SendLua.OnRightClick += LuaSendServer;
+
+            SendJS.OnLeftClick += JSSend;
+            SendJS.OnRightClick += JSSendServer;
+
             AddToSidebar(NoclipTool);
             AddToSidebar(HitboxTool);
             AddToSidebar(BlackHoleTool);
@@ -92,9 +133,47 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
             BlackHoleTool.OnMiddleClick += BlackHoleProjectile;
             BlackHoleTool.OnRightClick += BlackHoleNPC;
 
+            ScriptingTool.OnLeftClick += ActivateScriptingMenu;
+
             SlimeGame.OnLeftClick += SlimeGameToggle;
         }
         
+        public void JSSend(UIEvent evt, UIElement elem)
+        {
+            AlienBloxUtility.RunJavaScript(ScriptBox.Text);
+            ScriptBox.SetText(string.Empty);
+        }
+
+        public void JSSendServer(UIEvent evt, UIElement elem)
+        {
+            AlienBloxUtility.JSServer(ScriptBox.Text);
+            ScriptBox.SetText(string.Empty);
+        }
+
+        public void LuaSend(UIEvent evt, UIElement elem)
+        {
+            AlienBloxUtility.Lua(ScriptBox.Text);
+            ScriptBox.SetText(string.Empty);
+        }
+
+        public void LuaSendServer(UIEvent evt, UIElement elem)
+        {
+            AlienBloxUtility.LuaServer(ScriptBox.Text);
+            ScriptBox.SetText(string.Empty);
+        }
+
+        public void ActivateScriptingMenu(UIEvent evt, UIElement elem)
+        {
+            if (ScriptBar.Parent == null)
+            {
+                Append(ScriptBar);
+            }
+            else
+            {
+                ScriptBar.Remove();
+            }
+        }
+
         public static void BlackHoleItem(UIEvent evt, UIElement elem)
         {
             if (Main.netMode == NetmodeID.SinglePlayer)

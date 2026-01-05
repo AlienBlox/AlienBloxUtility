@@ -97,6 +97,8 @@ UI: {
 		NPCImmortality: Toggle Town NPC Immortality
 		PlayerImmortality: Toggle Player Immortality
 		SpawnEntity: Toggle Spawn Menu
+		JSSend: Send JavaScript (Right-click to send to server.)
+		LuaSend: Send Lua (Right-click to send to server.)
 	}
 }
 
