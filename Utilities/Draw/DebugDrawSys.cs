@@ -43,21 +43,4 @@ namespace AlienBloxUtility.Utilities.Draw
             }
         }
     }
-
-    public class DrawDebugTE : GlobalTile
-    {
-        public override void PostDraw(int i, int j, int type, SpriteBatch spriteBatch)
-        {
-            if (Main.LocalPlayer.AlienBloxUtility().HitboxTool)
-            {
-                foreach (var pair in TileEntity.ByPosition)
-                {
-                    Rectangle locationRectangle = new(pair.Key.X * 16, pair.Key.Y * 16, 16, 16);
-                    locationRectangle.Offset((int)-Main.screenPosition.X, (int)-Main.screenPosition.Y);
-                    locationRectangle = Main.ReverseGravitySupport(locationRectangle);
-                    Main.spriteBatch.Draw(TextureAssets.MagicPixel.Value, locationRectangle, Color.Green * 0.6f);
-                }
-            }
-        }
-    }
 }
