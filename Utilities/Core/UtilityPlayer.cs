@@ -84,12 +84,22 @@ namespace AlienBloxUtility.Utilities.Core
             AlienBloxUtility.RetrieveSteamID();
         }
 
+        public override bool CanBeHitByNPC(NPC npc, ref int cooldownSlot)
+        {
+            return !Immortal;
+        }
+
+        public override bool CanBeHitByProjectile(Projectile proj)
+        {
+            return !Immortal;
+        }
+
         public override bool PreKill(double damage, int hitDirection, bool pvp, ref bool playSound, ref bool genDust, ref PlayerDeathReason damageSource)
         {
             noClipHackPos = Player.position;
             noClipHack = false;
 
-            return Immortal;
+            return !Immortal;
         }
     }
 }

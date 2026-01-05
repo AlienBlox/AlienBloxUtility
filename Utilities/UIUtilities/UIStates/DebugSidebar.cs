@@ -1,9 +1,11 @@
 ﻿using AlienBloxUtility.Utilities.Core;
+using AlienBloxUtility.Utilities.Helpers;
 using AlienBloxUtility.Utilities.NetCode.Packets;
 using AlienBloxUtility.Utilities.UIUtilities.UIElements;
 using AlienBloxUtility.Utilities.UIUtilities.UIRenderers;
 using Microsoft.Xna.Framework;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Terraria;
 using Terraria.GameContent.UI.Elements;
@@ -123,7 +125,7 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
             AddToSidebar(ScriptingTool);
             AddToSidebar(NPCImmortalityTool);
             AddToSidebar(PlayerImmortalityTool);
-            AddToSidebar(SpawningTool);
+            //AddToSidebar(SpawningTool);
             AddToSidebar(SlimeGame);
 
             NoclipTool.OnLeftClick += WallClip;
@@ -135,9 +137,12 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
 
             ScriptingTool.OnLeftClick += ActivateScriptingMenu;
 
+            NPCImmortalityTool.OnLeftClick += DoNPCImmortality;
+            PlayerImmortalityTool.OnLeftClick += PushImmortality;
+
             SlimeGame.OnLeftClick += SlimeGameToggle;
         }
-        
+
         public void JSSend(UIEvent evt, UIElement elem)
         {
             AlienBloxUtility.RunJavaScript(ScriptBox.Text);
@@ -171,6 +176,47 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
             else
             {
                 ScriptBar.Remove();
+            }
+        }
+
+        public static void PushImmortality(UIEvent evt, UIElement elem)
+        {
+            if (elem is ButtonIcon button)
+            {
+                if (Main.netMode == NetmodeID.MultiplayerClient)
+                {
+                    using var ms = new MemoryStream();
+                    using var br = new BinaryWriter(ms);
+
+                    br.Write(Main.myPlayer);
+                    br.Write(button.Toggle);
+
+                    AlienBloxUtility.SendAlienBloxPacket("PlrImmortality", ms.ToArray());
+                }
+                else
+                {
+                    Main.LocalPlayer.AlienBloxUtility().Immortal = button.Toggle;
+                }
+            }
+        }
+
+        public static void DoNPCImmortality(UIEvent evt, UIElement elem)
+        {
+            if (elem is ButtonIcon button)
+            {
+                if (Main.netMode == NetmodeID.MultiplayerClient)
+                {
+                    using var ms = new MemoryStream();
+                    using var br = new BinaryWriter(ms);
+
+                    br.Write(button.Toggle);
+
+                    AlienBloxUtility.SendAlienBloxPacket("TownieImmortality", ms.ToArray());
+                }
+                else
+                {
+                    NPCImmortality.GlobalImmortality = button.Toggle;
+                }
             }
         }
 

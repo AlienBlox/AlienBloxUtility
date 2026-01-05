@@ -1,2 +1,9 @@
-AlienBlox's Utility v0.1.4.2 released!
- * Made the Asset Inspector have proper async to decompile items (prevents tModLoader from hanging)
+AlienBlox's Utility v0.1.4.3 released!
+==Super Utilities Update!==
+ * Added the Immortality Tool
+ * Added the town NPC Immortality Tool
+ * Added the Hitbox sight tool
+ * Added the Scripting tool
+ * Added the Black Hole tool
+ * Added the Noclip tool
+ * Added the Debug Sidebar (access all those tools on it, middle click debug icon to use.)
