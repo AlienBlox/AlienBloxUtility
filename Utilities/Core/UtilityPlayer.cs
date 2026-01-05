@@ -76,7 +76,7 @@ namespace AlienBloxUtility.Utilities.Core
         public override void OnEnterWorld()
         {
             noClipHack = false;
-            AlienBloxUtility.SendNoclipHack(noClipHackPos, noClipHack);
+            AlienBloxUtility.SendNoclipHack(new Vector2(Main.spawnTileX * 16, Main.spawnTileY * 16), noClipHack);
 
             //DebugSidebarRender.Instance.RegenUI();
             AlienBloxUtility.SendSteamID(Player);

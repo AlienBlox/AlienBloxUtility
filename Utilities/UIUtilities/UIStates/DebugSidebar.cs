@@ -37,7 +37,7 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
 
             NoclipTool = new("Mods.AlienBloxUtility.UI.SidebarTools.Noclip", ItemID.CreativeWings, Color.MintCream, true);
             HitboxTool = new("Mods.AlienBloxUtility.UI.SidebarTools.Hitbox", ItemID.Wood, Color.SandyBrown, true);
-            BlackHoleTool = new("Mods.AlienBloxUtility.UI.SidebarTools.BlackHole", ItemID.BlackDye, Color.Black, true);
+            BlackHoleTool = new("Mods.AlienBloxUtility.UI.SidebarTools.BlackHole", ItemID.BlackDye, Color.Black, false);
             ScriptingTool = new("Mods.AlienBloxUtility.UI.SidebarTools.Scripting", ItemID.Amber, Color.Yellow, true);
             NPCImmortalityTool = new("Mods.AlienBloxUtility.UI.SidebarTools.NPCImmortality", ItemID.SpectreBar, Color.MediumPurple, true);
             PlayerImmortalityTool = new("Mods.AlienBloxUtility.UI.SidebarTools.PlayerImmortality", ItemID.GuideVoodooDoll, Colors.RarityRed, true);
