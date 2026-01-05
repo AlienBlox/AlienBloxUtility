@@ -84,7 +84,13 @@ UI: {
 
 	SidebarTools: {
 		Scripting: Toggle Scripting Tool
-		BlackHole: Toggle Black Hole Tool
+		BlackHole:
+			'''
+			Toggle Black Hole Tool
+			Left-click for Item Black Hole
+			Right-click for NPC Black Hole
+			Middle-click for Projectile Black Hole
+			'''
 		Hitbox: Toggle Hitbox Tool
 		Noclip: Toggle Wallclip Tool
 		SlimeGame: Start Slime Game

@@ -1,4 +1,5 @@
 ﻿using AlienBloxUtility.Utilities.Core;
+using AlienBloxUtility.Utilities.NetCode.Packets;
 using AlienBloxUtility.Utilities.UIUtilities.UIElements;
 using AlienBloxUtility.Utilities.UIUtilities.UIRenderers;
 using Microsoft.Xna.Framework;
@@ -86,7 +87,57 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
 
             NoclipTool.OnLeftClick += WallClip;
             HitboxTool.OnLeftClick += DoHitboxTool;
+
+            BlackHoleTool.OnLeftClick += BlackHoleItem;
+            BlackHoleTool.OnMiddleClick += BlackHoleProjectile;
+            BlackHoleTool.OnRightClick += BlackHoleNPC;
+
             SlimeGame.OnLeftClick += SlimeGameToggle;
+        }
+        
+        public static void BlackHoleItem(UIEvent evt, UIElement elem)
+        {
+            if (Main.netMode == NetmodeID.SinglePlayer)
+            {
+                foreach (var item in Main.ActiveItems)
+                {
+                    item.position = Main.LocalPlayer.position;
+                }
+            }
+            else
+            {
+                BlackHolePacket.SendBlackHole(0, Main.LocalPlayer.position);
+            }
+        }
+
+        public static void BlackHoleProjectile(UIEvent evt, UIElement elem)
+        {
+            if (Main.netMode == NetmodeID.SinglePlayer)
+            {
+                foreach (var proj in Main.ActiveProjectiles)
+                {
+                    proj.position = Main.LocalPlayer.position;
+                }
+            }
+            else
+            {
+                BlackHolePacket.SendBlackHole(1, Main.LocalPlayer.position);
+            } 
+        }
+
+        public static void BlackHoleNPC(UIEvent evt, UIElement elem)
+        {
+            if (Main.netMode == NetmodeID.SinglePlayer)
+            {
+                foreach (var npc in Main.ActiveNPCs)
+                {
+                    npc.position = Main.LocalPlayer.position;
+                }
+            }
+            else
+            {
+                BlackHolePacket.SendBlackHole(2, Main.LocalPlayer.position);
+            }   
         }
 
         public static void DoHitboxTool(UIEvent evt, UIElement elem)
