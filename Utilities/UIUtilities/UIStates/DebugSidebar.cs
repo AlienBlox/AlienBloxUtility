@@ -85,7 +85,16 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
             AddToSidebar(SlimeGame);
 
             NoclipTool.OnLeftClick += WallClip;
+            HitboxTool.OnLeftClick += DoHitboxTool;
             SlimeGame.OnLeftClick += SlimeGameToggle;
+        }
+
+        public static void DoHitboxTool(UIEvent evt, UIElement elem)
+        {
+            if (elem is ButtonIcon icon)
+            {
+                Main.LocalPlayer.AlienBloxUtility().HitboxTool = icon.Toggle;
+            }
         }
 
         public static void SlimeGameToggle(UIEvent evt, UIElement elem)

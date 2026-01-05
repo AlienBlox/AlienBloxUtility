@@ -10,9 +10,9 @@ namespace AlienBloxUtility.Utilities.Core
     {
         public bool noClipHack;
 
-        public bool safeNoclip;
-
         public bool Immortal;
+
+        public bool HitboxTool;
 
         public int ForceSyncTimer;
 
@@ -76,6 +76,7 @@ namespace AlienBloxUtility.Utilities.Core
         public override void OnEnterWorld()
         {
             noClipHack = false;
+            AlienBloxUtility.SendNoclipHack(noClipHackPos, noClipHack);
 
             //DebugSidebarRender.Instance.RegenUI();
             AlienBloxUtility.SendSteamID(Player);
