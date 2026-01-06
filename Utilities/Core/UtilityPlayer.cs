@@ -32,6 +32,38 @@ namespace AlienBloxUtility.Utilities.Core
             {
                 Player.position = noClipHackPos;
             }
+
+            if (Immortal)
+            {
+                Player.statLife = Player.statLifeMax2;
+                
+                for (int i = 0; i < Main.debuff.Length; i++)
+                {
+                    Player.buffImmune[i] = true;
+                }
+            }
+        }
+
+        public override void PreUpdateBuffs()
+        {
+            foreach (var buffs in Player.buffType)
+            {
+                if (Main.debuff[buffs])
+                {
+                    Player.ClearBuff(buffs);
+                }
+            }
+        }
+
+        public override void PostUpdateBuffs()
+        {
+            foreach (var buffs in Player.buffType)
+            {
+                if (Main.debuff[buffs])
+                {
+                    Player.ClearBuff(buffs);
+                }
+            }
         }
 
         public override void ProcessTriggers(TriggersSet triggersSet)
