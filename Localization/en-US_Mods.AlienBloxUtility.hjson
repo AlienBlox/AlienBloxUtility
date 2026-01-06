@@ -46,6 +46,7 @@ UI: {
 		Left-click to inspect mod.
 		Middle-click for mod info.
 		'''
+	EntitySummon: Summon Menu
 
 	Console: {
 		ConWelcome: AlienBlox's Utility V{0} loaded!
@@ -99,6 +100,7 @@ UI: {
 		SpawnEntity: Toggle Spawn Menu
 		JSSend: Send JavaScript (Right-click to send to server.)
 		LuaSend: Send Lua (Right-click to send to server.)
+		ButcherEntity: Toggle Butcher Menu
 	}
 }
 

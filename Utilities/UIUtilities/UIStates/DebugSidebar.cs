@@ -17,13 +17,17 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
 {
     public class DebugSidebar : UIState
     {
-        public UIPanel Sidebar, ScriptBar;
+        public PanelV2 SummonerPanel;
+
+        public UIPanel Sidebar, ScriptBar, SummonerBacker, SummonerTopbar, ItemSummoner, ProjectileSummoner, NPCSummoner, BuffGiver;
+
+        public UIElement SummonerPanelActual;
 
         public UITextBoxImproved ScriptBox;
 
         //public UIList SidebarList;
 
-        public ButtonIcon NoclipTool, HitboxTool, BlackHoleTool, ScriptingTool, NPCImmortalityTool, PlayerImmortalityTool, SpawningTool, SlimeGame, SendLua, SendJS;
+        public ButtonIcon NoclipTool, HitboxTool, BlackHoleTool, ScriptingTool, NPCImmortalityTool, PlayerImmortalityTool, SpawningTool, ButcherTool, SlimeGame, SendLua, SendJS;
 
         public List<ButtonIcon> Buttons;
 
@@ -31,6 +35,75 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
 
         public override void OnInitialize()
         {
+            SummonerPanelActual = new()
+            {
+                VAlign = 1,
+                HAlign = .5f
+            };
+
+            SummonerPanelActual.Width.Set(0, 1);
+            SummonerPanelActual.Height.Set(0, .9f);
+
+            SummonerPanel = new(new(650, 450), Vector2.Zero, new(0, 128, 0, 128), new(0, 0, 0), Language.GetText("Mods.AlienBloxUtility.UI.EntitySummon").Value, true, false, 650, 450);
+
+            ItemSummoner = new();
+            ProjectileSummoner = new();
+            NPCSummoner = new();
+            BuffGiver = new();
+
+            ItemSummoner.Height.Set(0, 1);
+            ItemSummoner.Width.Set(0, .25f);
+            ItemSummoner.HAlign = 0;
+
+            ProjectileSummoner.Height.Set(0, 1);
+            ProjectileSummoner.Width.Set(0, .25f);
+            ProjectileSummoner.HAlign = .25f;
+
+            NPCSummoner.Height.Set(0, 1);
+            NPCSummoner.Width.Set(0, .25f);
+            NPCSummoner.HAlign = .5f;
+
+            BuffGiver.Height.Set(0, 1);
+            BuffGiver.Width.Set(0, .25f);
+            BuffGiver.HAlign = .75f;
+
+            SummonerPanel.Width.Set(0, 1);
+            SummonerPanel.Height.Set(0, 1);
+            SummonerPanel.HAlign = 1;
+
+            ItemSummoner.VAlign = ProjectileSummoner.VAlign = NPCSummoner.VAlign = BuffGiver.VAlign = .5f;
+
+            SummonerTopbar = new()
+            {
+                VAlign = 0,
+                HAlign = .5f
+            };
+
+            SummonerTopbar.Width.Set(0, 1);
+            SummonerTopbar.Height.Set(0, .1f);
+
+            SummonerTopbar.Append(ItemSummoner);
+            SummonerTopbar.Append(ProjectileSummoner);
+            SummonerTopbar.Append(NPCSummoner);
+            SummonerTopbar.Append(BuffGiver);
+
+            SummonerBacker = new()
+            {
+                VAlign = 1,
+                HAlign = .5f,
+                BackgroundColor = new(0, 128, 0)
+            };
+
+            SummonerBacker.SetPadding(0);
+            SummonerBacker.Width.Set(0, 1);
+            SummonerBacker.Height.Set(0, 1);
+            SummonerBacker.Append(SummonerTopbar);
+
+            SummonerPanel.Append(SummonerPanelActual);
+            SummonerPanel.Append(SummonerBacker);
+
+            Append(SummonerPanel);
+
             Buttons = [];
 
             ScriptBar = new();
@@ -79,6 +152,7 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
             NPCImmortalityTool = new("Mods.AlienBloxUtility.UI.SidebarTools.NPCImmortality", ItemID.SpectreBar, Color.MediumPurple, true);
             PlayerImmortalityTool = new("Mods.AlienBloxUtility.UI.SidebarTools.PlayerImmortality", ItemID.GuideVoodooDoll, Colors.RarityRed, true);
             SpawningTool = new("Mods.AlienBloxUtility.UI.SidebarTools.SpawnEntity", ItemID.SuspiciousLookingEye, Colors.RarityOrange, true);
+            ButcherTool = new("Mods.AlienBloxUtility.UI.SidebarTools.ButcherEntity", ItemID.BloodyMachete, Color.DarkRed, true);
             SlimeGame = new("Mods.AlienBloxUtility.UI.SidebarTools.SlimeGame", ItemID.PinkGel, Color.LightPink);
 
             NoclipTool.Width.Set(0, 1);
@@ -98,6 +172,9 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
 
             PlayerImmortalityTool.Width.Set(0, 1);
             PlayerImmortalityTool.Height.Set(60, 0);
+
+            ButcherTool.Width.Set(0, 1);
+            ButcherTool.Height.Set(60, 0);
 
             SpawningTool.Width.Set(0, 1);
             SpawningTool.Height.Set(60, 0);
@@ -125,7 +202,8 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
             AddToSidebar(ScriptingTool);
             AddToSidebar(NPCImmortalityTool);
             AddToSidebar(PlayerImmortalityTool);
-            //AddToSidebar(SpawningTool);
+            AddToSidebar(SpawningTool);
+            AddToSidebar(ButcherTool);
             AddToSidebar(SlimeGame);
 
             NoclipTool.OnLeftClick += WallClip;
@@ -139,6 +217,8 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
 
             NPCImmortalityTool.OnLeftClick += DoNPCImmortality;
             PlayerImmortalityTool.OnLeftClick += PushImmortality;
+
+            SpawningTool.OnLeftClick += ActivateSummonMenu;
 
             SlimeGame.OnLeftClick += SlimeGameToggle;
         }
@@ -176,6 +256,18 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
             else
             {
                 ScriptBar.Remove();
+            }
+        }
+
+        public void ActivateSummonMenu(UIEvent evt, UIElement elem)
+        {
+            if (SummonerPanel.Parent == null)
+            {
+                Append(SummonerPanel);
+            }
+            else
+            {
+                SummonerPanel.Remove();
             }
         }
 
@@ -297,6 +389,7 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
         {
             if (!Fix)
             {
+                SummonerPanel.Remove();
                 Sidebar.SetPadding(0);
                 Sidebar.VAlign = ShowUtilityMenuButton.Instance._UI.VAlign;
                 Sidebar.HAlign = ShowUtilityMenuButton.Instance._UI.HAlign;
@@ -314,6 +407,14 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
                 Append(Sidebar);
 
                 //SidebarList.Recalculate();
+
+                SummonerPanel.Close.OnLeftClick += (_, _) => 
+                {
+                    SpawningTool.Toggle = false;
+                    SummonerPanel.Remove();
+                };
+
+                SummonerBacker.MaxHeight.Set(-SummonerPanel.Topbar.GetDimensions().Height, 1f);
 
                 Fix = true;
             }
