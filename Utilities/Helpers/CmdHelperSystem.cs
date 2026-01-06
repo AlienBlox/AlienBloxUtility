@@ -26,6 +26,11 @@ namespace AlienBloxUtility.Utilities.Helpers
 
             }
 
+            /// <summary>
+            /// Launches the command.
+            /// </summary>
+            /// <param name="Conhost">The Console menu to print things to.</param>
+            /// <param name="Params">The params of the command</param>
             public virtual void LaunchCommand(ConHostSystem Conhost, params string[] Params)
             {
                 
@@ -49,7 +54,7 @@ namespace AlienBloxUtility.Utilities.Helpers
                 string[] parameters = new string[parts.Length - 1];
                 Array.Copy(parts, 1, parameters, 0, parameters.Length);
 
-                if (command == CommandName)
+                if (command.Equals(CommandName, StringComparison.CurrentCultureIgnoreCase))
                 {
                     LaunchCommand(ConHost, parameters);
 

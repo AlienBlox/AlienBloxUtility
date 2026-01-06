@@ -202,8 +202,8 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
             AddToSidebar(ScriptingTool);
             AddToSidebar(NPCImmortalityTool);
             AddToSidebar(PlayerImmortalityTool);
-            AddToSidebar(SpawningTool);
-            AddToSidebar(ButcherTool);
+            //AddToSidebar(SpawningTool);
+            //AddToSidebar(ButcherTool);
             AddToSidebar(SlimeGame);
 
             NoclipTool.OnLeftClick += WallClip;

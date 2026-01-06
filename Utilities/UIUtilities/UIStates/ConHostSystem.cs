@@ -615,29 +615,36 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
 
         public void Search(UIMouseEvent evt, UIElement element)
         {
-            CommandsScroll.Clear();
-
-            foreach (var item in CmdHelperSystem.GetCmdNames())
+            try
             {
-                if (item.Contains(SearchBar.Text))
+                CommandsScroll.Clear();
+
+                foreach (var item in CmdHelperSystem.GetCmdNames())
                 {
-                    var panel = new UIPanel();
-
-                    panel.Width.Set(0, 1f);
-                    panel.Height.Set(30, 0);
-                    panel.InsertText(item);
-                    panel.OnLeftClick += (_, _) =>
+                    if (item.Contains(SearchBar.Text))
                     {
-                        SoundEngine.PlaySound(SoundID.MenuTick);
+                        var panel = new UIPanel();
 
-                        CommandBox.SetText(item);
-                    };
+                        panel.Width.Set(0, 1f);
+                        panel.Height.Set(30, 0);
+                        panel.InsertText(item);
+                        panel.OnLeftClick += (_, _) =>
+                        {
+                            SoundEngine.PlaySound(SoundID.MenuTick);
 
-                    CommandsScroll.Add(panel);
+                            CommandBox.SetText(item);
+                        };
+
+                        CommandsScroll.Add(panel);
+                    }
                 }
-            }
 
-            SearchBar.SetText(string.Empty);
+                SearchBar.SetText(string.Empty);
+            }
+            catch
+            {
+
+            } 
         }
 
         /// <summary>
