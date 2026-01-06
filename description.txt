@@ -13,6 +13,9 @@ Features includes these abilities:
  * A documentation page for every feature!
  * The ability to run JavaScript and Lua right in tModLoader
  * An asset extractor used to inspect tMod files (Right-click to decompile, left-click to inspect and middle click for build.txt of the mod.)
+ * A toolbar that grants features like immortality, super flight, town NPC immortality, hitbox seeing, black hole and scripting
+ * The ability to quick butcher entities
+ * The ability to summon projectiles, NPCs and give buffs (a command.)
 Upcoming Features:
  * A console chat feature that allows you to chat directly from the debug console (With groupchat, anon and more!)
 Legals:

@@ -4,7 +4,7 @@ using AlienBloxUtility.Utilities.UIUtilities.UIStates;
 using Terraria;
 using Terraria.ID;
 
-namespace AlienBloxUtility.Utilities.Core
+namespace AlienBloxUtility.Utilities.Commands
 {
     public class ButcherCommand : CommandBase
     {
