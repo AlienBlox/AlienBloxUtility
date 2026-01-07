@@ -70,26 +70,33 @@ namespace AlienBloxUtility.Utilities.Core
         {
             if (noClipHack)
             {
+
+                float secondaryModifier = 1f;
                 Vector2 prevNoClipHack = noClipHackPos;
+
+                if (AlienBloxKeybinds.SudoKeybind.Current)
+                {
+                    secondaryModifier = 2f;
+                }
 
                 if (triggersSet.Up)
                 {
-                    noClipHackPos.Y -= 40;
+                    noClipHackPos.Y -= 40 * secondaryModifier;
                 }
 
                 if (triggersSet.Down)
                 {
-                    noClipHackPos.Y += 40;
+                    noClipHackPos.Y += 40 * secondaryModifier;
                 }
 
                 if (triggersSet.Left)
                 {
-                    noClipHackPos.X += Player.direction * 40;
+                    noClipHackPos.X += Player.direction * 40 * secondaryModifier;
                 }
 
                 if (triggersSet.Right)
                 {
-                    noClipHackPos.X += Player.direction * 40;
+                    noClipHackPos.X += Player.direction * 40 * secondaryModifier;
                 }
 
                 if (prevNoClipHack != noClipHackPos)

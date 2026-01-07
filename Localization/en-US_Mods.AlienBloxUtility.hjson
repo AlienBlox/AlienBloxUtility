@@ -309,3 +309,8 @@ Documents: {
 			'''
 	}
 }
+
+Keybinds: {
+	Sudo.DisplayName: Use Sudo
+	ToggleAdvancedDebugging.DisplayName: Toggle Sudo Debugging UI
+}
