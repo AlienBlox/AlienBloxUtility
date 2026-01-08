@@ -2,6 +2,7 @@
 using AlienBloxUtility.Utilities.UIUtilities.UIStates;
 using System;
 using System.Collections.Generic;
+using Terraria.Localization;
 using Terraria.ModLoader;
 
 namespace AlienBloxUtility.Utilities.Helpers
@@ -14,7 +15,7 @@ namespace AlienBloxUtility.Utilities.Helpers
 
             public virtual string CommandName { get; set; }
 
-            public virtual string FriendlyDescription { get; }
+            public virtual string FriendlyDescription { get; set; }
 
             public virtual void OnLoad()
             {
@@ -66,6 +67,11 @@ namespace AlienBloxUtility.Utilities.Helpers
 
             public void Load(Mod mod)
             {
+                if (FriendlyDescription == default)
+                {
+                    FriendlyDescription = Language.GetOrRegister($"Mods.AlienBloxUtility.Commands.{GetType().Name}").Value;
+                }
+
                 AddCommand(this);
                 OnLoad();
             }
@@ -158,6 +164,24 @@ namespace AlienBloxUtility.Utilities.Helpers
             }
 
             return [.. names];
+        }
+
+        /// <summary>
+        /// Description helper...
+        /// </summary>
+        /// <param name="cmdName">we</param>
+        /// <returns>we</returns>
+        public static string DescFromCommandName(string cmdName)
+        {
+            foreach (CommandHelper cmd in CmdHelpers)
+            {
+                if (cmd.CommandName == cmdName)
+                {
+                    return cmd.FriendlyDescription;
+                }
+            }
+
+            return "";
         }
     }
 }

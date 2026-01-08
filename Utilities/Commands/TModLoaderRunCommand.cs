@@ -8,8 +8,6 @@ namespace AlienBloxUtility.Utilities.Commands
     {
         public override string CommandName => "tmodloader";
 
-        public override string FriendlyDescription => "(Runs an extra instance of tModLoader.)";
-
         public override void LaunchCommand(ConHostSystem Conhost, params string[] Params)
         {
             string ExtraArgs = "";

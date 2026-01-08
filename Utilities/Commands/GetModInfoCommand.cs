@@ -11,8 +11,6 @@ namespace AlienBloxUtility.Utilities.Commands
     {
         public override string CommandName => "getmod";
 
-        public override string FriendlyDescription => "(Gets the details about every mod installed)";
-
         public override void LaunchCommand(ConHostSystem Conhost, params string[] Params)
         {
             try

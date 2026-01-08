@@ -314,3 +314,28 @@ Keybinds: {
 	Sudo.DisplayName: Use Sudo
 	ToggleAdvancedDebugging.DisplayName: Toggle Sudo Debugging UI
 }
+
+Commands: {
+	TModFilePeekerCommand: Peek inside tMod Files (Usage: Mod name)
+	SummoningCommand: Summons an entity like an NPC, Projectile or even gives a buff. (See documentation for usage.)
+	SlimeCommand: Runs the slime game.
+	ServerLuaCommand: Does lua on the server (Usage: lua code after command)
+	NetTest: Tests are packets working
+	MovieCreditsCommand: The credits for the mod.
+	ModImpersonateCommand: Impersonates another mod's output
+	ModCommandHelper: A command implemented by other mods (refer to the other mod's documentation)
+	LuaCommand: Does lua on the client (Usage: lua code after command)
+	LuaCancel: Cancel all lua tasks safely
+	LoadFileTest: Tests is the load tMod file system working.
+	JavaScriptCommand: Runs a JavaScript script (Usage: see documentation)
+	JavaFileCommand: Runs a JavaScript file (Usage: see documentation)
+	HelpCommand: Help
+	GetLuaCommand: Gets a list of Lua objects in the Lua env
+	GetLoadedModCount: See how many mods are loaded at once
+	DVDCommand: DVD!
+	DumpModCommand: Dumps a mod's content (only PDB, tMod and DLL)
+	DMCommand: DMs another user (Usage: Name of player, message after that)
+	ButcherCommand: Butchers an entity (you can choose to butcher NPC, Projectiles or townies)
+	GetModInfoCommand: Gets a Mod's build info like is the mod's resources visible
+	TModLoaderRunCommand: Runs an extra copy of tModLoader
+}

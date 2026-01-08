@@ -1,5 +1,6 @@
 ﻿using AlienBloxUtility.Utilities.Core;
 using AlienBloxUtility.Utilities.DataStructures;
+using AlienBloxUtility.Utilities.Helpers;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -203,5 +204,10 @@ namespace AlienBloxUtility
                 }
             }
         }
+
+        public static string CommandDescription(this CmdHelperSystem.CommandHelper command)
+        {
+            return Language.GetText($"Mods.AlienBloxUtility.Commands.{command.GetType().Name}").Value;
+        } 
     }
 }
