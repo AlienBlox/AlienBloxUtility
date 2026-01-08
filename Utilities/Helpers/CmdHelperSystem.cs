@@ -55,7 +55,7 @@ namespace AlienBloxUtility.Utilities.Helpers
             {
                 if (DocumentationLocalization == default)
                 {
-                    DocumentationLocalization = GetType().Name;
+                    DocumentationLocalization = $"Mods.AlienBloxUtility.Documents.{GetType().Name}";
                 }
 
                 if (DocumentationEnabled)
