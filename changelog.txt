@@ -1,4 +1,4 @@
-AlienBlox's Utility v0.1.4.4 released!
-==Toolset Update!==
- * Added the butcher command.
- * Added the summon command.
+AlienBlox's Utility v0.1.4.5 released!
+==Docs Update!==
+ * Finally fixed the description of commands not working.
+ * Added the documentation for a few commands.
