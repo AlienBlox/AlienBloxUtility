@@ -9,6 +9,8 @@ namespace AlienBloxUtility.Utilities.Commands
     {
         public override string CommandName => "serverlua";
 
+        public override bool DocumentationEnabled => false;
+
         public override void LaunchCommand(ConHostSystem Conhost, params string[] Params)
         {
             if (Main.netMode == NetmodeID.MultiplayerClient)

@@ -190,12 +190,14 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
             }
         }
 
-        public static void Toggle(UIEvent evt, UIElement element)
+        public void Toggle(UIEvent evt, UIElement element)
         {
             if (element is ButtonIcon b)
             {
                 b.Toggle = !b.Toggle;
             }
+
+            SearchDocs(TextBox.Text);
         }
 
         public void SearchDocs(string docName)

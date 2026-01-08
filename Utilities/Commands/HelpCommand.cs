@@ -7,6 +7,8 @@ namespace AlienBloxUtility.Utilities.Commands
     {
         public override string CommandName => "help";
 
+        public override bool DocumentationEnabled => false;
+
         public override void LaunchCommand(ConHostSystem Conhost, params string[] Params)
         {
             foreach (string name in CmdHelperSystem.GetCmdNames())

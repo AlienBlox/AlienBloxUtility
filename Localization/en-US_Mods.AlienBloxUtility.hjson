@@ -308,11 +308,30 @@ Documents: {
 			AlienBlox's Utility uses Jint + Acornima for JavaScript
 			'''
 	}
+
+	ButcherCommand: {
+		Title: Butcher Command
+		Description:
+			'''
+			The Butcher Command in AlienBlox's Utility is a command used for one shotting things
+			It has these different options: item, npc, npcfriendly and proj
+			'''
+	}
+
+	TModLoaderRunCommand: {
+		Title: tModLoader Command
+		Description: Runs an extra instance of tModLoader
+	}
+
+	DMCommand: {
+		Title: DM Command
+		Description: Allows the direct messaging of users.
+	}
 }
 
 Keybinds: {
 	Sudo.DisplayName: Use Sudo
-	ToggleAdvancedDebugging.DisplayName: Toggle Sudo Debugging UI
+	ToggleAdvancedDebugging.DisplayName: Toggle Sudo Debugging UI (Unused)
 }
 
 Commands: {

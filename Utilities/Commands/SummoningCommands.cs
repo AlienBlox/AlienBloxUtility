@@ -10,6 +10,8 @@ namespace AlienBloxUtility.Utilities.Commands
     {
         public override string CommandName => "summon";
 
+        public override bool DocumentationEnabled => false;
+
         public override void LaunchCommand(ConHostSystem Conhost, params string[] Params)
         {
             string Param = Params[0];

@@ -13,9 +13,23 @@ namespace AlienBloxUtility.Utilities.Helpers
         {
             public int CommandID;
 
+            public bool Lua;
+
+            public bool CSharp;
+
+            public bool Core;
+
+            public bool JS;
+
             public virtual string CommandName { get; set; }
 
-            public virtual string FriendlyDescription { get; set; }
+            public virtual string FriendlyDescription { get => FriendlyDescription = Language.GetOrRegister($"Mods.AlienBloxUtility.Commands.{GetType().Name}").Value; set {} }
+
+            public virtual string DocumentationLocalization { get; set;  }
+
+            public virtual bool DocumentationEnabled { get; set; } = true;
+
+            public Mod Mod { get; private set; }
 
             public virtual void OnLoad()
             {
@@ -35,6 +49,24 @@ namespace AlienBloxUtility.Utilities.Helpers
             public virtual void LaunchCommand(ConHostSystem Conhost, params string[] Params)
             {
                 
+            }
+
+            public void LoadDocumentation()
+            {
+                if (DocumentationLocalization == default)
+                {
+                    DocumentationLocalization = GetType().Name;
+                }
+
+                if (DocumentationEnabled)
+                {
+                    DocumentationStorage.RegisterEntry(Mod, GetType().Name, DocumentationLocalization, Lua, CSharp, Core, JS);
+                }
+
+                if (FriendlyDescription == default)
+                {
+                    FriendlyDescription = Language.GetOrRegister($"Mods.AlienBloxUtility.Commands.{GetType().Name}").Value;
+                }
             }
 
             public bool TryParse(string content, ConHostSystem ConHost)
@@ -67,10 +99,7 @@ namespace AlienBloxUtility.Utilities.Helpers
 
             public void Load(Mod mod)
             {
-                if (FriendlyDescription == default)
-                {
-                    FriendlyDescription = Language.GetOrRegister($"Mods.AlienBloxUtility.Commands.{GetType().Name}").Value;
-                }
+                Mod = mod;
 
                 AddCommand(this);
                 OnLoad();
@@ -111,6 +140,14 @@ namespace AlienBloxUtility.Utilities.Helpers
             if (CmdHelpers != null)
             {
                 command.CommandID = CmdHelpers.Count;
+            }
+        }
+
+        public static void LoadAllDocs()
+        {
+            foreach (CommandHelper helper in CmdHelpers)
+            {
+                helper.LoadDocumentation();
             }
         }
 

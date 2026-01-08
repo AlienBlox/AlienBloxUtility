@@ -7,6 +7,8 @@ namespace AlienBloxUtility.Utilities.Commands
     {
         public override string CommandName => "slimegame";
 
+        public override bool DocumentationEnabled => false;
+
         public override void LaunchCommand(ConHostSystem Conhost, params string[] Params)
         {
             bool dg = false;

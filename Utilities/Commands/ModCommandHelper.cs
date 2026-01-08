@@ -11,6 +11,8 @@ namespace AlienBloxUtility.Utilities.Commands
 
         public override string CommandName => "modrun";
 
+        public override bool DocumentationEnabled => false;
+
         public override void OnLoad()
         {
             Commands = [];

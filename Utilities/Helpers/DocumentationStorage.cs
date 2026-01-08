@@ -1,8 +1,6 @@
 ﻿using AlienBloxUtility.Common.Exceptions;
 using System.Collections.Generic;
-using Terraria;
 using Terraria.GameContent.UI.Elements;
-using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.UI;
@@ -29,8 +27,8 @@ namespace AlienBloxUtility.Utilities.Helpers
 
             public bool js;
 
-            public string Title => Language.GetOrRegister(LocalizationLocation + ".Title", () => { return "cat"; }).Value;
-            public string Description => Language.GetOrRegister(LocalizationLocation + ".Description", () => { return "cat"; }).Value;
+            public string Title => Language.GetOrRegister(LocalizationLocation + ".Title").Value;
+            public string Description => Language.GetOrRegister(LocalizationLocation + ".Description").Value;
 
             public string FullName => $"{mod}:{entryName}";
         }
@@ -117,6 +115,8 @@ namespace AlienBloxUtility.Utilities.Helpers
             RegisterEntry(Mod, "StatsBar", "Mods.AlienBloxUtility.Documents.StatsBar", false, false, true, false);
             RegisterEntry(Mod, "JavaScript", "Mods.AlienBloxUtility.Documents.JavaScript", false, false, true, true);
             RegisterEntry(Mod, "Lua", "Mods.AlienBloxUtility.Documents.Lua", true, false, true, false);
+
+            CmdHelperSystem.LoadAllDocs();
         }
 
         public override void Unload()

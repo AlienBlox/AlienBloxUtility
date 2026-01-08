@@ -1,5 +1,4 @@
-﻿using Terraria;
-using AlienBloxUtility.Utilities.Helpers;
+﻿using AlienBloxUtility.Utilities.Helpers;
 using AlienBloxUtility.Utilities.UIUtilities.UIStates;
 using AlienBloxUtility.Utilities.Core;
 
@@ -8,6 +7,8 @@ namespace AlienBloxUtility.Utilities.Commands
     public class DumpModCommand : CmdHelperSystem.CommandHelper
     {
         public override string CommandName => "dumpmod";
+
+        public override bool DocumentationEnabled => false;
 
         public override void LaunchCommand(ConHostSystem Conhost, params string[] Params)
         {
