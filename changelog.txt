@@ -1,4 +1,2 @@
-AlienBlox's Utility v0.1.4.5 released!
-==Docs Update!==
- * Finally fixed the description of commands not working.
- * Added the documentation for a few commands.
+AlienBlox's Utility v0.1.4.6 released!
+ * Added the Tools API (Unused)
