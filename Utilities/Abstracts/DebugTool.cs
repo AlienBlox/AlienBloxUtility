@@ -32,7 +32,7 @@ namespace AlienBloxUtility.Utilities.Abstracts
         public int ToolID;
 
         /// <summary>
-        /// Called both on server, singleplayer and clients when a debug tool is used
+        /// Called on server, singleplayer and clients when a debug tool is used
         /// </summary>
         /// <param name="user">The player that used the tool</param>
         /// <param name="sudo">Was the tool used in Sudo mode.</param>
@@ -50,7 +50,7 @@ namespace AlienBloxUtility.Utilities.Abstracts
             try
             {
                 using MemoryStream ms = new();
-                using BinaryWriter bw = new BinaryWriter(ms, Encoding.UTF8);
+                using BinaryWriter bw = new(ms);
 
                 bw.Write(tool);
                 bw.Write(player);

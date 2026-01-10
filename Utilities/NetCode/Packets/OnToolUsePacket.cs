@@ -13,6 +13,9 @@ namespace AlienBloxUtility.Utilities.NetCode.Packets
             int plr = reader.ReadInt32();
             bool sudo = reader.ReadBoolean();
 
+            if (Main.myPlayer == plr)
+                return;
+
             foreach (var tool in DebugTool.Tools)
             {
                 if (tool.Name == toolType)
