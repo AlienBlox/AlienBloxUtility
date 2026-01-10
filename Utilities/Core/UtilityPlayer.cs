@@ -14,6 +14,8 @@ namespace AlienBloxUtility.Utilities.Core
 
         public bool HitboxTool;
 
+        public bool toolSudo;
+
         public int ForceSyncTimer;
 
         public Vector2 noClipHackPos;
@@ -68,6 +70,11 @@ namespace AlienBloxUtility.Utilities.Core
 
         public override void ProcessTriggers(TriggersSet triggersSet)
         {
+            if (AlienBloxKeybinds.SudoKeybind.JustPressed)
+            {
+                toolSudo = !toolSudo;
+            }
+
             if (noClipHack)
             {
 
