@@ -48,22 +48,28 @@ namespace AlienBloxUtility.Utilities.Core
 
         public override void PreUpdateBuffs()
         {
-            foreach (var buffs in Player.buffType)
+            if (Immortal)
             {
-                if (Main.debuff[buffs])
+                foreach (var buffs in Player.buffType)
                 {
-                    Player.ClearBuff(buffs);
+                    if (Main.debuff[buffs])
+                    {
+                        Player.ClearBuff(buffs);
+                    }
                 }
             }
         }
 
         public override void PostUpdateBuffs()
         {
-            foreach (var buffs in Player.buffType)
+            if (Immortal)
             {
-                if (Main.debuff[buffs])
+                foreach (var buffs in Player.buffType)
                 {
-                    Player.ClearBuff(buffs);
+                    if (Main.debuff[buffs])
+                    {
+                        Player.ClearBuff(buffs);
+                    }
                 }
             }
         }

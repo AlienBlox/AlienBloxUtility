@@ -1,2 +1,2 @@
-AlienBlox's Utility v0.1.4.6 released!
- * Added the Tools API (Unused)
+AlienBlox's Utility v0.1.4.7 released!
+ * Fixed a bug regarding the immortality feature
