@@ -1,4 +1,4 @@
-﻿using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -7,7 +7,7 @@ using System.Collections.Immutable;
 namespace AlienBloxAnalyzer
 {
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
-    public class AlienBloxAnalyzer : DiagnosticAnalyzer
+    public class MethodMisuseAnalyzerTemplate : DiagnosticAnalyzer
     {
         public const string DiagnosticId = "MethodMisuseAnalyzer";
 
@@ -34,7 +34,7 @@ namespace AlienBloxAnalyzer
             var memberAccess = (MemberAccessExpressionSyntax)context.Node;
 
             // Check if the member being accessed is 'Items'
-            if (memberAccess.Name.Identifier.Text != "LuaUnifiedEnv")
+            if (memberAccess.Name.Identifier.Text != "Items")
                 return;
 
             // Check the type of the object
@@ -43,10 +43,10 @@ namespace AlienBloxAnalyzer
 
             // You can check the containing type or the property type
             var containingType = symbolInfo.Symbol.ContainingType;
-            if (containingType.Name != "AlienBloxUtility") return; // restrict to your type
+            if (containingType.Name != "MyCollection") return; // restrict to your type
 
             // Report a diagnostic
-            var diagnostic = Diagnostic.Create(Rule, memberAccess.GetLocation(), "LuaUnifiedEnv", "RegisterFunc");
+            var diagnostic = Diagnostic.Create(Rule, memberAccess.GetLocation(), "Items", "AddItem");
             context.ReportDiagnostic(diagnostic);
         }
     }
