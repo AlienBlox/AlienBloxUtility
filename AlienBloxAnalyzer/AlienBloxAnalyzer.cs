@@ -9,7 +9,7 @@ namespace AlienBloxAnalyzer
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
     public class AlienBloxAnalyzer : DiagnosticAnalyzer
     {
-        public const string DiagnosticId = "MethodMisuseAnalyzer";
+        public const string DiagnosticId = "AlienBloxAnalyzer";
 
         private static readonly LocalizableString Title = "Do not access underlying collection directly";
         private static readonly LocalizableString MessageFormat = "Do not access '{0}' directly; use '{1}' instead";
