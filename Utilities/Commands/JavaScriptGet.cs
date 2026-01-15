@@ -1,5 +1,6 @@
 ﻿using AlienBloxUtility.Utilities.UIUtilities.UIStates;
 using Jint.Native.Object;
+using Jint.Runtime;
 using System;
 
 namespace AlienBloxUtility.Utilities.Commands
@@ -13,9 +14,9 @@ namespace AlienBloxUtility.Utilities.Commands
             ObjectInstance global = AlienBloxUtility.JSEngine.Global;
 
             // Enumerate property names
-            foreach (var property in global.GetOwnProperties())
+            foreach (var property in global.GetOwnPropertyKeys())
             {
-                Console.WriteLine(property.Key);
+                Conhost.AddConsoleText(Enum.GetName(typeof(Types), property.Type));
             }
         }
     }

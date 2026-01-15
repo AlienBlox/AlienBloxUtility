@@ -358,4 +358,5 @@ Commands: {
 	ButcherCommand: Butchers an entity (you can choose to butcher NPC, Projectiles or townies)
 	GetModInfoCommand: Gets a Mod's build info like is the mod's resources visible
 	TModLoaderRunCommand: Runs an extra copy of tModLoader
+	JavaScriptGet: Mods.AlienBloxUtility.Commands.JavaScriptGet
 }

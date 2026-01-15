@@ -6,7 +6,7 @@ namespace AlienBloxUtility.Utilities.JavaScriptHelpers
 {
     public class JavaScriptSystem : ModSystem
     {
-        public override void Load()
+        public override void OnModLoad()
         {
             var JavaScriptSpawnNPC = (string name) =>
             {
@@ -38,6 +38,7 @@ namespace AlienBloxUtility.Utilities.JavaScriptHelpers
                 }
             };
 
+            AlienBloxUtility.SetValue("Terraria", Main.instance);
             AlienBloxUtility.SetValue("Terraria.SpawnNPC", JavaScriptSpawnNPC);
             AlienBloxUtility.SetValue("Terraria.KillNPC", JavaScriptKillNPC);
         }
