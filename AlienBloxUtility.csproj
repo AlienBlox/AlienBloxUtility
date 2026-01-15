@@ -27,6 +27,9 @@
 		<Reference Include="BCrypt.Net-Next">
 			<HintPath>lib\BCrypt.Net-Next.dll</HintPath>
 		</Reference>
+
+		<ProjectReference Include="AlienBloxAnalyzer\AlienBloxAnalyzer.csproj" OutputItemType="Analyzer"
+                      ReferenceOutputAssembly="false"/>
 	</ItemGroup>
 
 	<!-- References -->
