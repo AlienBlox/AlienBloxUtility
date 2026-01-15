@@ -111,6 +111,7 @@ Messages: {
 		DoJS: "{0} ran a JavaScript at {1} (Unix Time)!"
 	}
 
+	OneShotPlayer: "{0} was brutally murdered by a Scripting Environment"
 	SlimeGame: Slime Game activated!
 	SlimeGameAnnouncement: "{0} completed the Slime Game at score: {1}"
 

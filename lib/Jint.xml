@@ -387,6 +387,13 @@
              </summary>
              <returns>a Promise instance and functions to either resolve or reject it</returns>
         </member>
+        <member name="M:Jint.Engine.RegisterPromiseWithClrValue">
+            <summary>
+            Internal version of RegisterPromise that returns settle functions accepting CLR objects.
+            The CLR to JsValue conversion happens on the event loop thread, not the caller thread.
+            This is critical for thread safety when called from Task.ContinueWith callbacks.
+            </summary>
+        </member>
         <member name="M:Jint.Engine.GetValue(Jint.Runtime.Reference,System.Boolean)">
             <summary>
             https://tc39.es/ecma262/#sec-getvalue
@@ -674,6 +681,12 @@
             <param name="omitPadding"></param>
             <returns>The base64url-encoded form of <paramref name="input"/>.</returns>
         </member>
+        <member name="M:Jint.HoistingScope.HasTopLevelAwait(Acornima.Ast.Module)">
+            <summary>
+            Checks if the module has top-level await expressions.
+            Only checks at the module level, not inside function bodies.
+            </summary>
+        </member>
         <member name="T:Jint.Constraint">
             <summary>
             A constraint that engine can check for validate during statement execution.
@@ -724,6 +737,19 @@
             <param name="timeout">timeout to wait</param>
             <returns>inner value if Promise the value itself otherwise</returns>
         </member>
+        <member name="M:Jint.JsValueExtensions.UnwrapIfPromise(Jint.Native.JsValue,System.Threading.CancellationToken)">
+            <summary>
+            If the value is a Promise
+                1. If "Fulfilled" returns the value it was fulfilled with
+                2. If "Rejected" throws "PromiseRejectedException" with the rejection reason
+                3. If "Pending" throws "OperationCanceledException" if cancellation is requested
+            Else
+                returns the value intact
+            </summary>
+            <param name="value">value to unwrap</param>
+            <param name="cancellationToken">cancellation token to observe</param>
+            <returns>inner value if Promise the value itself otherwise</returns>
+        </member>
         <member name="M:Jint.JsValueExtensions.GetArrayBufferMaxByteLengthOption(Jint.Native.JsValue)">
             <summary>
             https://tc39.es/ecma262/#sec-getarraybuffermaxbytelengthoption
@@ -758,6 +784,11 @@
         <member name="M:Jint.Native.Array.ArrayConstructor.From(Jint.Native.JsValue,Jint.Native.JsValue[])">
             <summary>
             https://tc39.es/ecma262/#sec-array.from
+            </summary>
+        </member>
+        <member name="M:Jint.Native.Array.ArrayConstructor.FromAsync(Jint.Native.JsValue,Jint.Native.JsValue[])">
+            <summary>
+            https://tc39.es/ecma262/#sec-array.fromasync
             </summary>
         </member>
         <member name="M:Jint.Native.Array.ArrayConstructor.ArrayCreate(System.UInt64,Jint.Native.Object.ObjectInstance)">
@@ -980,6 +1011,11 @@
             https://tc39.es/ecma262/#sec-properties-of-the-arraybuffer-prototype-object
             </summary>
         </member>
+        <member name="M:Jint.Native.ArrayBuffer.ArrayBufferPrototype.Immutable(Jint.Native.JsValue,Jint.Native.JsValue[])">
+            <summary>
+            https://tc39.es/proposal-immutable-arraybuffer/#sec-get-arraybuffer.prototype.immutable
+            </summary>
+        </member>
         <member name="M:Jint.Native.ArrayBuffer.ArrayBufferPrototype.MaxByteLength(Jint.Native.JsValue,Jint.Native.JsValue[])">
             <summary>
             https://tc39.es/ecma262/#sec-get-arraybuffer.prototype.maxbytelength
@@ -993,6 +1029,7 @@
         <member name="M:Jint.Native.ArrayBuffer.ArrayBufferPrototype.Resize(Jint.Native.JsValue,Jint.Native.JsValue[])">
             <summary>
             https://tc39.es/ecma262/#sec-arraybuffer.prototype.resize
+            https://tc39.es/proposal-immutable-arraybuffer/#sec-arraybuffer.prototype.resize
             </summary>
         </member>
         <member name="M:Jint.Native.ArrayBuffer.ArrayBufferPrototype.ByteLength(Jint.Native.JsValue,Jint.Native.JsValue[])">
@@ -1015,9 +1052,114 @@
             https://tc39.es/proposal-arraybuffer-transfer/#sec-arraybuffer.prototype.transfertofixedlength
             </summary>
         </member>
+        <member name="M:Jint.Native.ArrayBuffer.ArrayBufferPrototype.TransferToImmutable(Jint.Native.JsValue,Jint.Native.JsValue[])">
+            <summary>
+            https://tc39.es/proposal-immutable-arraybuffer/#sec-arraybuffer.prototype.transfertoimmutable
+            </summary>
+        </member>
+        <member name="M:Jint.Native.ArrayBuffer.ArrayBufferPrototype.SliceToImmutable(Jint.Native.JsValue,Jint.Native.JsValue[])">
+            <summary>
+            https://tc39.es/proposal-immutable-arraybuffer/#sec-arraybuffer.prototype.slicetoimmutable
+            </summary>
+        </member>
         <member name="T:Jint.Native.AsyncFunction.AsyncFunctionConstructor">
             <summary>
             https://tc39.es/ecma262/#sec-async-function-constructor
+            </summary>
+        </member>
+        <member name="T:Jint.Native.AsyncFunction.AsyncFunctionInstance">
+            <summary>
+            Tracks the execution state of an async function, enabling suspension at await points
+            and resumption when the awaited promise settles.
+            </summary>
+        </member>
+        <member name="F:Jint.Native.AsyncFunction.AsyncFunctionInstance._savedContext">
+            <summary>
+            The execution context captured when the async function started or last suspended.
+            Used to restore the environment when resuming execution.
+            </summary>
+        </member>
+        <member name="F:Jint.Native.AsyncFunction.AsyncFunctionInstance._capability">
+            <summary>
+            The promise capability representing this async function's return value.
+            Resolved when the function completes normally, rejected on exception.
+            </summary>
+        </member>
+        <member name="F:Jint.Native.AsyncFunction.AsyncFunctionInstance._body">
+            <summary>
+            The statement list being executed by this async function.
+            Needed to resume execution from the saved position.
+            </summary>
+        </member>
+        <member name="F:Jint.Native.AsyncFunction.AsyncFunctionInstance._bodyFunction">
+            <summary>
+            The body function to execute (for expression bodies or statement list execution).
+            </summary>
+        </member>
+        <member name="F:Jint.Native.AsyncFunction.AsyncFunctionInstance._lastAwaitNode">
+            <summary>
+            The AST node (AwaitExpression) where execution last suspended.
+            Used for node-based tracking similar to generator yield tracking.
+            </summary>
+        </member>
+        <member name="F:Jint.Native.AsyncFunction.AsyncFunctionInstance._resumeValue">
+            <summary>
+            The value from the settled promise, to be returned when resuming at the await point.
+            </summary>
+        </member>
+        <member name="F:Jint.Native.AsyncFunction.AsyncFunctionInstance._resumeWithThrow">
+            <summary>
+            If true, the resumed await should throw the _resumeValue instead of returning it.
+            Set when the awaited promise was rejected.
+            </summary>
+        </member>
+        <member name="F:Jint.Native.AsyncFunction.AsyncFunctionInstance._isResuming">
+            <summary>
+            Signals that we are resuming from a suspended await point.
+            When true, the await expression at _lastAwaitNode should return _resumeValue.
+            </summary>
+        </member>
+        <member name="F:Jint.Native.AsyncFunction.AsyncFunctionInstance._completedAwaits">
+            <summary>
+            Stores the resolved values of completed await expressions.
+            For expression bodies that re-evaluate on resume, already-completed awaits
+            return their cached values instead of re-suspending.
+            </summary>
+        </member>
+        <member name="P:Jint.Native.AsyncFunction.AsyncFunctionInstance.Jint#Runtime#ISuspendable#PendingCompletionType">
+            <summary>
+            Tracks the pending completion type when suspended in a finally block.
+            </summary>
+        </member>
+        <member name="P:Jint.Native.AsyncFunction.AsyncFunctionInstance.Jint#Runtime#ISuspendable#PendingCompletionValue">
+            <summary>
+            Tracks the pending completion value when suspended in a finally block.
+            </summary>
+        </member>
+        <member name="P:Jint.Native.AsyncFunction.AsyncFunctionInstance.Jint#Runtime#ISuspendable#CurrentFinallyStatement">
+            <summary>
+            The try statement whose finally block we're currently executing.
+            Used to properly resume execution in finally blocks.
+            </summary>
+        </member>
+        <member name="T:Jint.Native.AsyncFunction.AsyncFunctionState">
+            <summary>
+            The execution state of an async function.
+            </summary>
+        </member>
+        <member name="F:Jint.Native.AsyncFunction.AsyncFunctionState.Executing">
+            <summary>
+            The async function is currently executing statements.
+            </summary>
+        </member>
+        <member name="F:Jint.Native.AsyncFunction.AsyncFunctionState.SuspendedAwait">
+            <summary>
+            The async function is suspended at an await expression, waiting for a promise to settle.
+            </summary>
+        </member>
+        <member name="F:Jint.Native.AsyncFunction.AsyncFunctionState.Completed">
+            <summary>
+            The async function has completed (either resolved or rejected its return promise).
             </summary>
         </member>
         <member name="T:Jint.Native.AsyncFunction.AsyncFunctionPrototype">
@@ -1025,89 +1167,262 @@
             https://tc39.es/ecma262/#sec-async-function-prototype-properties
             </summary>
         </member>
-        <member name="T:Jint.Native.Generator.AsyncGeneratorFunctionConstructor">
+        <member name="T:Jint.Native.AsyncGenerator.AsyncGeneratorFunctionConstructor">
             <summary>
             https://tc39.es/ecma262/#sec-asyncgeneratorfunction-constructor
             </summary>
         </member>
-        <member name="T:Jint.Native.Generator.AsyncGeneratorFunctionPrototype">
+        <member name="T:Jint.Native.AsyncGenerator.AsyncGeneratorFunctionPrototype">
             <summary>
             https://tc39.es/ecma262/#sec-properties-of-asyncgeneratorfunction-prototype
             </summary>
         </member>
-        <member name="T:Jint.Native.Generator.AsyncGeneratorPrototype">
+        <member name="T:Jint.Native.AsyncGenerator.AsyncGeneratorInstance">
             <summary>
             https://tc39.es/ecma262/#sec-asyncgenerator-objects
             </summary>
         </member>
-        <member name="M:Jint.Native.Generator.AsyncGeneratorPrototype.Next(Jint.Native.JsValue,Jint.Native.JsValue[])">
+        <member name="F:Jint.Native.AsyncGenerator.AsyncGeneratorInstance._asyncGeneratorQueue">
             <summary>
-            https://tc39.es/ecma262/#sec-generator.prototype.next
+            Queue of pending next/return/throw requests.
+            Each request has a PromiseCapability that resolves when the request completes.
             </summary>
         </member>
-        <member name="M:Jint.Native.Generator.AsyncGeneratorPrototype.Return(Jint.Native.JsValue,Jint.Native.JsValue[])">
+        <member name="F:Jint.Native.AsyncGenerator.AsyncGeneratorInstance._currentPromiseCapability">
             <summary>
-            https://tc39.es/ecma262/#sec-generator.prototype.return
+            The promise capability of the currently executing request.
+            Used by AsyncGeneratorYield to resolve the current request's promise.
             </summary>
         </member>
-        <member name="M:Jint.Native.Generator.AsyncGeneratorPrototype.Throw(Jint.Native.JsValue,Jint.Native.JsValue[])">
+        <member name="M:Jint.Native.AsyncGenerator.AsyncGeneratorInstance.AsyncGeneratorStart(Jint.Runtime.Interpreter.JintStatementList)">
             <summary>
-            https://tc39.es/ecma262/#sec-generator.prototype.throw
+            https://tc39.es/ecma262/#sec-asyncgeneratorstart
             </summary>
         </member>
-        <member name="T:Jint.Native.Generator.GeneratorFunctionConstructor">
+        <member name="M:Jint.Native.AsyncGenerator.AsyncGeneratorInstance.AsyncGeneratorEnqueue(Jint.Runtime.Completion)">
             <summary>
-            https://tc39.es/ecma262/#sec-generatorfunction-constructor
+            https://tc39.es/ecma262/#sec-asyncgeneratorenqueue
+            Creates a new AsyncGeneratorRequest, enqueues it, and returns a Promise.
+            If the generator is idle (suspended), starts processing the queue.
             </summary>
         </member>
-        <member name="T:Jint.Native.Generator.GeneratorFunctionPrototype">
+        <member name="M:Jint.Native.AsyncGenerator.AsyncGeneratorInstance.AsyncGeneratorResumeNext">
             <summary>
-            https://tc39.es/ecma262/#sec-properties-of-the-generatorfunction-prototype-object
+            https://tc39.es/ecma262/#sec-asyncgeneratorresumenext
+            Processes the next request in the queue if any.
             </summary>
         </member>
-        <member name="T:Jint.Native.Generator.GeneratorInstance">
+        <member name="M:Jint.Native.AsyncGenerator.AsyncGeneratorInstance.ResumeExecution(Jint.Native.Promise.PromiseCapability)">
             <summary>
-            https://tc39.es/ecma262/#sec-properties-of-generator-instances
+            Resumes execution of the async generator with the current request.
             </summary>
         </member>
-        <member name="M:Jint.Native.Generator.GeneratorInstance.GeneratorStart(Jint.Runtime.Interpreter.JintStatementList)">
+        <member name="M:Jint.Native.AsyncGenerator.AsyncGeneratorInstance.AsyncGeneratorResolve(Jint.Native.JsValue,System.Boolean,Jint.Native.Promise.PromiseCapability)">
             <summary>
-            https://tc39.es/ecma262/#sec-generatorstart
+            https://tc39.es/ecma262/#sec-asyncgeneratorresolve
+            Resolves the current request's promise with an iterator result.
             </summary>
         </member>
-        <member name="M:Jint.Native.Generator.GeneratorInstance.GeneratorResume(Jint.Native.JsValue,Jint.Native.JsValue)">
+        <member name="M:Jint.Native.AsyncGenerator.AsyncGeneratorInstance.AsyncGeneratorReject(Jint.Native.JsValue,Jint.Native.Promise.PromiseCapability)">
             <summary>
-            https://tc39.es/ecma262/#sec-generatorresume
+            https://tc39.es/ecma262/#sec-asyncgeneratorreject
+            Rejects the current request's promise.
             </summary>
         </member>
-        <member name="M:Jint.Native.Generator.GeneratorInstance.GeneratorResumeAbrupt(Jint.Runtime.Completion@,Jint.Native.JsValue)">
+        <member name="M:Jint.Native.AsyncGenerator.AsyncGeneratorInstance.CreateResolvedPromise(Jint.Native.JsValue)">
             <summary>
-            https://tc39.es/ecma262/#sec-generatorresumeabrupt
+            Creates a promise resolved with the given value.
             </summary>
         </member>
-        <member name="T:Jint.Native.Generator.GeneratorPrototype">
+        <member name="M:Jint.Native.AsyncGenerator.AsyncGeneratorInstance.AsyncGeneratorAwaitReturn(Jint.Native.JsValue,Jint.Native.Promise.PromiseCapability)">
             <summary>
-            https://tc39.es/ecma262/#sec-generator-objects
+            https://tc39.es/ecma262/#sec-asyncgeneratorawaitreturn
+            Awaits the return value before completing the generator.
             </summary>
         </member>
-        <member name="M:Jint.Native.Generator.GeneratorPrototype.Next(Jint.Native.JsValue,Jint.Native.JsValue[])">
+        <member name="M:Jint.Native.AsyncGenerator.AsyncGeneratorInstance.ResumeAfterDelegation(Jint.Native.JsValue,Jint.Native.Promise.PromiseCapability)">
             <summary>
-            https://tc39.es/ecma262/#sec-generator.prototype.next
+            Resumes execution after a yield* delegation has completed.
+            Called when the delegated iterator returns done=true.
             </summary>
         </member>
-        <member name="M:Jint.Native.Generator.GeneratorPrototype.Return(Jint.Native.JsValue,Jint.Native.JsValue[])">
+        <member name="M:Jint.Native.AsyncGenerator.AsyncGeneratorInstance.AsyncGeneratorYield(Jint.Native.JsValue)">
             <summary>
-            https://tc39.es/ecma262/#sec-generator.prototype.return
+            https://tc39.es/ecma262/#sec-asyncgeneratoryield
+            Yields a value from the async generator.
+            Awaits the value, then resolves the current request's promise with the awaited value.
             </summary>
         </member>
-        <member name="M:Jint.Native.Generator.GeneratorPrototype.Throw(Jint.Native.JsValue,Jint.Native.JsValue[])">
+        <member name="T:Jint.Native.AsyncGenerator.AsyncGeneratorPrototype">
             <summary>
-            https://tc39.es/ecma262/#sec-generator.prototype.throw
+            https://tc39.es/ecma262/#sec-asyncgenerator-prototype-object
+            </summary>
+        </member>
+        <member name="M:Jint.Native.AsyncGenerator.AsyncGeneratorPrototype.Next(Jint.Native.JsValue,Jint.Native.JsValue[])">
+            <summary>
+            https://tc39.es/ecma262/#sec-asyncgenerator-prototype-next
+            </summary>
+        </member>
+        <member name="M:Jint.Native.AsyncGenerator.AsyncGeneratorPrototype.Return(Jint.Native.JsValue,Jint.Native.JsValue[])">
+            <summary>
+            https://tc39.es/ecma262/#sec-asyncgenerator-prototype-return
+            </summary>
+        </member>
+        <member name="M:Jint.Native.AsyncGenerator.AsyncGeneratorPrototype.Throw(Jint.Native.JsValue,Jint.Native.JsValue[])">
+            <summary>
+            https://tc39.es/ecma262/#sec-asyncgenerator-prototype-throw
+            </summary>
+        </member>
+        <member name="M:Jint.Native.AsyncGenerator.AsyncGeneratorPrototype.CreateRejectedPromiseWithTypeError(System.String)">
+            <summary>
+            Creates a rejected promise with a TypeError.
+            Per spec, when the generator is invalid, we return a rejected promise instead of throwing.
+            </summary>
+        </member>
+        <member name="T:Jint.Native.AsyncGenerator.AsyncGeneratorRequest">
+            <summary>
+            https://tc39.es/ecma262/#sec-asyncgenerator-objects
+            Represents a pending next/return/throw request for an async generator.
+            Each request has a PromiseCapability that resolves when the request completes.
+            </summary>
+        </member>
+        <member name="M:Jint.Native.AsyncGenerator.AsyncGeneratorRequest.#ctor(Jint.Runtime.Completion,Jint.Native.Promise.PromiseCapability)">
+            <summary>
+            https://tc39.es/ecma262/#sec-asyncgenerator-objects
+            Represents a pending next/return/throw request for an async generator.
+            Each request has a PromiseCapability that resolves when the request completes.
+            </summary>
+        </member>
+        <member name="T:Jint.Native.AsyncGenerator.AsyncGeneratorState">
+            <summary>
+            https://tc39.es/ecma262/#sec-asyncgenerator-objects
+            The execution state of an async generator.
+            </summary>
+        </member>
+        <member name="F:Jint.Native.AsyncGenerator.AsyncGeneratorState.SuspendedStart">
+            <summary>
+            The async generator has been created but not yet started.
+            Transitions to Executing on first next/return/throw call.
+            </summary>
+        </member>
+        <member name="F:Jint.Native.AsyncGenerator.AsyncGeneratorState.SuspendedYield">
+            <summary>
+            The async generator is suspended at a yield expression.
+            Transitions to Executing when resumed.
+            </summary>
+        </member>
+        <member name="F:Jint.Native.AsyncGenerator.AsyncGeneratorState.Executing">
+            <summary>
+            The async generator is currently executing statements.
+            Transitions to SuspendedYield (on yield), AwaitingReturn (on return), or Completed.
+            </summary>
+        </member>
+        <member name="F:Jint.Native.AsyncGenerator.AsyncGeneratorState.AwaitingReturn">
+            <summary>
+            The async generator is awaiting a return value before completing.
+            Transitions to Completed when the awaited promise settles.
+            </summary>
+        </member>
+        <member name="F:Jint.Native.AsyncGenerator.AsyncGeneratorState.Completed">
+            <summary>
+            The async generator has completed execution.
+            All subsequent next() calls return {done: true}.
             </summary>
         </member>
         <member name="T:Jint.Native.Atomics.AtomicsInstance">
             <summary>
             https://tc39.es/ecma262/#sec-atomics-object
+            </summary>
+        </member>
+        <member name="F:Jint.Native.Atomics.AtomicsInstance._waiters">
+            <summary>
+            Global waiters list for Atomics.wait/notify.
+            Key is (buffer identity, byte index), value is list of waiting threads.
+            </summary>
+        </member>
+        <member name="M:Jint.Native.Atomics.AtomicsInstance.Add(Jint.Native.JsValue,Jint.Native.JsValue[])">
+            <summary>
+            https://tc39.es/ecma262/#sec-atomics.add
+            </summary>
+        </member>
+        <member name="M:Jint.Native.Atomics.AtomicsInstance.And(Jint.Native.JsValue,Jint.Native.JsValue[])">
+            <summary>
+            https://tc39.es/ecma262/#sec-atomics.and
+            </summary>
+        </member>
+        <member name="M:Jint.Native.Atomics.AtomicsInstance.CompareExchange(Jint.Native.JsValue,Jint.Native.JsValue[])">
+            <summary>
+            https://tc39.es/ecma262/#sec-atomics.compareexchange
+            </summary>
+        </member>
+        <member name="M:Jint.Native.Atomics.AtomicsInstance.Exchange(Jint.Native.JsValue,Jint.Native.JsValue[])">
+            <summary>
+            https://tc39.es/ecma262/#sec-atomics.exchange
+            </summary>
+        </member>
+        <member name="M:Jint.Native.Atomics.AtomicsInstance.IsLockFree(Jint.Native.JsValue,Jint.Native.JsValue[])">
+            <summary>
+            https://tc39.es/ecma262/#sec-atomics.islockfree
+            </summary>
+        </member>
+        <member name="M:Jint.Native.Atomics.AtomicsInstance.Load(Jint.Native.JsValue,Jint.Native.JsValue[])">
+            <summary>
+            https://tc39.es/ecma262/#sec-atomics.load
+            </summary>
+        </member>
+        <member name="M:Jint.Native.Atomics.AtomicsInstance.Notify(Jint.Native.JsValue,Jint.Native.JsValue[])">
+            <summary>
+            https://tc39.es/ecma262/#sec-atomics.notify
+            </summary>
+        </member>
+        <member name="M:Jint.Native.Atomics.AtomicsInstance.Or(Jint.Native.JsValue,Jint.Native.JsValue[])">
+            <summary>
+            https://tc39.es/ecma262/#sec-atomics.or
+            </summary>
+        </member>
+        <member name="M:Jint.Native.Atomics.AtomicsInstance.Pause(Jint.Native.JsValue,Jint.Native.JsValue[])">
+            <summary>
+            https://tc39.es/ecma262/#sec-atomics.pause
+            </summary>
+        </member>
+        <member name="M:Jint.Native.Atomics.AtomicsInstance.Store(Jint.Native.JsValue,Jint.Native.JsValue[])">
+            <summary>
+            https://tc39.es/ecma262/#sec-atomics.store
+            </summary>
+        </member>
+        <member name="M:Jint.Native.Atomics.AtomicsInstance.Sub(Jint.Native.JsValue,Jint.Native.JsValue[])">
+            <summary>
+            https://tc39.es/ecma262/#sec-atomics.sub
+            </summary>
+        </member>
+        <member name="M:Jint.Native.Atomics.AtomicsInstance.Wait(Jint.Native.JsValue,Jint.Native.JsValue[])">
+            <summary>
+            https://tc39.es/ecma262/#sec-atomics.wait
+            </summary>
+        </member>
+        <member name="M:Jint.Native.Atomics.AtomicsInstance.WaitAsync(Jint.Native.JsValue,Jint.Native.JsValue[])">
+            <summary>
+            https://tc39.es/ecma262/#sec-atomics.waitasync
+            </summary>
+        </member>
+        <member name="M:Jint.Native.Atomics.AtomicsInstance.Xor(Jint.Native.JsValue,Jint.Native.JsValue[])">
+            <summary>
+            https://tc39.es/ecma262/#sec-atomics.xor
+            </summary>
+        </member>
+        <member name="M:Jint.Native.Atomics.AtomicsInstance.ValidateIntegerTypedArray(Jint.Native.JsValue,System.Boolean,System.Boolean)">
+            <summary>
+            https://tc39.es/ecma262/#sec-validateintegertypedarray
+            </summary>
+        </member>
+        <member name="M:Jint.Native.Atomics.AtomicsInstance.ValidateAtomicAccess(Jint.Native.TypedArray.IntrinsicTypedArrayPrototype.TypedArrayWithBufferWitnessRecord,Jint.Native.JsValue)">
+            <summary>
+            https://tc39.es/ecma262/#sec-validateatomicaccess
+            </summary>
+        </member>
+        <member name="M:Jint.Native.Atomics.AtomicsInstance.AtomicReadModifyWrite(Jint.Native.JsValue,Jint.Native.JsValue,Jint.Native.JsValue,Jint.Native.Atomics.AtomicsInstance.AtomicOperation)">
+            <summary>
+            https://tc39.es/ecma262/#sec-atomicreadmodifywrite
             </summary>
         </member>
         <member name="T:Jint.Native.BigInt.BigIntConstructor">
@@ -1218,6 +1533,7 @@
         <member name="M:Jint.Native.DataView.DataViewPrototype.SetViewValue(Jint.Native.JsValue,Jint.Native.JsValue,Jint.Native.JsValue,Jint.Native.TypedArray.TypedArrayElementType,Jint.Native.JsValue)">
             <summary>
             https://tc39.es/ecma262/#sec-setviewvalue
+            https://tc39.es/proposal-immutable-arraybuffer/#sec-setviewvalue
             </summary>
         </member>
         <member name="T:Jint.Native.Date.DateConstructor">
@@ -1677,6 +1993,11 @@
             https://tc39.es/ecma262/#sec-runtime-semantics-instantiategeneratorfunctionobject
             </summary>
         </member>
+        <member name="M:Jint.Native.Function.FunctionConstructor.InstantiateAsyncGeneratorFunctionObject(Jint.Runtime.Interpreter.JintFunctionDefinition,Jint.Runtime.Environments.Environment,Jint.Runtime.Environments.PrivateEnvironment)">
+            <summary>
+            https://tc39.es/ecma262/#sec-runtime-semantics-instantiateasyncgeneratorfunctionobject
+            </summary>
+        </member>
         <member name="T:Jint.Native.Function.FunctionPrototype">
             <summary>
             https://tc39.es/ecma262/#sec-properties-of-the-function-prototype-object
@@ -1730,6 +2051,136 @@
         <member name="M:Jint.Native.Function.ScriptFunction.Jint#Native#IConstructor#Construct(Jint.Native.JsValue[],Jint.Native.JsValue)">
             <summary>
             https://tc39.es/ecma262/#sec-ecmascript-function-objects-construct-argumentslist-newtarget
+            </summary>
+        </member>
+        <member name="T:Jint.Native.Generator.GeneratorFunctionConstructor">
+            <summary>
+            https://tc39.es/ecma262/#sec-generatorfunction-constructor
+            </summary>
+        </member>
+        <member name="T:Jint.Native.Generator.GeneratorFunctionPrototype">
+            <summary>
+            https://tc39.es/ecma262/#sec-properties-of-the-generatorfunction-prototype-object
+            </summary>
+        </member>
+        <member name="T:Jint.Native.Generator.GeneratorInstance">
+            <summary>
+            https://tc39.es/ecma262/#sec-properties-of-generator-instances
+            </summary>
+        </member>
+        <member name="F:Jint.Native.Generator.GeneratorInstance._isResuming">
+            <summary>
+            Tracks whether we are resuming from a suspended yield (vs first call from SuspendedStart).
+            When true, the first yield expression encountered should return _nextValue instead of yielding.
+            </summary>
+        </member>
+        <member name="F:Jint.Native.Generator.GeneratorInstance._suspendedValue">
+            <summary>
+            Stores the value that was yielded when the generator suspended.
+            This is needed because the statement containing the yield might have a different completion value
+            (e.g., variable declarations return Empty, not the yielded value).
+            </summary>
+        </member>
+        <member name="F:Jint.Native.Generator.GeneratorInstance._lastYieldNode">
+            <summary>
+            The yield expression node we suspended at. Used for node-based yield tracking
+            which works correctly for both loops (same node) and multi-yield expressions (different nodes).
+            </summary>
+        </member>
+        <member name="F:Jint.Native.Generator.GeneratorInstance._yieldNodeValues">
+            <summary>
+            Maps yield expression nodes to their return values from previous resumes.
+            When re-executing code with yields (e.g., in loops), yields that have already been
+            resumed return their stored value instead of yielding again.
+            </summary>
+        </member>
+        <member name="F:Jint.Native.Generator.GeneratorInstance._delegatingIterator">
+            <summary>
+            The iterator we're delegating to during yield* evaluation.
+            When this is non-null, we're in the middle of yield* delegation.
+            </summary>
+        </member>
+        <member name="F:Jint.Native.Generator.GeneratorInstance._delegatingYieldNode">
+            <summary>
+            The yield* expression we're delegating from.
+            </summary>
+        </member>
+        <member name="F:Jint.Native.Generator.GeneratorInstance._delegationResumeType">
+            <summary>
+            The type of completion we received when resuming during yield* delegation.
+            </summary>
+        </member>
+        <member name="F:Jint.Native.Generator.GeneratorInstance._delegationInnerResult">
+            <summary>
+            When yield* suspends, stores the inner iterator's result object directly.
+            This allows us to pass through the exact result (including its 'done' property state)
+            instead of creating a new result with done: false.
+            </summary>
+        </member>
+        <member name="F:Jint.Native.Generator.GeneratorInstance._returnRequested">
+            <summary>
+            Signals that generator.return() was called and execution should complete
+            after running finally blocks. Aligns with spec's Return completion handling
+            in GeneratorResumeAbrupt.
+            </summary>
+        </member>
+        <member name="F:Jint.Native.Generator.GeneratorInstance._resumeCompletionType">
+            <summary>
+            The completion type used when resuming via GeneratorResumeAbrupt.
+            Used by yield expressions to know if they should trigger an early return.
+            </summary>
+        </member>
+        <member name="F:Jint.Native.Generator.GeneratorInstance._pendingCompletionType">
+            <summary>
+            Tracks a pending completion (throw/return) that needs to be processed after a finally block
+            that yielded. When a finally block yields, we need to remember any pending completion
+            so we can restore it after the finally block completes.
+            </summary>
+        </member>
+        <member name="F:Jint.Native.Generator.GeneratorInstance._pendingCompletionValue">
+            <summary>
+            The value associated with the pending completion (the thrown error or return value).
+            </summary>
+        </member>
+        <member name="F:Jint.Native.Generator.GeneratorInstance._currentFinallyStatement">
+            <summary>
+            Tracks which try statement's finally block we're currently inside.
+            Used to properly restore pending completion after finally completes.
+            </summary>
+        </member>
+        <member name="M:Jint.Native.Generator.GeneratorInstance.GeneratorStart(Jint.Runtime.Interpreter.JintStatementList)">
+            <summary>
+            https://tc39.es/ecma262/#sec-generatorstart
+            </summary>
+        </member>
+        <member name="M:Jint.Native.Generator.GeneratorInstance.GeneratorResume(Jint.Native.JsValue,Jint.Native.JsValue)">
+            <summary>
+            https://tc39.es/ecma262/#sec-generatorresume
+            </summary>
+        </member>
+        <member name="M:Jint.Native.Generator.GeneratorInstance.GeneratorResumeAbrupt(Jint.Runtime.Completion@,Jint.Native.JsValue)">
+            <summary>
+            https://tc39.es/ecma262/#sec-generatorresumeabrupt
+            </summary>
+        </member>
+        <member name="T:Jint.Native.Generator.GeneratorPrototype">
+            <summary>
+            https://tc39.es/ecma262/#sec-generator-objects
+            </summary>
+        </member>
+        <member name="M:Jint.Native.Generator.GeneratorPrototype.Next(Jint.Native.JsValue,Jint.Native.JsValue[])">
+            <summary>
+            https://tc39.es/ecma262/#sec-generator.prototype.next
+            </summary>
+        </member>
+        <member name="M:Jint.Native.Generator.GeneratorPrototype.Return(Jint.Native.JsValue,Jint.Native.JsValue[])">
+            <summary>
+            https://tc39.es/ecma262/#sec-generator.prototype.return
+            </summary>
+        </member>
+        <member name="M:Jint.Native.Generator.GeneratorPrototype.Throw(Jint.Native.JsValue,Jint.Native.JsValue[])">
+            <summary>
+            https://tc39.es/ecma262/#sec-generator.prototype.throw
             </summary>
         </member>
         <member name="M:Jint.Native.Global.GlobalObject.ParseInt(Jint.Native.JsValue,Jint.Native.JsValue[])">
@@ -1942,6 +2393,216 @@
             https://tc39.es/ecma402/#sec-properties-of-intl-segmenter-prototype-object
             </summary>
         </member>
+        <member name="T:Jint.Native.Iterator.AsyncFromSyncIterator">
+            <summary>
+            https://tc39.es/ecma262/#sec-async-from-sync-iterator-objects
+            </summary>
+        </member>
+        <member name="P:Jint.Native.Iterator.AsyncFromSyncIterator.SyncIterator">
+            <summary>
+            Gets the underlying sync iterator.
+            </summary>
+        </member>
+        <member name="T:Jint.Native.Iterator.AsyncFromSyncIteratorPrototype">
+            <summary>
+            https://tc39.es/ecma262/#sec-%asyncfromsynciteratorprototype%-object
+            </summary>
+        </member>
+        <member name="M:Jint.Native.Iterator.AsyncFromSyncIteratorPrototype.Next(Jint.Native.JsValue,Jint.Native.JsValue[])">
+            <summary>
+            https://tc39.es/ecma262/#sec-%asyncfromsynciteratorprototype%.next
+            </summary>
+        </member>
+        <member name="M:Jint.Native.Iterator.AsyncFromSyncIteratorPrototype.Return(Jint.Native.JsValue,Jint.Native.JsValue[])">
+            <summary>
+            https://tc39.es/ecma262/#sec-%asyncfromsynciteratorprototype%.return
+            </summary>
+        </member>
+        <member name="M:Jint.Native.Iterator.AsyncFromSyncIteratorPrototype.Throw(Jint.Native.JsValue,Jint.Native.JsValue[])">
+            <summary>
+            https://tc39.es/ecma262/#sec-%asyncfromsynciteratorprototype%.throw
+            </summary>
+        </member>
+        <member name="M:Jint.Native.Iterator.AsyncFromSyncIteratorPrototype.AsyncFromSyncIteratorContinuation(Jint.Native.Object.ObjectInstance,Jint.Native.Promise.PromiseCapability,Jint.Native.Iterator.IteratorInstance,System.Boolean)">
+            <summary>
+            https://tc39.es/ecma262/#sec-asyncfromsynciteratorcontinuation
+            </summary>
+        </member>
+        <member name="T:Jint.Native.Iterator.AsyncIteratorPrototype">
+            <summary>
+            https://tc39.es/ecma262/#sec-asynciteratorprototype
+            </summary>
+        </member>
+        <member name="M:Jint.Native.Iterator.AsyncIteratorPrototype.AsyncIterator(Jint.Native.JsValue,Jint.Native.JsValue[])">
+            <summary>
+            https://tc39.es/ecma262/#sec-asynciteratorprototype-asynciterator
+            %AsyncIteratorPrototype% [ @@asyncIterator ] ( )
+            1. Return the this value.
+            </summary>
+        </member>
+        <member name="M:Jint.Native.Iterator.AsyncIteratorPrototype.AsyncDispose(Jint.Native.JsValue,Jint.Native.JsValue[])">
+            <summary>
+            https://tc39.es/ecma262/#sec-%asynciteratorprototype%-@@asyncDispose
+            %AsyncIteratorPrototype% [ @@asyncDispose ] ( )
+            </summary>
+        </member>
+        <member name="M:Jint.Native.Iterator.IteratorConstructor.Concat(Jint.Native.JsValue,Jint.Native.JsValue[])">
+            <summary>
+            https://tc39.es/proposal-iterator-sequencing/#sec-iterator.concat
+            </summary>
+        </member>
+        <member name="M:Jint.Native.Iterator.IteratorConstructor.From(Jint.Native.JsValue,Jint.Native.JsValue[])">
+            <summary>
+            https://tc39.es/ecma262/#sec-iterator.from
+            </summary>
+        </member>
+        <member name="M:Jint.Native.Iterator.IteratorConstructor.GetIteratorFlattenable(Jint.Native.JsValue,Jint.Native.Iterator.IteratorConstructor.StringHandlingType,Jint.Native.Object.ObjectInstance@)">
+            <summary>
+            https://tc39.es/ecma262/#sec-getiteratorflattenable
+            </summary>
+        </member>
+        <member name="M:Jint.Native.Iterator.IteratorConstructor.Zip(Jint.Native.JsValue,Jint.Native.JsValue[])">
+            <summary>
+            https://tc39.es/proposal-joint-iteration/#sec-iterator.zip
+            </summary>
+        </member>
+        <member name="M:Jint.Native.Iterator.IteratorConstructor.ZipKeyed(Jint.Native.JsValue,Jint.Native.JsValue[])">
+            <summary>
+            https://tc39.es/proposal-joint-iteration/#sec-iterator.zipkeyed
+            </summary>
+        </member>
+        <member name="M:Jint.Native.Iterator.IteratorConstructor.GetOptionsObject(Jint.Native.JsValue)">
+            <summary>
+            https://tc39.es/proposal-joint-iteration/#sec-getoptionsobject
+            </summary>
+        </member>
+        <member name="T:Jint.Native.Iterator.IteratorHelper">
+            <summary>
+            Base class for iterator helper instances (map, filter, take, drop, flatMap).
+            https://tc39.es/ecma262/#sec-iterator-helper-objects
+            </summary>
+        </member>
+        <member name="M:Jint.Native.Iterator.IteratorHelper.Next">
+            <summary>
+            Called by IteratorHelperPrototype.next() to get the next value.
+            </summary>
+        </member>
+        <member name="M:Jint.Native.Iterator.IteratorHelper.Return">
+            <summary>
+            Called by IteratorHelperPrototype.return() to close the helper.
+            </summary>
+        </member>
+        <member name="M:Jint.Native.Iterator.IteratorHelper.ExecuteStep">
+            <summary>
+            Override in derived classes to implement the specific iteration logic.
+            </summary>
+        </member>
+        <member name="M:Jint.Native.Iterator.IteratorHelper.IteratorStepValue">
+            <summary>
+            Gets the next value from the underlying iterator.
+            Returns (value, false) if a value is available, or (undefined, true) if done.
+            </summary>
+        </member>
+        <member name="M:Jint.Native.Iterator.IteratorHelper.CloseIterator(Jint.Runtime.CompletionType)">
+            <summary>
+            Close the underlying iterator.
+            </summary>
+        </member>
+        <member name="M:Jint.Native.Iterator.IteratorHelper.CreateIteratorResult(Jint.Native.JsValue,System.Boolean)">
+            <summary>
+            Create an iterator result object.
+            </summary>
+        </member>
+        <member name="T:Jint.Native.Iterator.IteratorHelper.StepResult">
+            <summary>
+            Represents the result of an iteration step.
+            </summary>
+        </member>
+        <member name="T:Jint.Native.Iterator.DropIterator">
+            <summary>
+            Iterator helper for drop(limit) - skips the first N elements.
+            https://tc39.es/ecma262/#sec-iterator.prototype.drop
+            </summary>
+        </member>
+        <member name="T:Jint.Native.Iterator.TakeIterator">
+            <summary>
+            Iterator helper for take(limit) - returns the first N elements.
+            https://tc39.es/ecma262/#sec-iterator.prototype.take
+            </summary>
+        </member>
+        <member name="T:Jint.Native.Iterator.FilterIterator">
+            <summary>
+            Iterator helper for filter(predicate) - returns elements matching the predicate.
+            https://tc39.es/ecma262/#sec-iterator.prototype.filter
+            </summary>
+        </member>
+        <member name="T:Jint.Native.Iterator.MapIterator">
+            <summary>
+            Iterator helper for map(mapper) - transforms each element.
+            https://tc39.es/ecma262/#sec-iterator.prototype.map
+            </summary>
+        </member>
+        <member name="T:Jint.Native.Iterator.FlatMapIterator">
+            <summary>
+            Iterator helper for flatMap(mapper) - maps and flattens one level.
+            https://tc39.es/ecma262/#sec-iterator.prototype.flatmap
+            </summary>
+        </member>
+        <member name="M:Jint.Native.Iterator.FlatMapIterator.Return">
+            <summary>
+            Override Return to also close the inner iterator if present.
+            </summary>
+        </member>
+        <member name="T:Jint.Native.Iterator.ConcatIterator">
+            <summary>
+            Iterator helper for Iterator.concat(...items) - sequences multiple iterables.
+            https://tc39.es/proposal-iterator-sequencing/
+            </summary>
+        </member>
+        <member name="T:Jint.Native.Iterator.ConcatIterator.IterableRecord">
+            <summary>
+            Record for storing captured iterable and its iterator method.
+            </summary>
+        </member>
+        <member name="M:Jint.Native.Iterator.ConcatIterator.Next">
+            <summary>
+            Called by IteratorHelperPrototype.next() to get the next value.
+            </summary>
+        </member>
+        <member name="M:Jint.Native.Iterator.ConcatIterator.Return">
+            <summary>
+            Called by IteratorHelperPrototype.return() to close the helper.
+            </summary>
+        </member>
+        <member name="T:Jint.Native.Iterator.ZipIterator">
+            <summary>
+            Iterator helper for Iterator.zip and Iterator.zipKeyed.
+            https://tc39.es/proposal-joint-iteration/#sec-iteratorzip
+            </summary>
+        </member>
+        <member name="T:Jint.Native.Iterator.IteratorHelperPrototype">
+            <summary>
+            https://tc39.es/ecma262/#sec-%iteratorhelperprototype%-object
+            The %IteratorHelperPrototype% object is the prototype of iterator helper objects.
+            </summary>
+        </member>
+        <member name="M:Jint.Native.Iterator.IteratorHelperPrototype.Next(Jint.Native.JsValue,Jint.Native.JsValue[])">
+            <summary>
+            https://tc39.es/ecma262/#sec-%iteratorhelperprototype%.next
+            </summary>
+        </member>
+        <member name="M:Jint.Native.Iterator.IteratorHelperPrototype.Return(Jint.Native.JsValue,Jint.Native.JsValue[])">
+            <summary>
+            https://tc39.es/ecma262/#sec-%iteratorhelperprototype%.return
+            </summary>
+        </member>
+        <member name="P:Jint.Native.Iterator.IteratorInstance.Instance">
+            <summary>
+            Gets the underlying iterator object instance.
+            For object iterators, this is the wrapped object. For built-in iterators, this is self.
+            Used by yield* to call methods like "return" and "throw" on the iterator.
+            </summary>
+        </member>
         <member name="M:Jint.Native.Iterator.IteratorInstance.CreateIterResultObject(Jint.Native.JsValue,System.Boolean)">
             <summary>
             https://tc39.es/ecma262/#sec-createiterresultobject
@@ -1957,9 +2618,96 @@
             https://tc39.es/ecma262/#sec-%iteratorprototype%-object
             </summary>
         </member>
+        <member name="M:Jint.Native.Iterator.IteratorPrototype.SetterThatIgnoresPrototypeProperties(Jint.Native.JsValue,Jint.Native.Object.ObjectInstance,Jint.Native.JsValue,Jint.Native.JsValue)">
+            <summary>
+            https://tc39.es/ecma262/#sec-SetterThatIgnoresPrototypeProperties
+            </summary>
+        </member>
+        <member name="M:Jint.Native.Iterator.IteratorPrototype.Map(Jint.Native.JsValue,Jint.Native.JsValue[])">
+            <summary>
+            https://tc39.es/ecma262/#sec-iterator.prototype.map
+            </summary>
+        </member>
+        <member name="M:Jint.Native.Iterator.IteratorPrototype.IteratorClose(Jint.Native.Object.ObjectInstance,Jint.Runtime.CompletionType)">
+            <summary>
+            Close an iterator by calling its return() method directly (without reading next).
+            Used when validation fails before GetIteratorDirect is called.
+            </summary>
+        </member>
+        <member name="M:Jint.Native.Iterator.IteratorPrototype.Filter(Jint.Native.JsValue,Jint.Native.JsValue[])">
+            <summary>
+            https://tc39.es/ecma262/#sec-iterator.prototype.filter
+            </summary>
+        </member>
+        <member name="M:Jint.Native.Iterator.IteratorPrototype.Take(Jint.Native.JsValue,Jint.Native.JsValue[])">
+            <summary>
+            https://tc39.es/ecma262/#sec-iterator.prototype.take
+            </summary>
+        </member>
+        <member name="M:Jint.Native.Iterator.IteratorPrototype.Drop(Jint.Native.JsValue,Jint.Native.JsValue[])">
+            <summary>
+            https://tc39.es/ecma262/#sec-iterator.prototype.drop
+            </summary>
+        </member>
+        <member name="M:Jint.Native.Iterator.IteratorPrototype.FlatMap(Jint.Native.JsValue,Jint.Native.JsValue[])">
+            <summary>
+            https://tc39.es/ecma262/#sec-iterator.prototype.flatmap
+            </summary>
+        </member>
+        <member name="M:Jint.Native.Iterator.IteratorPrototype.Reduce(Jint.Native.JsValue,Jint.Native.JsValue[])">
+            <summary>
+            https://tc39.es/ecma262/#sec-iterator.prototype.reduce
+            </summary>
+        </member>
+        <member name="M:Jint.Native.Iterator.IteratorPrototype.ToArray(Jint.Native.JsValue,Jint.Native.JsValue[])">
+            <summary>
+            https://tc39.es/ecma262/#sec-iterator.prototype.toarray
+            </summary>
+        </member>
+        <member name="M:Jint.Native.Iterator.IteratorPrototype.ForEach(Jint.Native.JsValue,Jint.Native.JsValue[])">
+            <summary>
+            https://tc39.es/ecma262/#sec-iterator.prototype.foreach
+            </summary>
+        </member>
+        <member name="M:Jint.Native.Iterator.IteratorPrototype.Some(Jint.Native.JsValue,Jint.Native.JsValue[])">
+            <summary>
+            https://tc39.es/ecma262/#sec-iterator.prototype.some
+            </summary>
+        </member>
+        <member name="M:Jint.Native.Iterator.IteratorPrototype.Every(Jint.Native.JsValue,Jint.Native.JsValue[])">
+            <summary>
+            https://tc39.es/ecma262/#sec-iterator.prototype.every
+            </summary>
+        </member>
+        <member name="M:Jint.Native.Iterator.IteratorPrototype.Find(Jint.Native.JsValue,Jint.Native.JsValue[])">
+            <summary>
+            https://tc39.es/ecma262/#sec-iterator.prototype.find
+            </summary>
+        </member>
         <member name="T:Jint.Native.Iterator.IteratorResult">
             <summary>
             https://tc39.es/ecma262/#sec-createiterresultobject
+            </summary>
+        </member>
+        <member name="T:Jint.Native.Iterator.WrapForValidIteratorPrototype">
+            <summary>
+            https://tc39.es/ecma262/#sec-%wrapforvaliditeratorprototype%-object
+            The %WrapForValidIteratorPrototype% object is the prototype of wrapped iterator objects from Iterator.from.
+            </summary>
+        </member>
+        <member name="M:Jint.Native.Iterator.WrapForValidIteratorPrototype.Next(Jint.Native.JsValue,Jint.Native.JsValue[])">
+            <summary>
+            https://tc39.es/ecma262/#sec-%wrapforvaliditeratorprototype%.next
+            </summary>
+        </member>
+        <member name="M:Jint.Native.Iterator.WrapForValidIteratorPrototype.Return(Jint.Native.JsValue,Jint.Native.JsValue[])">
+            <summary>
+            https://tc39.es/ecma262/#sec-%wrapforvaliditeratorprototype%.return
+            </summary>
+        </member>
+        <member name="T:Jint.Native.Iterator.WrapForValidIterator">
+            <summary>
+            Wrapper instance for Iterator.from when the input is not already an Iterator instance.
             </summary>
         </member>
         <member name="T:Jint.Native.JsArguments">
@@ -1991,6 +2739,11 @@
             https://tc39.es/ecma262/#sec-arraybuffer-objects
             </summary>
         </member>
+        <member name="P:Jint.Native.JsArrayBuffer.IsImmutableBuffer">
+            <summary>
+            https://tc39.es/proposal-immutable-arraybuffer/#sec-isimmutablebuffer
+            </summary>
+        </member>
         <member name="M:Jint.Native.JsArrayBuffer.DetachArrayBuffer(Jint.Native.JsValue)">
             <summary>
             https://tc39.es/ecma262/#sec-detacharraybuffer
@@ -2016,6 +2769,11 @@
             https://tc39.es/ecma262/#sec-setvalueinbuffer
             </summary>
         </member>
+        <member name="M:Jint.Native.JsArrayBuffer.AssertNotImmutable">
+            <summary>
+            https://tc39.es/proposal-immutable-arraybuffer/#sec-isimmutablebuffer
+            </summary>
+        </member>
         <member name="T:Jint.Native.JsDataView">
             <summary>
             https://tc39.es/ecma262/#sec-properties-of-dataview-instances
@@ -2036,9 +2794,36 @@
             Dynamically constructed JavaScript object instance.
             </summary>
         </member>
+        <member name="M:Jint.Native.Json.JsonInstance.IsRawJSON(Jint.Native.JsValue,Jint.Native.JsValue[])">
+            <summary>
+            https://tc39.es/proposal-json-parse-with-source/#sec-json.israwjson
+            </summary>
+        </member>
+        <member name="M:Jint.Native.Json.JsonInstance.RawJSON(Jint.Native.JsValue,Jint.Native.JsValue[])">
+            <summary>
+            https://tc39.es/proposal-json-parse-with-source/#sec-json.rawjson
+            </summary>
+        </member>
+        <member name="M:Jint.Native.Json.JsonInstance.InternalizeJSONProperty(Jint.Native.JsValue,Jint.Native.JsValue,Jint.Native.ICallable,Jint.Native.Json.JsonParseNode,System.String)">
+            <summary>
+            Internalizes a JSON property with source text tracking for the reviver.
+            https://tc39.es/proposal-json-parse-with-source/#sec-internalizejsonproperty
+            </summary>
+        </member>
         <member name="M:Jint.Native.Json.JsonInstance.Parse(Jint.Native.JsValue,Jint.Native.JsValue[])">
             <summary>
             https://tc39.es/ecma262/#sec-json.parse
+            </summary>
+        </member>
+        <member name="T:Jint.Native.Json.JsonParseNode">
+            <summary>
+            Represents a parse node for tracking source text positions.
+            Used for the JSON.parse source text access proposal.
+            </summary>
+        </member>
+        <member name="T:Jint.Native.Json.JsonParseResult">
+            <summary>
+            Result of parsing JSON with source information.
             </summary>
         </member>
         <member name="M:Jint.Native.Json.JsonParser.#ctor(Jint.Engine)">
@@ -2052,6 +2837,12 @@
             By calling Lex().Value for each type, we parse the token twice.
             It was already parsed by the peek() method.
             _lookahead.Value already contain the value.
+            </summary>
+        </member>
+        <member name="M:Jint.Native.Json.JsonParser.ParseWithSourceInfo(System.String)">
+            <summary>
+            Parses JSON and returns both the value and source tracking information.
+            Used for the JSON.parse source text access proposal.
             </summary>
         </member>
         <member name="P:Jint.Native.Json.JsonParser.State.CurrentDepth">
@@ -2080,6 +2871,23 @@
         <member name="M:Jint.Native.Json.JsonSerializer.SerializeJSONObject(Jint.Native.Object.ObjectInstance,System.Text.ValueStringBuilder@)">
             <summary>
             https://tc39.es/ecma262/#sec-serializejsonobject
+            </summary>
+        </member>
+        <member name="T:Jint.Native.Json.JsRawJson">
+            <summary>
+            Represents a Raw JSON value created by JSON.rawJSON().
+            https://tc39.es/proposal-json-parse-with-source/#sec-json.rawjson
+            </summary>
+        </member>
+        <member name="M:Jint.Native.Json.JsRawJson.Create(Jint.Engine,System.String)">
+            <summary>
+            Creates a new RawJSON object.
+            https://tc39.es/proposal-json-parse-with-source/#sec-json.rawjson
+            </summary>
+        </member>
+        <member name="P:Jint.Native.Json.JsRawJson.RawJson">
+            <summary>
+            Gets the raw JSON string.
             </summary>
         </member>
         <member name="M:Jint.Native.JsProxy.Jint#Native#ICallable#Call(Jint.Native.JsValue,Jint.Native.JsValue[])">
@@ -2155,6 +2963,12 @@
         <member name="T:Jint.Native.JsSharedArrayBuffer">
             <summary>
             https://tc39.es/ecma262/#sec-sharedarraybuffer-objects
+            </summary>
+        </member>
+        <member name="M:Jint.Native.JsSharedArrayBuffer.Resize(System.UInt32)">
+            <summary>
+            Override Resize for SharedArrayBuffer to properly update the byte length.
+            https://tc39.es/ecma262/#sec-sharedarraybuffer.prototype.grow
             </summary>
         </member>
         <member name="M:Jint.Native.JsSharedArrayBuffer.CreateSharedByteDataBlock(Jint.Runtime.Realm,System.UInt64)">
@@ -2271,6 +3085,11 @@
         <member name="M:Jint.Native.JsValue.InstanceofOperator(Jint.Native.JsValue)">
             <summary>
             https://tc39.es/ecma262/#sec-instanceofoperator
+            </summary>
+        </member>
+        <member name="M:Jint.Native.JsValue.GetMethod(Jint.Runtime.Realm,Jint.Native.JsValue,Jint.Native.JsValue)">
+            <summary>
+            https://tc39.es/ecma262/#sec-getmethod
             </summary>
         </member>
         <member name="M:Jint.Native.JsValue.IsLooselyEqual(Jint.Native.JsValue)">
@@ -2810,6 +3629,16 @@
             https://tc39.es/proposal-promise-try/
             </summary>
         </member>
+        <member name="T:Jint.Native.Promise.ManualPromiseWithClrValue">
+            <summary>
+            Internal version of ManualPromise that accepts CLR objects for thread-safe Task interop.
+            </summary>
+        </member>
+        <member name="M:Jint.Native.Promise.ManualPromiseWithClrValue.#ctor(Jint.Native.JsValue,System.Action{System.Object},System.Action{System.Object})">
+            <summary>
+            Internal version of ManualPromise that accepts CLR objects for thread-safe Task interop.
+            </summary>
+        </member>
         <member name="T:Jint.Native.Proxy.ProxyConstructor">
             <summary>
             https://tc39.es/ecma262/#sec-proxy-constructor
@@ -2843,6 +3672,16 @@
         <member name="M:Jint.Native.Reflect.ReflectInstance.DefineProperty(Jint.Native.JsValue,Jint.Native.JsValue[])">
             <summary>
             https://tc39.es/ecma262/#sec-reflect.defineproperty
+            </summary>
+        </member>
+        <member name="M:Jint.Native.RegExp.RegExpConstructor.Escape(Jint.Native.JsValue,Jint.Native.JsValue[])">
+            <summary>
+            https://tc39.es/ecma262/#sec-regexp.escape
+            </summary>
+        </member>
+        <member name="M:Jint.Native.RegExp.RegExpConstructor.EncodeForRegExpEscape(System.Text.ValueStringBuilder@,System.Int32)">
+            <summary>
+            https://tc39.es/ecma262/#sec-encodeforregexescape
             </summary>
         </member>
         <member name="M:Jint.Native.RegExp.RegExpConstructor.Construct(Jint.Native.JsValue[],Jint.Native.JsValue)">
@@ -3096,6 +3935,34 @@
         <member name="M:Jint.Native.String.StringPrototype.TrimEnd(Jint.Native.JsValue,Jint.Native.JsValue[])">
             <summary>
             https://tc39.es/ecma262/#sec-string.prototype.trimend
+            </summary>
+        </member>
+        <member name="M:Jint.Native.String.StringPrototype.ToLowerCaseWithSpecialCasing(System.String,System.Globalization.CultureInfo)">
+            <summary>
+            Converts string to lowercase with Unicode special casing rules.
+            Handles Final_Sigma context for Greek capital sigma (U+03A3).
+            https://unicode.org/reports/tr21/tr21-5.html#SpecialCasing
+            </summary>
+        </member>
+        <member name="M:Jint.Native.String.StringPrototype.IsFinalSigmaContext(System.String,System.Int32)">
+            <summary>
+            Determines if the character at the given position is in a Final_Sigma context.
+            Final_Sigma: C is preceded by a sequence consisting of a cased letter and then zero or more Case_Ignorable characters,
+            and C is NOT followed by a sequence consisting of zero or more Case_Ignorable characters and then a cased letter.
+            https://unicode.org/reports/tr21/tr21-5.html#Context
+            </summary>
+        </member>
+        <member name="M:Jint.Native.String.StringPrototype.IsCased(System.Char)">
+            <summary>
+            Checks if a character is "cased" (has uppercase or lowercase property).
+            A character is cased if it has the Lowercase or Uppercase property, or has General_Category=Titlecase_Letter.
+            </summary>
+        </member>
+        <member name="M:Jint.Native.String.StringPrototype.IsCaseIgnorable(System.Char)">
+            <summary>
+            Checks if a character is Case_Ignorable.
+            Case_Ignorable characters include: Mn (Nonspacing_Mark), Me (Enclosing_Mark), Cf (Format),
+            Lm (Modifier_Letter), Sk (Modifier_Symbol), and characters with Word_Break property MidLetter, MidNumLet, or Single_Quote.
             </summary>
         </member>
         <member name="M:Jint.Native.String.StringPrototype.Split(Jint.Native.JsValue,Jint.Native.JsValue[])">
@@ -4673,6 +5540,17 @@
             Helper to cache JsString/Key when environments use different lookups.
             </summary>
         </member>
+        <member name="P:Jint.Runtime.Environments.ExecutionContext.Suspendable">
+            <summary>
+            Returns the active suspendable (Generator, AsyncFunction, or AsyncGenerator) if any.
+            </summary>
+        </member>
+        <member name="P:Jint.Runtime.Environments.ExecutionContext.IsSuspended">
+            <summary>
+            Whether the current execution context is suspended.
+            True if either generator is suspended at yield or async function is suspended at await.
+            </summary>
+        </member>
         <member name="M:Jint.Runtime.Environments.ExecutionContext.GetThisEnvironment">
             <summary>
             https://tc39.es/ecma262/#sec-getthisenvironment
@@ -4793,6 +5671,20 @@
         <member name="M:Jint.Runtime.Environments.PrivateEnvironment.ResolvePrivateIdentifier(System.String)">
             <summary>
             https://tc39.es/ecma262/#sec-resolve-private-identifier
+            </summary>
+        </member>
+        <member name="F:Jint.Runtime.EventLoop._isProcessing">
+            <summary>
+            Tracks whether we are currently processing the event loop.
+            Used to prevent re-entrant calls from causing stack overflow.
+            </summary>
+        </member>
+        <member name="F:Jint.Runtime.EventLoop._waitingThreadId">
+            <summary>
+            Tracks the thread ID of the thread that is currently waiting on a promise.
+            Only this thread (or any thread if -1) is allowed to process continuations.
+            This prevents background threads (e.g., Task.ContinueWith callbacks) from
+            executing JavaScript code on the Engine.
             </summary>
         </member>
         <member name="M:Jint.Runtime.Host.Initialize(Jint.Engine)">
@@ -5083,6 +5975,18 @@
             Per Engine.Evaluate() call context.
             </summary>
         </member>
+        <member name="M:Jint.Runtime.Interpreter.EvaluationContext.IsGeneratorAborted">
+            <summary>
+            Returns true if the generator is suspended (yielded) or a return was requested.
+            This is the combined check that should be used after evaluating sub-expressions.
+            </summary>
+        </member>
+        <member name="M:Jint.Runtime.Interpreter.EvaluationContext.IsSuspended">
+            <summary>
+            Returns true if execution is suspended (generator at yield or async function at await).
+            Use this after evaluating expressions that may suspend.
+            </summary>
+        </member>
         <member name="T:Jint.Runtime.Interpreter.Expressions.ExpressionCache">
             <summary>
             Optimizes constants values from expression array and only returns the actual JsValue in consecutive calls.
@@ -5096,6 +6000,18 @@
         <member name="M:Jint.Runtime.Interpreter.Expressions.JintArrowFunctionExpression.InstantiateAsyncArrowFunctionExpression(Jint.Engine,Jint.Runtime.Interpreter.JintFunctionDefinition,System.String)">
             <summary>
             https://tc39.es/ecma262/#sec-runtime-semantics-instantiateasyncarrowfunctionexpression
+            </summary>
+        </member>
+        <member name="M:Jint.Runtime.Interpreter.Expressions.JintAwaitExpression.AsyncFunctionResume(Jint.Engine,Jint.Native.AsyncFunction.AsyncFunctionInstance)">
+            <summary>
+            Resumes execution of a suspended async function.
+            Called from promise reaction jobs when the awaited promise settles.
+            </summary>
+        </member>
+        <member name="M:Jint.Runtime.Interpreter.Expressions.JintBinaryExpression.TryEvaluateOperands(Jint.Runtime.Interpreter.EvaluationContext,Jint.Native.JsValue@,Jint.Native.JsValue@)">
+            <summary>
+            Evaluates both operands with proper suspension checks for async/generator functions.
+            Returns false if evaluation was suspended (caller should return early).
             </summary>
         </member>
         <member name="M:Jint.Runtime.Interpreter.Expressions.JintCallExpression.GetSuperConstructor(Jint.Runtime.Environments.FunctionEnvironment)">
@@ -5189,21 +6105,57 @@
         <member name="M:Jint.Runtime.Interpreter.Expressions.JintYieldExpression.YieldDelegate(Jint.Runtime.Interpreter.EvaluationContext,Jint.Native.JsValue)">
             <summary>
             https://tc39.es/ecma262/#sec-generator-function-definitions-runtime-semantics-evaluation
+            Starts the yield* delegation loop.
             </summary>
         </member>
-        <member name="M:Jint.Runtime.Interpreter.Expressions.JintYieldExpression.AsyncGeneratorYield(System.Object)">
+        <member name="M:Jint.Runtime.Interpreter.Expressions.JintYieldExpression.ContinueYieldDelegate(Jint.Runtime.Interpreter.EvaluationContext,Jint.Native.Generator.GeneratorInstance)">
+            <summary>
+            Continues the yield* delegation loop after resuming from a suspension.
+            </summary>
+        </member>
+        <member name="M:Jint.Runtime.Interpreter.Expressions.JintYieldExpression.ContinueAsyncYieldDelegate(Jint.Runtime.Interpreter.EvaluationContext,Jint.Native.AsyncGenerator.AsyncGeneratorInstance)">
+            <summary>
+            Continues the yield* delegation loop for async generators after resuming from a suspension.
+            </summary>
+        </member>
+        <member name="M:Jint.Runtime.Interpreter.Expressions.JintYieldExpression.RunYieldDelegateLoop(Jint.Runtime.Interpreter.EvaluationContext,Jint.Native.Generator.GeneratorInstance,Jint.Native.Iterator.IteratorInstance,Jint.Runtime.CompletionType,Jint.Native.JsValue)">
+            <summary>
+            Runs the yield* delegation loop. Called both for initial delegation and continuation.
+            </summary>
+        </member>
+        <member name="M:Jint.Runtime.Interpreter.Expressions.JintYieldExpression.SuspendForDelegation(Jint.Runtime.Interpreter.EvaluationContext,Jint.Native.Generator.GeneratorInstance,Jint.Native.Object.ObjectInstance,Jint.Runtime.CompletionType)">
+            <summary>
+            Suspends the generator during yield* delegation.
+            Sets generator state to suspendedYield - callers check context.IsSuspended().
+            </summary>
+        </member>
+        <member name="M:Jint.Runtime.Interpreter.Expressions.JintYieldExpression.RunAsyncYieldDelegateLoop(Jint.Runtime.Interpreter.EvaluationContext,Jint.Native.AsyncGenerator.AsyncGeneratorInstance,Jint.Native.Iterator.IteratorInstance,Jint.Runtime.CompletionType,Jint.Native.JsValue)">
+            <summary>
+            Runs the yield* delegation loop for async generators.
+            </summary>
+        </member>
+        <member name="M:Jint.Runtime.Interpreter.Expressions.JintYieldExpression.AwaitAndYieldDelegation(Jint.Runtime.Interpreter.EvaluationContext,Jint.Native.AsyncGenerator.AsyncGeneratorInstance,Jint.Native.Iterator.IteratorInstance,Jint.Native.JsPromise)">
+            <summary>
+            Awaits the inner iterator's Promise and continues delegation.
+            </summary>
+        </member>
+        <member name="M:Jint.Runtime.Interpreter.Expressions.JintYieldExpression.AsyncGeneratorYield(Jint.Runtime.Interpreter.EvaluationContext,Jint.Native.JsValue)">
             <summary>
             https://tc39.es/ecma262/#sec-asyncgeneratoryield
+            For yield* delegation in async generators.
             </summary>
         </member>
-        <member name="M:Jint.Runtime.Interpreter.Expressions.JintYieldExpression.Await(Jint.Native.JsValue)">
+        <member name="M:Jint.Runtime.Interpreter.Expressions.JintYieldExpression.Await(Jint.Runtime.Interpreter.EvaluationContext,Jint.Native.JsValue)">
             <summary>
             https://tc39.es/ecma262/#await
+            Simplified await for use in yield* - returns the value directly for now.
+            Full await implementation would need to suspend and resume.
             </summary>
         </member>
         <member name="M:Jint.Runtime.Interpreter.Expressions.JintYieldExpression.Yield(Jint.Runtime.Interpreter.EvaluationContext,Jint.Native.JsValue)">
             <summary>
             https://tc39.es/ecma262/#sec-yield
+            https://tc39.es/ecma262/#sec-generatoryield
             </summary>
         </member>
         <member name="T:Jint.Runtime.Interpreter.JintFunctionDefinition">
@@ -5216,12 +6168,12 @@
             https://tc39.es/ecma262/#sec-ordinarycallevaluatebody
             </summary>
         </member>
-        <member name="M:Jint.Runtime.Interpreter.JintFunctionDefinition.AsyncFunctionStart(Jint.Runtime.Interpreter.EvaluationContext,Jint.Native.Promise.PromiseCapability,System.Func{Jint.Runtime.Interpreter.EvaluationContext,Jint.Runtime.Completion})">
+        <member name="M:Jint.Runtime.Interpreter.JintFunctionDefinition.AsyncFunctionStart(Jint.Runtime.Interpreter.EvaluationContext,Jint.Native.Promise.PromiseCapability,Jint.Runtime.Interpreter.JintStatementList,System.Func{Jint.Runtime.Interpreter.EvaluationContext,Jint.Runtime.Completion})">
             <summary>
             https://tc39.es/ecma262/#sec-async-functions-abstract-operations-async-function-start
             </summary>
         </member>
-        <member name="M:Jint.Runtime.Interpreter.JintFunctionDefinition.AsyncBlockStart(Jint.Runtime.Interpreter.EvaluationContext,Jint.Native.Promise.PromiseCapability,System.Func{Jint.Runtime.Interpreter.EvaluationContext,Jint.Runtime.Completion},Jint.Runtime.Environments.ExecutionContext@)">
+        <member name="M:Jint.Runtime.Interpreter.JintFunctionDefinition.AsyncBlockStart(Jint.Runtime.Interpreter.EvaluationContext,Jint.Native.AsyncFunction.AsyncFunctionInstance,System.Func{Jint.Runtime.Interpreter.EvaluationContext,Jint.Runtime.Completion})">
             <summary>
             https://tc39.es/ecma262/#sec-asyncblockstart
             </summary>
@@ -5229,6 +6181,11 @@
         <member name="M:Jint.Runtime.Interpreter.JintFunctionDefinition.EvaluateGeneratorBody(Jint.Runtime.Interpreter.EvaluationContext,Jint.Native.Function.Function,Jint.Native.JsValue[])">
             <summary>
             https://tc39.es/ecma262/#sec-runtime-semantics-evaluategeneratorbody
+            </summary>
+        </member>
+        <member name="M:Jint.Runtime.Interpreter.JintFunctionDefinition.EvaluateAsyncGeneratorBody(Jint.Runtime.Interpreter.EvaluationContext,Jint.Native.Function.Function,Jint.Native.JsValue[])">
+            <summary>
+            https://tc39.es/ecma262/#sec-runtime-semantics-evaluateasyncgeneratorbody
             </summary>
         </member>
         <member name="M:Jint.Runtime.Interpreter.JintStatementList.BlockDeclarationInstantiation(Jint.Runtime.Environments.DeclarativeEnvironment,Jint.Runtime.Interpreter.DeclarationCache)">
@@ -5281,14 +6238,27 @@
             https://tc39.es/ecma262/#sec-runtime-semantics-forin-div-ofheadevaluation-tdznames-expr-iterationkind
             </summary>
         </member>
-        <member name="M:Jint.Runtime.Interpreter.Statements.JintForInForOfStatement.BodyEvaluation(Jint.Runtime.Interpreter.EvaluationContext,Jint.Runtime.Interpreter.Expressions.JintExpression,Jint.Runtime.Interpreter.Statements.ProbablyBlockStatement@,Jint.Native.Iterator.IteratorInstance,Jint.Runtime.Interpreter.Statements.JintForInForOfStatement.IterationKind,Jint.Runtime.Interpreter.Statements.JintForInForOfStatement.LhsKind,Jint.Runtime.Interpreter.Statements.JintForInForOfStatement.IteratorKind)">
+        <member name="M:Jint.Runtime.Interpreter.Statements.JintForInForOfStatement.BodyEvaluation(Jint.Runtime.Interpreter.EvaluationContext,Jint.Runtime.Interpreter.Expressions.JintExpression,Jint.Runtime.Interpreter.Statements.ProbablyBlockStatement@,Jint.Native.Iterator.IteratorInstance,Jint.Runtime.Interpreter.Statements.JintForInForOfStatement.IterationKind,Jint.Runtime.Interpreter.Statements.JintForInForOfStatement.LhsKind,Jint.Runtime.ForOfSuspendData,System.Boolean,Jint.Runtime.Interpreter.Statements.JintForInForOfStatement.IteratorKind)">
             <summary>
             https://tc39.es/ecma262/#sec-runtime-semantics-forin-div-ofbodyevaluation-lhs-stmt-iterator-lhskind-labelset
+            </summary>
+        </member>
+        <member name="M:Jint.Runtime.Interpreter.Statements.JintForInForOfStatement.SuspendForAsyncIteration(Jint.Runtime.Interpreter.EvaluationContext,Jint.Native.JsPromise,Jint.Native.AsyncFunction.AsyncFunctionInstance,Jint.Native.AsyncGenerator.AsyncGeneratorInstance,Jint.Native.Iterator.IteratorInstance,Jint.Native.JsValue)">
+            <summary>
+            Suspends the current async function/generator to await the iterator's next() Promise.
             </summary>
         </member>
         <member name="T:Jint.Runtime.Interpreter.Statements.JintForStatement">
             <summary>
             https://tc39.es/ecma262/#sec-forbodyevaluation
+            </summary>
+        </member>
+        <member name="M:Jint.Runtime.Interpreter.Statements.JintForStatement.IsNodeInsideForStatementExcludingInit(Acornima.Ast.Node)">
+            <summary>
+            Checks if the given node is inside this for statement's body, test, or update (but NOT init).
+            Used to determine if we're resuming from a yield/await inside the loop.
+            When resuming from init, we must re-execute init to complete nested awaits.
+            When resuming from body/test/update, we skip init to avoid resetting variables.
             </summary>
         </member>
         <member name="M:Jint.Runtime.Interpreter.Statements.JintForStatement.ForBodyEvaluation(Jint.Runtime.Interpreter.EvaluationContext)">
@@ -5338,6 +6308,66 @@
             This is especially true for things like for statements body
             </summary>
         </member>
+        <member name="T:Jint.Runtime.ISuspendable">
+            <summary>
+            Interface for entities that can suspend execution (generators, async functions).
+            Aligns with TC39 execution context suspension semantics.
+            </summary>
+        </member>
+        <member name="P:Jint.Runtime.ISuspendable.IsSuspended">
+            <summary>
+            Whether this suspendable is currently in a suspended state.
+            For generators: SuspendedStart or SuspendedYield
+            For async functions: SuspendedAwait
+            </summary>
+        </member>
+        <member name="P:Jint.Runtime.ISuspendable.IsResuming">
+            <summary>
+            Whether we are resuming from a suspended state.
+            </summary>
+        </member>
+        <member name="P:Jint.Runtime.ISuspendable.SuspendedValue">
+            <summary>
+            The value yielded/awaited when suspended.
+            For generators: the yielded value
+            For async functions: the resume value from awaited promise
+            </summary>
+        </member>
+        <member name="P:Jint.Runtime.ISuspendable.LastSuspensionNode">
+            <summary>
+            The AST node where execution last suspended (yield or await expression).
+            Unified property for tracking suspension location across all suspendable types.
+            </summary>
+        </member>
+        <member name="P:Jint.Runtime.ISuspendable.ReturnRequested">
+            <summary>
+            Signals that an early return was requested (e.g., generator.return() was called).
+            For generators: true when generator.return() was called
+            For async functions/generators: typically false
+            </summary>
+        </member>
+        <member name="P:Jint.Runtime.ISuspendable.PendingCompletionType">
+            <summary>
+            Tracks the pending completion type when suspended in a finally block.
+            </summary>
+        </member>
+        <member name="P:Jint.Runtime.ISuspendable.PendingCompletionValue">
+            <summary>
+            Tracks the pending completion value when suspended in a finally block.
+            </summary>
+        </member>
+        <member name="P:Jint.Runtime.ISuspendable.CurrentFinallyStatement">
+            <summary>
+            The try statement whose finally block we're currently executing.
+            Used to properly resume execution in finally blocks.
+            </summary>
+        </member>
+        <member name="P:Jint.Runtime.ISuspendable.Data">
+            <summary>
+            Dictionary for tracking state of loops, destructuring, etc. during async execution.
+            Keyed by Jint expression/statement instances (not AST nodes) to avoid collisions.
+            </summary>
+        </member>
         <member name="T:Jint.Runtime.ITimeSystem">
             <summary>
             Date related operations that can replaced with implementation that can handle also full IANA data as recommended
@@ -5375,6 +6405,12 @@
             </summary>
             <param name="epochMilliseconds">Date as milliseconds since the Unix epoch, may be negative (for instants before the epoch).</param>
             <seealso cref="T:System.TimeZone"/>
+        </member>
+        <member name="M:Jint.Runtime.JavaScriptException.GetBaseException">
+            <summary>
+            Returns this exception as the base exception.
+            The inner exception is a private implementation detail and should not be exposed.
+            </summary>
         </member>
         <member name="P:Jint.Runtime.JavaScriptException.JavaScriptErrorWrapperException.StackTrace">
             <summary>
@@ -5416,12 +6452,12 @@
             https://tc39.es/ecma262/#sec-execute-async-module
             </summary>
         </member>
-        <member name="M:Jint.Runtime.Modules.CyclicModule.AsyncModuleExecutionFulfilled(Jint.Native.JsValue,Jint.Native.JsValue[])">
+        <member name="M:Jint.Runtime.Modules.CyclicModule.AsyncModuleExecutionFulfilled(Jint.Runtime.Modules.CyclicModule)">
             <summary>
             https://tc39.es/ecma262/#sec-async-module-execution-fulfilled
             </summary>
         </member>
-        <member name="M:Jint.Runtime.Modules.CyclicModule.AsyncModuleExecutionRejected(Jint.Native.JsValue,Jint.Native.JsValue[])">
+        <member name="M:Jint.Runtime.Modules.CyclicModule.AsyncModuleExecutionRejected(Jint.Runtime.Modules.CyclicModule,Jint.Native.JsValue)">
             <summary>
             https://tc39.es/ecma262/#sec-async-module-execution-rejected
             </summary>
@@ -5910,6 +6946,99 @@
         <member name="P:Jint.Runtime.Reference.Strict">
             <summary>
             true if the Reference Record originated in strict mode code, false otherwise.
+            </summary>
+        </member>
+        <member name="T:Jint.Runtime.SuspendData">
+            <summary>
+            Base class for generator suspension state.
+            Used to track iterator state when a generator yields inside constructs like for-of loops
+            or destructuring patterns.
+            </summary>
+        </member>
+        <member name="P:Jint.Runtime.SuspendData.Iterator">
+            <summary>
+            The iterator instance that was in progress when the generator suspended.
+            Null for constructs that don't use iterators (e.g., regular for loops).
+            </summary>
+        </member>
+        <member name="T:Jint.Runtime.DestructuringSuspendData">
+            <summary>
+            Stores the state of an array destructuring pattern when a generator yields inside it.
+            When a generator yields during array destructuring (e.g., [x[yield]] = iterable),
+            the iterator must be preserved so it can be properly closed when the generator
+            completes or returns.
+            </summary>
+        </member>
+        <member name="P:Jint.Runtime.DestructuringSuspendData.Done">
+            <summary>
+            Whether the iterator has been exhausted (done=true).
+            </summary>
+        </member>
+        <member name="T:Jint.Runtime.ForOfSuspendData">
+            <summary>
+            Stores the state of a for-of/for-in loop when a generator yields inside it.
+            </summary>
+        </member>
+        <member name="P:Jint.Runtime.ForOfSuspendData.CurrentValue">
+            <summary>
+            The current value being processed (from TryIteratorStep).
+            Needed when yield happens during destructuring or body execution.
+            </summary>
+        </member>
+        <member name="P:Jint.Runtime.ForOfSuspendData.AccumulatedValue">
+            <summary>
+            The accumulated result value (v) from previous iterations.
+            </summary>
+        </member>
+        <member name="P:Jint.Runtime.ForOfSuspendData.IterationEnv">
+            <summary>
+            The iteration environment for lexical bindings (let/const in for-of).
+            </summary>
+        </member>
+        <member name="T:Jint.Runtime.ForLoopSuspendData">
+            <summary>
+            Stores the state of a regular for loop when a generator yields inside it.
+            Saves loop variable values so they can be restored when resuming.
+            </summary>
+        </member>
+        <member name="P:Jint.Runtime.ForLoopSuspendData.BoundValues">
+            <summary>
+            The saved values of loop variables (let bindings in for loop init).
+            </summary>
+        </member>
+        <member name="T:Jint.Runtime.ForAwaitSuspendData">
+            <summary>
+            Stores the state of a for-await-of loop when an async function awaits inside it.
+            </summary>
+        </member>
+        <member name="P:Jint.Runtime.ForAwaitSuspendData.ResolvedIteratorResult">
+            <summary>
+            The resolved iterator result from awaiting the next() Promise.
+            </summary>
+        </member>
+        <member name="P:Jint.Runtime.ForAwaitSuspendData.AccumulatedValue">
+            <summary>
+            The accumulated result value (v) from previous iterations.
+            </summary>
+        </member>
+        <member name="F:Jint.Runtime.SuspendDataDictionary._suspendData">
+            <summary>
+            Unified dictionary for all suspend data (for-of loops, destructuring patterns, etc.).
+            </summary>
+        </member>
+        <member name="M:Jint.Runtime.SuspendDataDictionary.GetOrCreate``1(System.Object,Jint.Native.Iterator.IteratorInstance)">
+            <summary>
+            Gets or creates suspend data of the specified type (for constructs without iterators).
+            </summary>
+        </member>
+        <member name="M:Jint.Runtime.SuspendDataDictionary.TryGet``1(System.Object,``0@)">
+            <summary>
+            Tries to get existing suspend data of the specified type.
+            </summary>
+        </member>
+        <member name="M:Jint.Runtime.SuspendDataDictionary.Clear(System.Object)">
+            <summary>
+            Clears suspend data for the given key when the construct completes.
             </summary>
         </member>
         <member name="T:Jint.Runtime.ErrorDispatchInfo">

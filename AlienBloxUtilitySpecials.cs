@@ -9,14 +9,34 @@ using System.Threading;
 using Terraria;
 using Terraria.GameContent.UI.Elements;
 using Terraria.GameInput;
+using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader.Core;
 using Terraria.UI;
+using static AlienBloxUtility.AlienBloxUtility;
 
 namespace AlienBloxUtility
 {
     public static class AlienBloxUtilitySpecials
     {
+        public static void RequestKill(this NPC npc)
+        {
+            if (Main.netMode == NetmodeID.MultiplayerClient)
+            {
+                using MemoryStream s = new();
+                using BinaryWriter bw = new(s);
+
+                bw.Write(npc.whoAmI);
+                bw.Write((byte)0);
+
+                SendAlienBloxPacket("OneShotPacket", s.ToArray());
+            }
+            else
+            {
+                npc.StrikeInstantKill();
+            }
+        }
+
         public static ValueModProperties DeriveProperty(this TmodFile f)
         {
             return new(f); 
