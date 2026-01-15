@@ -1,2 +1,3 @@
-AlienBlox's Utility v0.1.4.7 released!
- * Fixed a bug regarding the immortality feature
+AlienBlox's Utility v0.1.4.8 released!
+ * Added the Terraria object to the JS system
+ * Updated the underlying JavaScript engine (Jint)
