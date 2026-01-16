@@ -14,7 +14,7 @@ namespace AlienBloxUtility.Utilities.DataStructures
     {
         public CancellationTokenSource MainToken;
 
-        public Dictionary<string, Action> CFunctions;
+        public List<(string, Action)> CFunctions;
 
         public CPPScriptingEnv()
         {
