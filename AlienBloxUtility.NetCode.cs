@@ -23,6 +23,7 @@ namespace AlienBloxUtility
             SpawnNPC,
             ServerLua,
             ServerJavaScript,
+            ServerCPP,
             SendSteamID,
             RemoveSteamID,
             RetrieveSteamID,
@@ -109,6 +110,31 @@ namespace AlienBloxUtility
                                 try
                                 {
                                     Task.Run(() => RunJavaScript(File.ReadAllText(JSStorageLocation + $"\\{code}")));
+                                }
+                                catch (Exception e)
+                                {
+                                    ChatHelper.BroadcastChatMessage(NetworkText.FromLiteral($"{e.GetType().Name}: {e.Message}"), Colors.CoinSilver);
+                                }
+                            }
+                        }
+                        break;
+                    case Messages.ServerCPP:
+                        if (Main.netMode == NetmodeID.Server)
+                        {
+                            string code = reader.ReadString();
+                            bool file = reader.ReadBoolean();
+
+                            ChatHelper.BroadcastChatMessage(NetworkText.FromKey("Mods.AlienBloxUtility.Messages.Server.DoCPP", PlrNet.name, PacketSpyUtility.UnixTime), Colors.CoinSilver);
+
+                            if (!file)
+                            {
+                                Task.Run(() => RunJavaScript(code));
+                            }
+                            else
+                            {
+                                try
+                                {
+                                    Task.Run(() => SharedCPP.Run(File.ReadAllText(JSStorageLocation + $"\\{code}")));
                                 }
                                 catch (Exception e)
                                 {
@@ -341,6 +367,19 @@ namespace AlienBloxUtility
                 ModPacket Pkt = Instance.GetPacket();
 
                 Pkt.Write((byte)Messages.ServerLua);
+                Pkt.Write(code);
+                Pkt.Write(file);
+                Pkt.Send();
+            }
+        }
+
+        public static void NativeServer(string code, bool file = false)
+        {
+            if (Main.netMode == NetmodeID.MultiplayerClient)
+            {
+                ModPacket Pkt = Instance.GetPacket();
+
+                Pkt.Write((byte)Messages.ServerCPP);
                 Pkt.Write(code);
                 Pkt.Write(file);
                 Pkt.Send();

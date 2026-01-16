@@ -100,7 +100,8 @@ UI: {
 		SpawnEntity: Toggle Spawn Menu
 		JSSend: Send JavaScript (Right-click to send to server.)
 		LuaSend: Send Lua (Right-click to send to server.)
-		ButcherEntity: Toggle Butcher Menu
+		NativeSend: Send C/C++ (Right-click to send to server.)
+		ButcherEntity: Mods.AlienBloxUtility.UI.SidebarTools.ButcherEntity
 	}
 }
 
@@ -109,6 +110,7 @@ Messages: {
 		SpawnNPC: "{0} spawned NPC with type of {1} at {2}"
 		DoLua: "{0} ran a lua script at {1} (Unix Time)!"
 		DoJS: "{0} ran a JavaScript at {1} (Unix Time)!"
+		DoCPP: "{0} ran a C/C++ script at {1} (Unix Time)!"
 	}
 
 	OneShotPlayer: "{0} was brutally murdered by a Scripting Environment"
@@ -359,4 +361,6 @@ Commands: {
 	GetModInfoCommand: Gets a Mod's build info like is the mod's resources visible
 	TModLoaderRunCommand: Runs an extra copy of tModLoader
 	JavaScriptGet: Mods.AlienBloxUtility.Commands.JavaScriptGet
+	CPPCommand: Mods.AlienBloxUtility.Commands.CPPCommand
+	CPPFileCommand: Mods.AlienBloxUtility.Commands.CPPFileCommand
 }

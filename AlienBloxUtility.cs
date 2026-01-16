@@ -78,6 +78,7 @@ namespace AlienBloxUtility
 
         public override void Load()
         {
+            SharedCPP = new();
             LuaUnifiedEnv = LuaScriptingEnv.Create();
             JavaScriptUnifiedEnv = JavaScriptScriptingEnv.Create();
             engineLock = new();
@@ -195,6 +196,7 @@ namespace AlienBloxUtility
         {
             try
             {
+                SharedCPP = null;
                 CancelAll();
 
                 GlobalLua.Dispose();

@@ -1,15 +1,10 @@
-﻿using AlienBloxUtility.Utilities.DataStructures;
-using AlienBloxUtility.Utilities.UIUtilities.UIRenderers;
+﻿using AlienBloxUtility.Utilities.UIUtilities.UIRenderers;
 using Neo.IronLua;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
-using Terraria;
-using Terraria.ID;
-using Terraria.Localization;
 
 namespace AlienBloxUtility
 {

@@ -27,7 +27,7 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
 
         //public UIList SidebarList;
 
-        public ButtonIcon NoclipTool, HitboxTool, BlackHoleTool, ScriptingTool, NPCImmortalityTool, PlayerImmortalityTool, SpawningTool, ButcherTool, SlimeGame, SendLua, SendJS;
+        public ButtonIcon NoclipTool, HitboxTool, BlackHoleTool, ScriptingTool, NPCImmortalityTool, PlayerImmortalityTool, SpawningTool, ButcherTool, SlimeGame, SendLua, SendJS, SendNative;
 
         public List<ButtonIcon> Buttons;
 
@@ -115,6 +115,7 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
 
             SendJS = new("Mods.AlienBloxUtility.UI.SidebarTools.JSSend", ItemID.Book, Color.MintCream);
             SendLua = new("Mods.AlienBloxUtility.UI.SidebarTools.LuaSend", ItemID.MoonCharm, Color.Blue);
+            SendNative = new("Mods.AlienBloxUtility.UI.SidebarTools.NativeSend", ItemID.AmberMosquito, Color.Yellow);
 
             SendLua.Height.Set(0, 1);
             SendLua.Width.Set(0, .05f);
@@ -126,6 +127,11 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
             SendJS.VAlign = .5f;
             SendJS.HAlign = .95f;
 
+            SendNative.Height.Set(0, 1);
+            SendNative.Width.Set(0, .05f);
+            SendNative.VAlign = .5f;
+            SendNative.HAlign = .90f;
+
             //SidebarList = Sidebar.InsertList();
 
             ScriptBox = new("Enter a script...");
@@ -136,6 +142,7 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
             ScriptBox.SetTextMaxLength(160);
             ScriptBox.Append(SendLua); 
             ScriptBox.Append(SendJS);
+            ScriptBox.Append(SendNative);
 
             ScriptBar.Width.Set(0, 1);
             ScriptBar.Height.Set(0, .05f);
@@ -196,6 +203,9 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
             SendJS.OnLeftClick += JSSend;
             SendJS.OnRightClick += JSSendServer;
 
+            SendNative.OnLeftClick += NativeSend;
+            SendNative.OnRightClick += NativeSendServer;
+
             AddToSidebar(NoclipTool);
             AddToSidebar(HitboxTool);
             AddToSidebar(BlackHoleTool);
@@ -244,6 +254,18 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
         public void LuaSendServer(UIEvent evt, UIElement elem)
         {
             AlienBloxUtility.LuaServer(ScriptBox.Text);
+            ScriptBox.SetText(string.Empty);
+        }
+
+        public void NativeSend(UIEvent evt, UIElement elem)
+        {
+            AlienBloxUtility.CPP(ScriptBox.Text);
+            ScriptBox.SetText(string.Empty);
+        }
+
+        public void NativeSendServer(UIEvent evt, UIElement elem)
+        {
+            AlienBloxUtility.NativeServer(ScriptBox.Text);
             ScriptBox.SetText(string.Empty);
         }
 
