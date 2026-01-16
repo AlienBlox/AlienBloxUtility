@@ -2,7 +2,9 @@
 using CLanguage;
 using CLanguage.Compiler;
 using CLanguage.Interpreter;
+using CLanguage.Types;
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -12,9 +14,7 @@ namespace AlienBloxUtility.Utilities.DataStructures
     {
         public CancellationTokenSource MainToken;
 
-        public Executable Exe;
-
-        public MachineInfo Machine;
+        public Dictionary<string, Action> CFunctions;
 
         public CPPScriptingEnv()
         {
@@ -38,7 +38,7 @@ namespace AlienBloxUtility.Utilities.DataStructures
                     try
                     {
                         var interpreter = new CInterpreter(program);
-                
+
                         interpreter.Reset("main");
                         interpreter.Run();
                     }
