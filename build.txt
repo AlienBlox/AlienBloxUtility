@@ -5,6 +5,6 @@ hideCode = false
 hideResources = false
 includeSource = true
 includePDB = true
-dllReferences = AlienBloxTools, ICSharpCode.Decompiler, Neo.Lua, Jint, Acornima, BCrypt.Net-Next
+dllReferences = AlienBloxTools, ICSharpCode.Decompiler, Neo.Lua, Jint, Acornima, BCrypt.Net-Next, CLanguage
 buildIgnore = FutureAdditions/*, PackageInfo/*, EasyXNB/*, AlienBloxAnalyzer/*, Analyzers/*
 sortBefore = AlienBloxMod
