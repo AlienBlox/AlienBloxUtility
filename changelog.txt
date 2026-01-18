@@ -1,3 +1,2 @@
-AlienBlox's Utility v0.1.4.8 released!
- * Added the Terraria object to the JS system
- * Updated the underlying JavaScript engine (Jint)
+AlienBlox's Utility v0.1.4.9 released!
+ * Added a hidden feature...
