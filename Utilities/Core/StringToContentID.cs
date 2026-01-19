@@ -1,4 +1,5 @@
-﻿using Terraria.ModLoader;
+﻿using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace AlienBloxUtility.Utilities.Core
 {
@@ -7,6 +8,11 @@ namespace AlienBloxUtility.Utilities.Core
         public static int ItemFromString(string str)
         {
             string[] strSplit = str.Split(':');
+
+            if (strSplit[0] == "Terraria")
+            {
+                return ItemID.Search.GetId(strSplit[1]);
+            }
 
             if (ModLoader.TryGetMod(strSplit[0], out var M))
             {
@@ -23,6 +29,11 @@ namespace AlienBloxUtility.Utilities.Core
         {
             string[] strSplit = str.Split(':');
 
+            if (strSplit[0] == "Terraria")
+            {
+                return ProjectileID.Search.GetId(strSplit[1]);
+            }
+
             if (ModLoader.TryGetMod(strSplit[0], out var M))
             {
                 if (M.TryFind<ModProjectile>(strSplit[1], out var I))
@@ -38,6 +49,11 @@ namespace AlienBloxUtility.Utilities.Core
         {
             string[] strSplit = str.Split(':');
 
+            if (strSplit[0] == "Terraria")
+            {
+                return NPCID.Search.GetId(strSplit[1]);
+            }
+
             if (ModLoader.TryGetMod(strSplit[0], out var M))
             {
                 if (M.TryFind<ModNPC>(strSplit[1], out var I))
@@ -52,6 +68,11 @@ namespace AlienBloxUtility.Utilities.Core
         public static int BuffFromString(string str)
         {
             string[] strSplit = str.Split(':');
+
+            if (strSplit[0] == "Terraria")
+            {
+                return BuffID.Search.GetId(strSplit[1]);
+            }
 
             if (ModLoader.TryGetMod(strSplit[0], out var M))
             {
