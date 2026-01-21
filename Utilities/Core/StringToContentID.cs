@@ -119,5 +119,28 @@ namespace AlienBloxUtility.Utilities.Core
 
             return -1;
         }
+
+        public static int TileFromString(string str)
+        {
+            if (str == null)
+                return 0;
+
+            string[] strSplit = str.Split(':');
+
+            if (strSplit[0] == "Terraria")
+            {
+                return TileID.Search.GetId(strSplit[1]);
+            }
+
+            if (ModLoader.TryGetMod(strSplit[0], out var M))
+            {
+                if (M.TryFind<ModTile>(strSplit[1], out var I))
+                {
+                    return I.Type;
+                }
+            }
+
+            return -1;
+        }
     }
 }

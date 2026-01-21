@@ -69,5 +69,29 @@ namespace AlienBloxUtility.Utilities.Core
                 return $"{PrefixLoader.GetPrefix(prefixID).Mod.Name}:{PrefixLoader.GetPrefix(prefixID).Name}";
             }
         }
+
+        public static string TileToString(int tileID)
+        {
+            if (ModContent.GetModTile(tileID) == null)
+            {
+                return $"Terraria:{TileID.Search.GetName(tileID)}";
+            }
+            else
+            {
+                return $"{ModContent.GetModTile(tileID).Mod.Name}:{ModContent.GetModTile(tileID).Name}";
+            }
+        }
+
+        public static string WallToString(int wallID)
+        {
+            if (ModContent.GetModWall(wallID) == null)
+            {
+                return $"Terraria:{TileID.Search.GetName(wallID)}";
+            }
+            else
+            {
+                return $"{ModContent.GetModWall(wallID).Mod.Name}:{ModContent.GetModWall(wallID).Name}";
+            }
+        }
     }
 }

@@ -45,18 +45,21 @@ namespace AlienBloxUtility.Utilities.Abstracts
         /// Use a tool
         /// </summary>
         /// <param name="tool">the name of the tool to use</param>
-        public static void UseTool(string tool, int player, bool sudo)
+        public static void UseTool(string tool, int player, bool sudo, bool net = false)
         {
             try
             {
-                using MemoryStream ms = new();
-                using BinaryWriter bw = new(ms);
+                if (net)
+                {
+                    using MemoryStream ms = new();
+                    using BinaryWriter bw = new(ms);
 
-                bw.Write(tool);
-                bw.Write(player);
-                bw.Write(sudo);
+                    bw.Write(tool);
+                    bw.Write(player);
+                    bw.Write(sudo);
 
-                AlienBloxUtility.SendAlienBloxPacket("OnToolUsePacket", ms.ToArray());
+                    AlienBloxUtility.SendAlienBloxPacket("OnToolUsePacket", ms.ToArray());
+                }
 
                 foreach (var item in Tools)
                 {

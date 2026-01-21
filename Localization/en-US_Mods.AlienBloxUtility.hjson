@@ -47,6 +47,15 @@ UI: {
 		Middle-click for mod info.
 		'''
 	EntitySummon: Summon Menu
+	TileInfoHover:
+		'''
+		Has TE: {0}
+		TE Type: {1}
+		Tile Type: {2}
+		Tile Frame: {3}
+		Wall Type: {4}
+		Slope Type: {5}
+		'''
 
 	Console: {
 		ConWelcome: AlienBlox's Utility V{0} loaded!
@@ -335,6 +344,7 @@ Documents: {
 Keybinds: {
 	Sudo.DisplayName: Use Sudo
 	ToggleAdvancedDebugging.DisplayName: Toggle Sudo Debugging UI (Unused)
+	UseTileTool.DisplayName: Use Tile Tool
 }
 
 Commands: {

@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using AlienBloxUtility.Utilities.Abstracts;
+using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.GameInput;
@@ -15,6 +16,8 @@ namespace AlienBloxUtility.Utilities.Core
         public bool HitboxTool;
 
         public bool toolSudo;
+
+        public bool tileTool;
 
         public int ForceSyncTimer;
 
@@ -74,11 +77,24 @@ namespace AlienBloxUtility.Utilities.Core
             }
         }
 
+        public override void DrawEffects(PlayerDrawSet drawInfo, ref float r, ref float g, ref float b, ref float a, ref bool fullBright)
+        {
+            if (tileTool)
+            {
+                DebugTool.UseTool("TileTool", Player.whoAmI, toolSudo);
+            }
+        }
+
         public override void ProcessTriggers(TriggersSet triggersSet)
         {
             if (AlienBloxKeybinds.SudoKeybind.JustPressed)
             {
                 toolSudo = !toolSudo;
+            }
+
+            if (AlienBloxKeybinds.UseTileTool.JustPressed)
+            {
+                tileTool = !tileTool;
             }
 
             if (noClipHack)
