@@ -79,10 +79,10 @@ namespace AlienBloxUtility.Utilities.Core
 
         public override void DrawEffects(PlayerDrawSet drawInfo, ref float r, ref float g, ref float b, ref float a, ref bool fullBright)
         {
-            if (tileTool)
-            {
-                DebugTool.UseTool("TileTool", Player.whoAmI, toolSudo);
-            }
+            //if (tileTool)
+            //{
+            //    DebugTool.UseTool("TileTool", Player.whoAmI, toolSudo);
+            //}
         }
 
         public override void ProcessTriggers(TriggersSet triggersSet)
@@ -92,10 +92,10 @@ namespace AlienBloxUtility.Utilities.Core
                 toolSudo = !toolSudo;
             }
 
-            if (AlienBloxKeybinds.UseTileTool.JustPressed)
-            {
-                tileTool = !tileTool;
-            }
+            //if (AlienBloxKeybinds.UseTileTool.JustPressed)
+            //{
+            //    tileTool = !tileTool;
+            //}
 
             if (noClipHack)
             {
