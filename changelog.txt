@@ -1,2 +1,2 @@
-AlienBlox's Utility v0.1.4.9 released!
- * Added a hidden feature...
+AlienBlox's Utility v0.1.5.0 released!
+ * Fixed the Super Flight system
