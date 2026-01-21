@@ -52,5 +52,22 @@ namespace AlienBloxUtility.Utilities.Core
                 return $"{ModContent.GetModBuff(buffID).Mod.Name}:{ModContent.GetModBuff(buffID).Name}";
             }
         }
+
+        public static string PrefixIdToString(int prefixID)
+        {
+            if (prefixID == 0)
+            {
+                return "Terraria:None";
+            }
+
+            if (PrefixLoader.GetPrefix(prefixID) == null)
+            {
+                return $"Terraria:{PrefixID.Search.GetName(prefixID)}";
+            }
+            else
+            {
+                return $"{PrefixLoader.GetPrefix(prefixID).Mod.Name}:{PrefixLoader.GetPrefix(prefixID).Name}";
+            }
+        }
     }
 }

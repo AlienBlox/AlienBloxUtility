@@ -7,6 +7,9 @@ namespace AlienBloxUtility.Utilities.Core
     {
         public static int ItemFromString(string str)
         {
+            if (str == null)
+                return 0;
+
             string[] strSplit = str.Split(':');
 
             if (strSplit[0] == "Terraria")
@@ -27,6 +30,9 @@ namespace AlienBloxUtility.Utilities.Core
 
         public static int ProjFromString(string str)
         {
+            if (str == null)
+                return 0;
+
             string[] strSplit = str.Split(':');
 
             if (strSplit[0] == "Terraria")
@@ -47,6 +53,9 @@ namespace AlienBloxUtility.Utilities.Core
 
         public static int NPCFromString(string str)
         {
+            if (str == null)
+                return 0;
+
             string[] strSplit = str.Split(':');
 
             if (strSplit[0] == "Terraria")
@@ -67,6 +76,9 @@ namespace AlienBloxUtility.Utilities.Core
 
         public static int BuffFromString(string str)
         {
+            if (str == null)
+                return 0;
+
             string[] strSplit = str.Split(':');
 
             if (strSplit[0] == "Terraria")
@@ -77,6 +89,29 @@ namespace AlienBloxUtility.Utilities.Core
             if (ModLoader.TryGetMod(strSplit[0], out var M))
             {
                 if (M.TryFind<ModBuff>(strSplit[1], out var I))
+                {
+                    return I.Type;
+                }
+            }
+
+            return -1;
+        }
+
+        public static int PrefixFromString(string str)
+        {
+            if (str == null || str == "Terraria:None")
+                return 0;
+
+            string[] strSplit = str.Split(':');
+
+            if (strSplit[0] == "Terraria")
+            {
+                return PrefixID.Search.GetId(strSplit[1]);
+            }
+
+            if (ModLoader.TryGetMod(strSplit[0], out var M))
+            {
+                if (M.TryFind<ModPrefix>(strSplit[1], out var I))
                 {
                     return I.Type;
                 }
