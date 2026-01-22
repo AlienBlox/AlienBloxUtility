@@ -99,7 +99,6 @@ namespace AlienBloxUtility.Utilities.Core
 
             if (noClipHack)
             {
-
                 float secondaryModifier = 1f;
                 Vector2 prevNoClipHack = noClipHackPos;
 
