@@ -13,8 +13,8 @@ namespace AlienBloxUtility.Utilities.Core
 
         public override void Load()
         {
-            //SudoKeybind = KeybindLoader.RegisterKeybind(Mod, "Sudo", Keys.NumPad1);
-            //ToggleAdvancedDebugging = KeybindLoader.RegisterKeybind(Mod, "ToggleAdvancedDebugging", Keys.NumPad2);
+            SudoKeybind = KeybindLoader.RegisterKeybind(Mod, "Sudo", Keys.NumPad1);
+            ToggleAdvancedDebugging = KeybindLoader.RegisterKeybind(Mod, "ToggleAdvancedDebugging", Keys.NumPad2);
             //UseTileTool = KeybindLoader.RegisterKeybind(Mod, "UseTileTool", Keys.NumPad3);
         }
     }
