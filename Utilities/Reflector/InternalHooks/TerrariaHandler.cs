@@ -9,6 +9,7 @@ namespace AlienBloxUtility.Utilities.Reflector.InternalHooks
 {
     /// <summary>
     /// Contains all the helpers to quickly reflect things from Terraria
+    /// Useful for making dummy instances for testing
     /// </summary>
     public static class TerrariaHandler
     {
