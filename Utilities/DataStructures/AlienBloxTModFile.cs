@@ -2,6 +2,7 @@
 using System;
 using System.IO;
 using System.Reflection;
+using System.Text;
 using Terraria.ModLoader.Core;
 
 namespace AlienBloxUtility.Utilities.DataStructures
@@ -72,14 +73,26 @@ namespace AlienBloxUtility.Utilities.DataStructures
         /// </summary>
         /// <param name="entry">The entry to use</param>
         /// <returns>The file bytes</returns>
-        public byte[] ReadFile(TmodFile.FileEntry entry) => AssociatedFile.GetBytes(entry);
+        public byte[] ReadFile(TmodFile.FileEntry entry)
+        {
+            using (Read())
+            {
+                return AssociatedFile.GetBytes(entry);
+            }
+        }
 
         /// <summary>
         /// Reads the tMod file with a fullname
         /// </summary>
         /// <param name="name">The file's fullname (Path + Name + Extension)</param>
         /// <returns>The file contents</returns>
-        public byte[] ReadFile(string name) => AssociatedFile.GetBytes(name);
+        public byte[] ReadFile(string name)
+        {
+            using (Read())
+            {
+                return AssociatedFile.GetBytes(name);
+            }
+        }
 
         /// <summary>
         /// Writes content to a tMod file
@@ -88,10 +101,13 @@ namespace AlienBloxUtility.Utilities.DataStructures
         /// <param name="data">The data to write onto</param>
         public void WriteFile(string fileName, byte[] data)
         {
-            Type tModType = typeof(TmodFile);
-            MethodInfo WriteMethod = tModType.GetMethod("AddFile", BindingFlags.NonPublic | BindingFlags.Instance, [typeof(string), typeof(byte[])]);
+            using (Read())
+            {
+                Type tModType = typeof(TmodFile);
+                MethodInfo WriteMethod = tModType.GetMethod("AddFile", BindingFlags.NonPublic | BindingFlags.Instance, [typeof(string), typeof(byte[])]);
             
-            WriteMethod?.Invoke(AssociatedFile, [fileName, data]);
+                WriteMethod?.Invoke(AssociatedFile, [fileName, data]);
+            }
         }
 
         /// <summary>
@@ -100,10 +116,13 @@ namespace AlienBloxUtility.Utilities.DataStructures
         /// <param name="fileName">The file to destroy</param>
         public void DestroyFile(string fileName)
         {
-            Type tModType = typeof(TmodFile);
-            MethodInfo DestroyMethod = tModType.GetMethod("RemoveFile", BindingFlags.NonPublic | BindingFlags.Instance, [typeof(string)]);
+            using(Read())
+            {
+                Type tModType = typeof(TmodFile);
+                MethodInfo DestroyMethod = tModType.GetMethod("RemoveFile", BindingFlags.NonPublic | BindingFlags.Instance, [typeof(string)]);
 
-            DestroyMethod?.Invoke(AssociatedFile, [fileName]);
+                DestroyMethod?.Invoke(AssociatedFile, [fileName]);
+            }
         }
 
         /// <summary>
@@ -111,10 +130,91 @@ namespace AlienBloxUtility.Utilities.DataStructures
         /// </summary>
         public void SaveFile()
         {
-            Type tModType = typeof(TmodFile);
-            MethodInfo SaveMethod = tModType.GetMethod("Save", BindingFlags.NonPublic | BindingFlags.Instance);
+            using (Read())
+            {
+                Type tModType = typeof(TmodFile);
+                MethodInfo SaveMethod = tModType.GetMethod("Save", BindingFlags.NonPublic | BindingFlags.Instance);
 
-            SaveMethod?.Invoke(AssociatedFile, null);
+                SaveMethod?.Invoke(AssociatedFile, null);
+            }
+        }
+
+        /// <summary>
+        /// Reads the associated tMod file
+        /// </summary>
+        public void ReadTMod()
+        {
+            Type tModType = typeof(TmodFile);
+            MethodInfo DestroyMethod = tModType.GetMethod("Read", BindingFlags.NonPublic | BindingFlags.Instance, Type.EmptyTypes);
+
+            DestroyMethod?.Invoke(AssociatedFile, null);
+        }
+
+        /// <summary>
+        /// Dumps the associated tMod file's contents
+        /// </summary>
+        /// <param name="source">Should it also decompile the mod's DLL</param>
+        public void DumpFile(bool source)
+        {
+            ExternalTModInspection.ExportToLocation(AssociatedFile.path, AssociatedFile, source);
+        }
+
+        public TModFileMetadata ReadMetadata()
+        {
+            return new(AssociatedFile);
+        }
+    }
+
+    /// <summary>
+    /// Represents a metadata table for a TMod file
+    /// </summary>
+    public struct TModFileMetadata
+    {
+        /// <summary>
+        /// The version of the mod
+        /// </summary>
+        public Version TModLoaderVersion { get; private set; }
+        /// <summary>
+        /// The hash of the mod
+        /// </summary>
+        public byte[] Hash { get; private set; }
+        /// <summary>
+        /// The signature of the mod
+        /// </summary>
+        public byte[] Sig { get; private set; }
+        /// <summary>
+        /// The associated tMod file (possibly null)
+        /// </summary>
+        public TmodFile AssociatedFile { get; private set; }
+
+        /// <summary>
+        /// Initializes a new instance of the TModFileMetadata class with the specified version, hash, and signature.
+        /// </summary>
+        /// <param name="ver">The version of the tModLoader used to create the mod file.</param>
+        /// <param name="hash">A byte array containing the hash of the mod file. Cannot be null.</param>
+        /// <param name="sig">A byte array containing the digital signature of the mod file. Cannot be null.</param>
+        public TModFileMetadata(Version ver, byte[] hash, byte[] sig)
+        {
+            TModLoaderVersion = ver;
+            Hash = hash;
+            Sig = sig;
+        }
+
+        public TModFileMetadata(TmodFile file)
+        {
+            AssociatedFile = file;
+
+            using FileStream FS = File.OpenRead(AssociatedFile.path);
+            using BinaryReader reader = new(FS);
+
+            if (Encoding.ASCII.GetString(reader.ReadBytes(4)) != "TMOD")
+            {
+                throw new("Well, that is NOT a tMod file but something evil instead");
+            }
+
+            TModLoaderVersion = new(reader.ReadString());
+            Hash = reader.ReadBytes(20);
+            Sig = reader.ReadBytes(256);
         }
     }
 }
