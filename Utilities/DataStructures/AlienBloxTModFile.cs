@@ -101,13 +101,10 @@ namespace AlienBloxUtility.Utilities.DataStructures
         /// <param name="data">The data to write onto</param>
         public void WriteFile(string fileName, byte[] data)
         {
-            using (Read())
-            {
-                Type tModType = typeof(TmodFile);
-                MethodInfo WriteMethod = tModType.GetMethod("AddFile", BindingFlags.NonPublic | BindingFlags.Instance, [typeof(string), typeof(byte[])]);
+            Type tModType = typeof(TmodFile);
+            MethodInfo WriteMethod = tModType.GetMethod("AddFile", BindingFlags.NonPublic | BindingFlags.Instance, [typeof(string), typeof(byte[])]);
             
-                WriteMethod?.Invoke(AssociatedFile, [fileName, data]);
-            }
+            WriteMethod?.Invoke(AssociatedFile, [fileName, data]);
         }
 
         /// <summary>
@@ -116,13 +113,10 @@ namespace AlienBloxUtility.Utilities.DataStructures
         /// <param name="fileName">The file to destroy</param>
         public void DestroyFile(string fileName)
         {
-            using(Read())
-            {
-                Type tModType = typeof(TmodFile);
-                MethodInfo DestroyMethod = tModType.GetMethod("RemoveFile", BindingFlags.NonPublic | BindingFlags.Instance, [typeof(string)]);
+            Type tModType = typeof(TmodFile);
+            MethodInfo DestroyMethod = tModType.GetMethod("RemoveFile", BindingFlags.NonPublic | BindingFlags.Instance, [typeof(string)]);
 
-                DestroyMethod?.Invoke(AssociatedFile, [fileName]);
-            }
+            DestroyMethod?.Invoke(AssociatedFile, [fileName]);
         }
 
         /// <summary>
@@ -130,13 +124,10 @@ namespace AlienBloxUtility.Utilities.DataStructures
         /// </summary>
         public void SaveFile()
         {
-            using (Read())
-            {
-                Type tModType = typeof(TmodFile);
-                MethodInfo SaveMethod = tModType.GetMethod("Save", BindingFlags.NonPublic | BindingFlags.Instance);
+            Type tModType = typeof(TmodFile);
+            MethodInfo SaveMethod = tModType.GetMethod("Save", BindingFlags.NonPublic | BindingFlags.Instance);
 
-                SaveMethod?.Invoke(AssociatedFile, null);
-            }
+            SaveMethod?.Invoke(AssociatedFile, null);
         }
 
         /// <summary>
