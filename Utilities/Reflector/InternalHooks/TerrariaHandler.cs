@@ -71,5 +71,18 @@ namespace AlienBloxUtility.Utilities.Reflector.InternalHooks
         /// <param name="path">The path to the Tmod file to load. Must refer to an existing file.</param>
         /// <returns>A <see cref="TmodFile"/> instance representing the loaded Tmod file.</returns>
         public static TmodFile LoadTMod(string path) => TModInspector.LoadFile(path);
+
+        /// <summary>
+        /// Dynamically compiles a tModLoader mod with reflection
+        /// </summary>
+        /// <param name="path">The path to turn into a tModLoader tMod file</param>
+        public static void DynamicCompileTmod(string path)
+        {
+            Type t = typeof(TmodFile).Assembly.GetType("Terraria.ModLoader.Core.ModCompile");
+
+            var method = t.GetMethod("Build", BindingFlags.Static | BindingFlags.NonPublic, [typeof(string)]);
+
+            method?.Invoke(null, [path]);
+        }
     }
 }
