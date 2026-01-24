@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Terraria;
@@ -111,6 +112,14 @@ namespace AlienBloxUtility.Utilities.Core
             //    AlienBloxUtility.Instance.Logger.Warn("No tMods found.");
             //}
 
+            var highestVersionMods = tMods
+            .GroupBy(mod => mod.Name)  // Group by mod name
+            .Select(group => group.OrderByDescending(mod => mod.Version)  // Sort by version in descending order
+            .First())  // Take the highest version from each group
+            .ToList();
+
+            tMods = highestVersionMods;
+
             return [.. tMods];
         }
 
@@ -118,6 +127,7 @@ namespace AlienBloxUtility.Utilities.Core
         /// Gets every single files from a tMod file
         /// </summary>
         /// <param name="file">The file to get.</param>
+        /// <param name="rawImgConvert">Whether or not to convert rawimgs</param>
         /// <returns>The list of files as an array of strings (filename) and byte arrays (content)</returns>
         public static (string, byte[])[] GetModFiles(TmodFile file, bool rawImgConvert = false)
         {

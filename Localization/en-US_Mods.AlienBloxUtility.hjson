@@ -40,6 +40,7 @@ UI: {
 	AssetTool: Asset Tool
 	ModalNotice: Double left click modal anywhere to exit!
 	SlimeGameText: Slime Score: {0} (Double right-click to exit!)
+	PatchMenu: Open Mod Patcher
 	AssetExtractorInfo:
 		'''
 		Right-click to decompile mod.

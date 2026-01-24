@@ -150,6 +150,21 @@ namespace AlienBloxUtility.Utilities.DataStructures
             ExternalTModInspection.ExportToLocation(AssociatedFile.path, AssociatedFile, source);
         }
 
+        /// <summary>
+        /// Patches the associated tMod file with the chosen contents
+        /// </summary>
+        /// <param name="fileName">The file to patch</param>
+        /// <param name="patch">The patch to deploy</param>
+        /// <param name="save">Whether or not to save the tMod file</param>
+        public void Patch(string fileName, byte[] patch, bool save = true)
+        {
+            DestroyFile(fileName);
+            WriteFile(fileName, patch);
+
+            if (save)
+                SaveFile();
+        }
+
         public TModFileMetadata ReadMetadata()
         {
             return new(AssociatedFile);

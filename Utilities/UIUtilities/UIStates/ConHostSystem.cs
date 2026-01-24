@@ -6,15 +6,14 @@ using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
-using Terraria;
 using Terraria.Audio;
 using Terraria.GameContent.UI.Elements;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.ModLoader.Core;
-using Terraria.ModLoader.UI;
 using Terraria.UI;
 
 namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
@@ -27,7 +26,7 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
 
         public UIElement BackingElement;
 
-        public UIPanel AssetInspectorMenu, MainPanel, SidePanel, CommandPanel, ClearConsole, ExportConsole, StopLuaExecution, CommandListPanel, CommandScrollBacking, ModalMask, AssetInspector;
+        public UIPanel AssetInspectorMenu, MainPanel, SidePanel, CommandPanel, ClearConsole, ExportConsole, StopLuaExecution, CommandListPanel, CommandScrollBacking, ModalMask, AssetInspector, PatchMenuButton;
 
         public SpriteButton SendCommand, CommandList, SearchButton;
 
@@ -71,6 +70,17 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
             ModalMask = new();
             
             AssetInspector = AddConhostPanel(Language.GetText("Mods.AlienBloxUtility.UI.AssetInspector"));
+            PatchMenuButton = AddConhostPanel(Language.GetText("Mods.AlienBloxUtility.UI.PatchMenu"));
+
+            PatchMenuButton.OnLeftClick += (_, _) =>
+            {
+                PatchMenu menu = new();
+
+                menu.OnRightDoubleClick += (_, _) =>
+                {
+                    SetModal(false);
+                };
+            };
 
             AssetInspector.OnLeftClick += (_, _) =>
             {
@@ -265,13 +275,18 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
             CommandPanel.Append(CommandBox);
             CommandPanel.Append(BackingConSysUI);
 
+            BackingList.ManualSortMethod = (_) => { };
+
             ExtraButtons.RemoveRange(0, 1);
 
             BackingList.AddRange(ExtraButtons);
             BackingList.AddRange([AssetInspector, ClearConsole, ExportConsole, StopLuaExecution]);
+            
 
             ClearConsole.Append(ClearConsoleText);
             ExportConsole.Append(ExportConsoleText);
+
+            BackingList.Recalculate();
 
             Append(Conhost);
         }
@@ -310,6 +325,7 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
         /// Sets a new modal UI to the console.
         /// </summary>
         /// <param name="modalSet">Should the modal be enabled</param>
+        /// <param name="doubleClickDisable">Is the double click disabled</param>
         /// <param name="elem">The element to add as the modal's main item</param>
         public void SetModal(bool modalSet, bool doubleClickDisable = false, UIElement elem = null)
         {

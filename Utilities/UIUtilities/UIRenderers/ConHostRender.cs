@@ -75,6 +75,11 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIRenderers
         /// <param name="elementToAdd"></param>
         public static void SetModal(bool modal, bool doubleclickDisable = false, UIElement elementToAdd = null)
         {
+            if (Instance == null || Instance?.Element == null)
+            {
+                return;
+            }
+
             Instance.Element.SetModal(modal, doubleclickDisable, elementToAdd);
         }
 

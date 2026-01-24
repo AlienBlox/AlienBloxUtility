@@ -78,7 +78,7 @@ namespace AlienBloxUtility.Utilities.DataStructures
             return instance.ToString();
         }
 
-        //// <summary>
+        /// <summary>
         /// Converts the Mod Property to its Value type counterpart
         /// </summary>
         /// <param name="instance">The instance to convert.</param>
@@ -217,7 +217,7 @@ namespace AlienBloxUtility.Utilities.DataStructures
         }
 
 
-        //// <summary>
+        /// <summary>
         /// Converts the Value type Mod Property to its reference type counterpart
         /// </summary>
         /// <param name="instance">The instance to convert.</param>
