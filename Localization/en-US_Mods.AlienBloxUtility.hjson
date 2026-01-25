@@ -375,5 +375,5 @@ Commands: {
 	CPPCommand: Run a C/C++ action
 	CPPFileCommand: Run a C/C++ file
 	ScareMeCommand: Gives you free Robux (100% real!, not a jumpscare!)
-	QuickPatchCommand: Mods.AlienBloxUtility.Commands.QuickPatchCommand
+	QuickPatchCommand: Quickly patches a tMod file (Usage: ModName, FileName, FileToOverrideWith and Save)
 }

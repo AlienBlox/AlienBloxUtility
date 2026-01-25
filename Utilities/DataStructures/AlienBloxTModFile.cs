@@ -132,8 +132,11 @@ namespace AlienBloxUtility.Utilities.DataStructures
         {
             Type tModType = typeof(TmodFile);
             MethodInfo SaveMethod = tModType.GetMethod("Save", BindingFlags.NonPublic | BindingFlags.Instance);
+            FieldInfo FESet = tModType.GetField("fileTable", BindingFlags.NonPublic | BindingFlags.Instance);
 
             Close();
+
+            FESet?.SetValue(AssociatedFile, AssociatedEntries);
 
             SaveMethod?.Invoke(AssociatedFile, null);
         }

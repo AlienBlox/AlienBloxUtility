@@ -11,7 +11,7 @@ namespace AlienBloxUtility.Utilities.Commands
 
         public override bool IsCommandEnabled()
         {
-            return true;
+            return false;
         }
 
         public override void LaunchCommand(ConHostSystem Conhost, params string[] Params)
