@@ -11,6 +11,8 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIElements
             Height.Set(0, 1f);
 
             ConHostRender.SetModal(true, true, this);
+
+            this.InsertText("Sorry, Patcher Feature is under construction...");
         }
     }
 }

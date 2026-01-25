@@ -27,7 +27,11 @@ namespace AlienBloxUtility.Utilities.Helpers
             {
                 AlienBloxTModFile loadedFile = new(Mod);
 
+                loadedFile = loadedFile.Copy();
+
                 loadedFile.Patch(FileName, Patch, save);
+
+                AlienBloxUtility.Instance.Logger.Debug("Patch successful");
             }
         }
 

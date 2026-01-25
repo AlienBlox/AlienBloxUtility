@@ -41,6 +41,11 @@ namespace AlienBloxUtility.Utilities.Helpers
 
             }
 
+            public virtual bool IsCommandEnabled()
+            {
+                return true;
+            }
+
             /// <summary>
             /// Launches the command.
             /// </summary>
@@ -101,7 +106,9 @@ namespace AlienBloxUtility.Utilities.Helpers
             {
                 Mod = mod;
 
-                AddCommand(this);
+                if (IsCommandEnabled())
+                    AddCommand(this);
+
                 OnLoad();
             }
 

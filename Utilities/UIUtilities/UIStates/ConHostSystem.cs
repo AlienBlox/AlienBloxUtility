@@ -277,11 +277,10 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
 
             BackingList.ManualSortMethod = (_) => { };
 
-            ExtraButtons.RemoveRange(0, 1);
+            BackingList.AddRange([PatchMenuButton, AssetInspector, ClearConsole, ExportConsole, StopLuaExecution]);
 
-            BackingList.AddRange(ExtraButtons);
-            BackingList.AddRange([AssetInspector, ClearConsole, ExportConsole, StopLuaExecution]);
-            
+            //if (ExtraButtons != new List<UIPanel>())
+                //BackingList.AddRange(ExtraButtons);
 
             ClearConsole.Append(ClearConsoleText);
             ExportConsole.Append(ExportConsoleText);
@@ -735,6 +734,8 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
             panel.Height.Set(30, 0);
 
             ConHostRender.Instance.Element.ExtraButtons.Add(panel);
+
+            ConHostRender.Instance.Element.BackingList?.Add(panel);
 
             return panel;
         }

@@ -9,6 +9,7 @@ using Steamworks;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Terraria;
@@ -455,7 +456,27 @@ namespace AlienBloxUtility.Utilities.Core
                 AlienBloxUtility.Instance.Logger.Warn("Can't dump mod due to exception:" + ex.Message);
             }
         }
-        
+
+        /// <summary>
+        /// Gets the file entry set for this TmodFile
+        /// </summary>
+        /// <param name="file">The TmodFile to query</param>
+        /// <returns>The file entry, null if none</returns>
+        public static TmodFile.FileEntry[] GetFETable(TmodFile file)
+        {
+            Type type = file.GetType();
+            FieldInfo files = type.GetField("files", BindingFlags.Instance | BindingFlags.NonPublic);
+
+            if (files != null)
+            {
+                IDictionary<string, TmodFile.FileEntry> dict = (IDictionary<string, TmodFile.FileEntry>)files.GetValue(file);
+
+                return [.. dict.Values];
+            }
+
+            return null;
+        }
+
         /// <summary>
         /// Gets the file entry set for this TmodFile
         /// </summary>
@@ -471,6 +492,9 @@ namespace AlienBloxUtility.Utilities.Core
                 if (FI != null && FI.GetValue(ModFile) is TmodFile.FileEntry[] v)
                 {
                     ConHostRender.Write("File entries retrieved!");
+
+                    if (v == null)
+                        return GetFETable(ModFile);
 
                     return v;
                 }

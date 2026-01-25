@@ -75,6 +75,9 @@ namespace AlienBloxUtility.Utilities.DataStructures
         /// <returns>The file bytes</returns>
         public byte[] ReadFile(TmodFile.FileEntry entry)
         {
+            if (AssociatedFile.IsOpen)
+                return AssociatedFile.GetBytes(entry);
+
             using (Read())
             {
                 return AssociatedFile.GetBytes(entry);
@@ -88,6 +91,9 @@ namespace AlienBloxUtility.Utilities.DataStructures
         /// <returns>The file contents</returns>
         public byte[] ReadFile(string name)
         {
+            if (AssociatedFile.IsOpen)
+                return AssociatedFile.GetBytes(name);
+
             using (Read())
             {
                 return AssociatedFile.GetBytes(name);
@@ -127,8 +133,44 @@ namespace AlienBloxUtility.Utilities.DataStructures
             Type tModType = typeof(TmodFile);
             MethodInfo SaveMethod = tModType.GetMethod("Save", BindingFlags.NonPublic | BindingFlags.Instance);
 
+            Close();
+
             SaveMethod?.Invoke(AssociatedFile, null);
         }
+
+        /// <summary>
+        /// Closes this tMod file
+        /// </summary>
+        public void Close()
+        {
+            Type tModType = typeof(TmodFile);
+            MethodInfo CloseMethod = tModType.GetMethod("Close", BindingFlags.NonPublic | BindingFlags.Instance);
+
+            CloseMethod?.Invoke(AssociatedFile, null);
+        }
+
+        #nullable enable
+        /// <summary>
+        /// Copies this TMod file handler to the specified path
+        /// </summary>
+        /// <param name="path">The path to copy to</param>
+        /// <returns>The clone</returns>
+        public AlienBloxTModFile Copy(string? path = null)
+        {
+            path ??= Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Downloads") + "\\";
+
+            byte[] copy = File.ReadAllBytes(AssociatedFile.path);
+
+            if (Directory.Exists(path)) //Sanity check
+            {
+                File.WriteAllBytes(path + $"{AssociatedFile.Name}.tmod", copy);
+            }
+
+            TmodFile file = TModInspector.LoadFile(path + $"{AssociatedFile.Name}.tmod");
+
+            return new(file);
+        }
+        #nullable disable
 
         /// <summary>
         /// Reads the associated tMod file
@@ -158,7 +200,7 @@ namespace AlienBloxUtility.Utilities.DataStructures
         /// <param name="save">Whether or not to save the tMod file</param>
         public void Patch(string fileName, byte[] patch, bool save = true)
         {
-            DestroyFile(fileName);
+            //DestroyFile(fileName);
             WriteFile(fileName, patch);
 
             if (save)
