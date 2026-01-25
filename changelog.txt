@@ -1,2 +1,4 @@
-AlienBlox's Utility v0.1.5.1 released!
- * Fixed the Super Flight system again
+AlienBlox's Utility v0.1.5.2 released!
+==API UPDATE!==
+ * [FOR CROSSMODDING] Added the AlienBloxTModFile Class
+ * [UNFINISHED] Adding a tMod patching system to AlienBlox's Utility
