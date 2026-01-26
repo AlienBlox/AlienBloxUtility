@@ -56,7 +56,7 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
             ContentGrid.Width.Set(0, 1);
             ContentGrid.Height.Set(0, 1);
             ContentGrid.VAlign = ContentGrid.HAlign = .5f;
-            ContentGrid.Append(Searchbar);
+            ContentGrid.Append(Scroller);
             ContentGrid.SetScrollbar(Scroller);
 
             //ContentGrid.InsertText("wee");
