@@ -3,7 +3,6 @@ using System;
 using System.IO;
 using System.Reflection;
 using System.Text;
-using Terraria;
 using Terraria.ModLoader.Core;
 
 namespace AlienBloxUtility.Utilities.DataStructures
@@ -23,6 +22,11 @@ namespace AlienBloxUtility.Utilities.DataStructures
         {
             AssociatedFile = TModInspector.LoadFile(readPath);
             AssociatedEntries = TModInspector.GetFESet(AssociatedFile);
+
+            using (AssociatedFile.Open())
+            {
+                AssociatedEntries = TModInspector.GetFESet(AssociatedFile);
+            }
         }
 
         /// <summary>
@@ -35,6 +39,11 @@ namespace AlienBloxUtility.Utilities.DataStructures
         {
             AssociatedFile = file;
             AssociatedEntries = TModInspector.GetFESet(AssociatedFile);
+
+            using (AssociatedFile.Open())
+            {
+                AssociatedEntries = TModInspector.GetFESet(AssociatedFile);
+            }
         }
 
         /// <summary>
@@ -51,7 +60,11 @@ namespace AlienBloxUtility.Utilities.DataStructures
             fs.Write(contents);
 
             AssociatedFile = TModInspector.LoadFile(readPath);
-            AssociatedEntries = TModInspector.GetFESet(AssociatedFile);
+
+            using (AssociatedFile.Open())
+            {
+                AssociatedEntries = TModInspector.GetFESet(AssociatedFile);
+            }
         }
 
         /// <summary>
@@ -133,11 +146,11 @@ namespace AlienBloxUtility.Utilities.DataStructures
         {
             Type tModType = typeof(TmodFile);
             MethodInfo SaveMethod = tModType.GetMethod("Save", BindingFlags.NonPublic | BindingFlags.Instance);
-            FieldInfo FESet = tModType.GetField("fileTable", BindingFlags.NonPublic | BindingFlags.Instance);
-            AlienBloxTModFile Clone = Copy(null, true);
+            FieldInfo FESetField = tModType.GetField("fileTable", BindingFlags.NonPublic | BindingFlags.Instance);
+            
+            FESetField?.SetValue(AssociatedFile, AssociatedEntries);
 
-            FESet?.SetValue(Clone.AssociatedFile, AssociatedEntries);  
-            SaveMethod?.Invoke(Clone.AssociatedFile, null);
+            SaveMethod?.Invoke(AssociatedFile, null);
         }
 
         /// <summary>
