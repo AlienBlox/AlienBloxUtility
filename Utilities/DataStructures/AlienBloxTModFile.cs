@@ -3,6 +3,7 @@ using System;
 using System.IO;
 using System.Reflection;
 using System.Text;
+using Terraria;
 using Terraria.ModLoader.Core;
 
 namespace AlienBloxUtility.Utilities.DataStructures
@@ -125,22 +126,37 @@ namespace AlienBloxUtility.Utilities.DataStructures
             DestroyMethod?.Invoke(AssociatedFile, [fileName]);
         }
 
+#nullable enable
         /// <summary>
         /// Saves this tMod file.
         /// </summary>
-        public void SaveFile()
+        public void SaveFile(string? path = null)
         {
+            string temp = AssociatedFile.path;
             Type tModType = typeof(TmodFile);
-            MethodInfo SaveMethod = tModType.GetMethod("Save", BindingFlags.NonPublic | BindingFlags.Instance);
-            FieldInfo FESet = tModType.GetField("fileTable", BindingFlags.NonPublic | BindingFlags.Instance);
+            MethodInfo? SaveMethod = tModType.GetMethod("Save", BindingFlags.NonPublic | BindingFlags.Instance);
+            FieldInfo? FESet = tModType.GetField("fileTable", BindingFlags.NonPublic | BindingFlags.Instance);
+            FieldInfo? pathField = tModType.GetField("path", BindingFlags.Public);
 
             Close();
 
             FESet?.SetValue(AssociatedFile, AssociatedEntries);
 
-            SaveMethod?.Invoke(AssociatedFile, null);
-        }
+            using (AssociatedFile.Open())
+            {
+                if (path != null)
+                {
+                    pathField?.SetValue(AssociatedFile, path);
 
+                    Main.NewText(AssociatedFile.path);
+                }
+
+                SaveMethod?.Invoke(AssociatedFile, null);
+            }   
+
+            pathField?.SetValue(AssociatedFile, temp);
+        }
+#nullable disable
         /// <summary>
         /// Closes this tMod file
         /// </summary>
@@ -207,7 +223,7 @@ namespace AlienBloxUtility.Utilities.DataStructures
             WriteFile(fileName, patch);
 
             if (save)
-                SaveFile();
+                SaveFile(Path.Combine(Path.GetDirectoryName(AssociatedFile.path), $"{AssociatedFile.Name}-patch.tmod"));
         }
 
         public TModFileMetadata ReadMetadata()
