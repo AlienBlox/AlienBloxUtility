@@ -212,7 +212,7 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
             AddToSidebar(ScriptingTool);
             AddToSidebar(NPCImmortalityTool);
             AddToSidebar(PlayerImmortalityTool);
-            //AddToSidebar(SpawningTool);
+            AddToSidebar(SpawningTool);
             //AddToSidebar(ButcherTool);
             AddToSidebar(SlimeGame);
 
@@ -281,16 +281,9 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
             }
         }
 
-        public void ActivateSummonMenu(UIEvent evt, UIElement elem)
+        public static void ActivateSummonMenu(UIEvent evt, UIElement elem)
         {
-            if (SummonerPanel.Parent == null)
-            {
-                Append(SummonerPanel);
-            }
-            else
-            {
-                SummonerPanel.Remove();
-            }
+            SpawningMenuRender.SpawnMenuEnabled = !SpawningMenuRender.SpawnMenuEnabled;
         }
 
         public static void PushImmortality(UIEvent evt, UIElement elem)

@@ -11,6 +11,7 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIElements
 {
     public class PanelV2 : UIPanel
     {
+        private bool immediateItem;
         private bool isResizing;
         private float originalWidth;
         private float originalHeight;
@@ -46,8 +47,10 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIElements
 
         public Vector2 SizeScale { get; private set; }
 
-        public PanelV2(Vector2 offsetSize, Vector2 scaleSize, Color backgroundC, Color borderC, string title = "Placeholder", bool Localizated = false, bool ApplyEffects = true, int minWidth = 300, int minHeight = 300)
+        public PanelV2(Vector2 offsetSize, Vector2 scaleSize, Color backgroundC, Color borderC, string title = "Placeholder", bool Localizated = false, bool ApplyEffects = true, int minWidth = 300, int minHeight = 300, bool immediate = false)
         {
+            immediateItem = immediate;
+
             BorderColorOverride = borderC;
             BackgroundColorOverride = backgroundC;
 
@@ -64,76 +67,149 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIElements
             Title = title;
             sizeOffset = offsetSize;
             SetScalePercentage(scaleSize.X, scaleSize.Y);
+
+            if (immediate)
+            {
+                Topbar = new()
+                {
+                    VAlign = 0,
+                    HAlign = .5f
+                };
+                Topbar.Height.Set(0, .1f);
+                Topbar.Width.Set(0, 1);
+                Topbar.BackgroundColor = new(BackgroundColorOverride.R, BackgroundColorOverride.G, BackgroundColorOverride.B, 0);
+                Topbar.BorderColor = new(BorderColorOverride.R, BorderColorOverride.G, BorderColorOverride.B, 255);
+                Topbar.MaxHeight.Set(34, 0);
+                Topbar.SetPadding(0);
+
+                Text = new(Title);
+                Text.Width.Set(0, 1);
+                Text.Height.Set(0, 1);
+                Text.VAlign = 0.5f;
+
+                LockUI = new();
+                LockUI.Width.Set(0, .1f);
+                LockUI.Height.Set(0, 1f);
+                LockUI.MaxWidth.Set(34, 0);
+                LockUI.VAlign = 0f;
+                LockUI.HAlign = 0f;
+                LockUI.MarginLeft = 34;
+                LockUI.OnLeftClick += UILock;
+
+                Close = new();
+                Close.Width.Set(0, .1f);
+                Close.Height.Set(0, 1f);
+                Close.MaxWidth.Set(34, 0);
+                Close.VAlign = 0f;
+                Close.HAlign = 0f;
+
+                Left.Set(Main.screenWidth / 2, 0f);  // Initial X
+                Top.Set(Main.screenHeight / 2, 0f);   // Initial Y
+                Width.Set(sizeOffset.X, _sizeXScale);
+                Height.Set(sizeOffset.Y, _sizeYScale);
+                BackgroundColor = BackgroundColorOverride;
+                BorderColor = BorderColorOverride;
+
+                Topbar.Append(Text);
+                Topbar.Append(Close);
+                Topbar.Append(LockUI);
+
+                SetPadding(0);
+
+                Append(Topbar);
+
+                Text.TextOriginY += 0.5f;
+
+                OnLeftMouseDown += MouseDown;
+                OnLeftMouseUp += MouseUp;
+
+                var resizeHandle = new UIElement();
+                resizeHandle.Width.Set(0, 0.1f);
+                resizeHandle.Height.Set(0, 0.1f);
+                resizeHandle.MaxHeight.Set(50, 0);
+                resizeHandle.MaxWidth.Set(50, 0);
+                resizeHandle.Left.Set(0, 0f);  // Bottom-right corner
+                resizeHandle.Top.Set(0, 0f);
+                resizeHandle.VAlign = 1;
+                resizeHandle.HAlign = 1;
+                resizeHandle.OnLeftMouseDown += ResizeHandle_OnMouseDown;
+                resizeHandle.OnLeftMouseUp += ResizeHandle_OnMouseUp;
+
+                Append(resizeHandle);
+            }
         }
 
         public override void OnInitialize()
         {
-            Topbar = new()
+            if (!immediateItem)
             {
-                VAlign = 0,
-                HAlign = .5f
-            };
-            Topbar.Height.Set(0, .1f);
-            Topbar.Width.Set(0, 1);
-            Topbar.BackgroundColor = new(BackgroundColorOverride.R, BackgroundColorOverride.G, BackgroundColorOverride.B, 0);
-            Topbar.BorderColor = new(BorderColorOverride.R, BorderColorOverride.G, BorderColorOverride.B, 255);
-            Topbar.MaxHeight.Set(34, 0);
-            Topbar.SetPadding(0);
+                Topbar = new()
+                {
+                    VAlign = 0,
+                    HAlign = .5f
+                };
+                Topbar.Height.Set(0, .1f);
+                Topbar.Width.Set(0, 1);
+                Topbar.BackgroundColor = new(BackgroundColorOverride.R, BackgroundColorOverride.G, BackgroundColorOverride.B, 0);
+                Topbar.BorderColor = new(BorderColorOverride.R, BorderColorOverride.G, BorderColorOverride.B, 255);
+                Topbar.MaxHeight.Set(34, 0);
+                Topbar.SetPadding(0);
 
-            Text = new(Title);
-            Text.Width.Set(0, 1);
-            Text.Height.Set(0, 1);
-            Text.VAlign = 0.5f;
+                Text = new(Title);
+                Text.Width.Set(0, 1);
+                Text.Height.Set(0, 1);
+                Text.VAlign = 0.5f;
 
-            LockUI = new();
-            LockUI.Width.Set(0, .1f);
-            LockUI.Height.Set(0, 1f);
-            LockUI.MaxWidth.Set(34, 0);
-            LockUI.VAlign = 0f;
-            LockUI.HAlign = 0f;
-            LockUI.MarginLeft = 34;
-            LockUI.OnLeftClick += UILock;
+                LockUI = new();
+                LockUI.Width.Set(0, .1f);
+                LockUI.Height.Set(0, 1f);
+                LockUI.MaxWidth.Set(34, 0);
+                LockUI.VAlign = 0f;
+                LockUI.HAlign = 0f;
+                LockUI.MarginLeft = 34;
+                LockUI.OnLeftClick += UILock;
 
-            Close = new();
-            Close.Width.Set(0, .1f);
-            Close.Height.Set(0, 1f);
-            Close.MaxWidth.Set(34, 0);
-            Close.VAlign = 0f;
-            Close.HAlign = 0f;
+                Close = new();
+                Close.Width.Set(0, .1f);
+                Close.Height.Set(0, 1f);
+                Close.MaxWidth.Set(34, 0);
+                Close.VAlign = 0f;
+                Close.HAlign = 0f;
 
-            Left.Set(Main.screenWidth / 2, 0f);  // Initial X
-            Top.Set(Main.screenHeight / 2, 0f);   // Initial Y
-            Width.Set(sizeOffset.X, _sizeXScale);
-            Height.Set(sizeOffset.Y, _sizeYScale);
-            BackgroundColor = BackgroundColorOverride;
-            BorderColor = BorderColorOverride;
+                Left.Set(Main.screenWidth / 2, 0f);  // Initial X
+                Top.Set(Main.screenHeight / 2, 0f);   // Initial Y
+                Width.Set(sizeOffset.X, _sizeXScale);
+                Height.Set(sizeOffset.Y, _sizeYScale);
+                BackgroundColor = BackgroundColorOverride;
+                BorderColor = BorderColorOverride;
 
-            Topbar.Append(Text);
-            Topbar.Append(Close);
-            Topbar.Append(LockUI);
+                Topbar.Append(Text);
+                Topbar.Append(Close);
+                Topbar.Append(LockUI);
 
-            SetPadding(0);
+                SetPadding(0);
 
-            Append(Topbar);
+                Append(Topbar);
 
-            Text.TextOriginY += 0.5f;
+                Text.TextOriginY += 0.5f;
 
-            OnLeftMouseDown += MouseDown;
-            OnLeftMouseUp += MouseUp;
+                OnLeftMouseDown += MouseDown;
+                OnLeftMouseUp += MouseUp;
 
-            var resizeHandle = new UIElement();
-            resizeHandle.Width.Set(0, 0.1f);
-            resizeHandle.Height.Set(0, 0.1f);
-            resizeHandle.MaxHeight.Set(50, 0);
-            resizeHandle.MaxWidth.Set(50, 0);
-            resizeHandle.Left.Set(0, 0f);  // Bottom-right corner
-            resizeHandle.Top.Set(0, 0f);
-            resizeHandle.VAlign = 1;
-            resizeHandle.HAlign = 1;
-            resizeHandle.OnLeftMouseDown += ResizeHandle_OnMouseDown;
-            resizeHandle.OnLeftMouseUp += ResizeHandle_OnMouseUp;
+                var resizeHandle = new UIElement();
+                resizeHandle.Width.Set(0, 0.1f);
+                resizeHandle.Height.Set(0, 0.1f);
+                resizeHandle.MaxHeight.Set(50, 0);
+                resizeHandle.MaxWidth.Set(50, 0);
+                resizeHandle.Left.Set(0, 0f);  // Bottom-right corner
+                resizeHandle.Top.Set(0, 0f);
+                resizeHandle.VAlign = 1;
+                resizeHandle.HAlign = 1;
+                resizeHandle.OnLeftMouseDown += ResizeHandle_OnMouseDown;
+                resizeHandle.OnLeftMouseUp += ResizeHandle_OnMouseUp;
 
-            Append(resizeHandle);
+                Append(resizeHandle);
+            }
         }
 
         public override void Update(GameTime gameTime)

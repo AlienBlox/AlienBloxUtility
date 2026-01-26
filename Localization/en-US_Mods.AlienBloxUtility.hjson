@@ -9,6 +9,7 @@ Buttons: {
 }
 
 UI: {
+	SpawnMenu: Spawn Entities
 	ToggleUtilityBar: Toggle Utility Bar (right-click for documentation, middle-click for Sidebar)
 	DecompUI: Decompiler
 	Conhost: Console Menu
