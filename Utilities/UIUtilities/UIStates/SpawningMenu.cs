@@ -55,10 +55,11 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
 
             ContentGrid.Width.Set(0, 1);
             ContentGrid.Height.Set(0, 1);
+            ContentGrid.VAlign = ContentGrid.HAlign = .5f;
             ContentGrid.Append(Searchbar);
             ContentGrid.SetScrollbar(Scroller);
 
-            ContentGrid.InsertText("wee");
+            //ContentGrid.InsertText("wee");
 
             SendButton.Width.Set(0, .1f);
             SendButton.Height.Set(0, 1);
@@ -121,6 +122,7 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
             Backpanel.Append(Backing);
             Append(Backpanel);
 
+            PopulateWithDummy();
             //CreateFilterButtons();
         }
 
