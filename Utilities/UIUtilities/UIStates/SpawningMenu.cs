@@ -49,13 +49,12 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
             FilterBar.Top.Set(5, 0);
             */
 
-            ContentGrid.Width.Set(0, 1);
-            ContentGrid.Height.Set(0, 1);
-
             Scroller.Height.Set(-10, 1);
             Scroller.VAlign = .5f;
             Scroller.HAlign = 1;
 
+            ContentGrid.Width.Set(0, 1);
+            ContentGrid.Height.Set(0, 1);
             ContentGrid.Append(Searchbar);
             ContentGrid.SetScrollbar(Scroller);
 
