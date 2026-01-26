@@ -150,7 +150,12 @@ namespace AlienBloxUtility.Utilities.DataStructures
             
             FESetField?.SetValue(AssociatedFile, AssociatedEntries);
 
-            SaveMethod?.Invoke(AssociatedFile, null);
+            using (Read())
+            {
+                AssociatedFile.CacheFiles();
+                Close();
+                SaveMethod?.Invoke(AssociatedFile, null);
+            }
         }
 
         /// <summary>
