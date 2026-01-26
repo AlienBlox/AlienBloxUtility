@@ -9,6 +9,8 @@ Buttons: {
 }
 
 UI: {
+	SwitchSpawnMode: Switch Spawn Modes
+	GeneralSend: Send
 	SpawnMenu: Spawn Entities
 	ToggleUtilityBar: Toggle Utility Bar (right-click for documentation, middle-click for Sidebar)
 	DecompUI: Decompiler
