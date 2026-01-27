@@ -9,6 +9,7 @@ Buttons: {
 }
 
 UI: {
+	Cards: Data Card
 	SwitchSpawnMode: Switch Spawn Modes
 	GeneralSend: Send
 	SpawnMenu: Spawn Entities
@@ -60,6 +61,23 @@ UI: {
 		Wall Type: {4}
 		Slope Type: {5}
 		'''
+
+	ItemCard: {
+		ItemSize: Item Size = Width: {0}, Height: {1}
+		ItemName: Item Name: {0}
+		ItemMaxStack: Item Max Stack: {0}
+		ItemValue: Item Value: {0}
+		ItemQuickIdentifier: Item Fullname: {0}
+		ItemID: ItemID: {0}
+		ItemCombat: DMG: {0}, KB: {1}, CRIT: {2}, CLASS: {3}
+		UseTime: Use Time: {0}, Use Anim: {1}, Use Style: {2}
+		AutoReuse: Autoswing: {0}
+		CreateTile: Creates Tile: {0}
+		CreateWall: Creates Wall: {0}
+		GivesBuff: Gives Buff: {0}, Buff Time: {1}
+		Projectile: Shoots Projectile: {0}, Shoot Speed: {1}
+		Channel: Channel: {0}, Pickaxe: {1}, Axe: {2}, Hammer: {3}
+	}
 
 	Console: {
 		ConWelcome: AlienBlox's Utility V{0} loaded!

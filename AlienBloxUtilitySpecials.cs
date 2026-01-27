@@ -19,6 +19,36 @@ namespace AlienBloxUtility
 {
     public static class AlienBloxUtilitySpecials
     {
+        public static UIText AddTextEntry(this UIList list, LocalizedText text)
+        {
+            UIText textcontent = new(text)
+            {
+                TextOriginX = 0
+            };
+
+            textcontent.Width.Set(0, 1);
+            textcontent.Height.Set(50, 0);
+
+            list.Add(textcontent);
+
+            return textcontent;
+        }
+
+        public static UIText AddTextEntry(this UIList list, string text)
+        {
+            UIText textcontent = new(text)
+            {
+                TextOriginX = 0
+            };
+
+            textcontent.Width.Set(0, 1);
+            textcontent.Height.Set(50, 0);
+
+            list.Add(textcontent);
+
+            return textcontent;
+        }
+
         public static void RequestKill(this NPC npc)
         {
             if (Main.netMode == NetmodeID.MultiplayerClient)

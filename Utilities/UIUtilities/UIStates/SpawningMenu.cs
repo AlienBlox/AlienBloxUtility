@@ -1,9 +1,16 @@
-﻿using AlienBloxUtility.Utilities.UIUtilities.UIElements;
+﻿using AlienBloxUtility.Utilities.Core;
+using AlienBloxUtility.Utilities.UIUtilities.UIElements;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Terraria;
+using Terraria.DataStructures;
 using Terraria.GameContent.UI.Elements;
 using Terraria.ID;
 using Terraria.Localization;
+using Terraria.ModLoader;
 using Terraria.ModLoader.UI.Elements;
 using Terraria.UI;
 using FixedUIScrollbar = Terraria.ModLoader.UI.Elements.FixedUIScrollbar;
@@ -12,11 +19,21 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
 {
     public class SpawningMenu : UIState
     {
+        public enum MenuSwitch : int
+        {
+            Item,
+            NPC,
+            Projectile,
+            Buff,
+            Tile,
+            TE,
+        }
+
         public PanelV2 Backpanel;
 
         public UIElement Backing, OptionBar;
 
-        public UIPanel Sidebar, MainBar, GridContainer/*, FilterBar*/;
+        public UIPanel Sidebar, MainBar, GridContainer, CardContainer, CardTitle/*, FilterBar*/;
 
         public ButtonIcon SendButton, SwitchModes;
 
@@ -26,6 +43,10 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
 
         public FixedUIScrollbar Scroller;
 
+        private int _menuSwitch;
+
+        public MenuSwitch SwitchState { get { return (MenuSwitch)_menuSwitch; } set { _menuSwitch = (int)value; } }
+
         public override void OnInitialize()
         {
             Backpanel = new(new(650, 450), Vector2.Zero, new(0, 128, 0, 128), new(0, 0, 0), Language.GetText("Mods.AlienBloxUtility.UI.SpawnMenu").Value, true, false, 650, 450, true);
@@ -34,12 +55,26 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
             MainBar = new();
             OptionBar = new();
             GridContainer = new();
+            CardContainer = new();
+            CardTitle = new();
             SendButton = new("Mods.AlienBloxUtility.UI.GeneralSend", ItemID.PaperAirplaneA, Color.White);
             SwitchModes = new("Mods.AlienBloxUtility.UI.SwitchSpawnMode", ItemID.Switch, Color.DarkSlateGray);
             Scroller = new(UserInterface.ActiveInstance);
             ContentGrid = [];
             //FilterBar = new();
             Searchbar = new("Search...");
+
+            CardTitle.Width.Set(0, 1);
+            CardTitle.Height.Set(0, .1f);
+            CardTitle.VAlign = 0;
+            CardTitle.HAlign = .5f;
+            CardTitle.InsertText(Language.GetText("Mods.AlienBloxUtility.UI.Cards"));
+
+            CardContainer.Width.Set(0, 1);
+            CardContainer.Height.Set(0, .9f);
+            CardContainer.VAlign = 1;
+            CardContainer.HAlign = .5f;
+            CardContainer.BackgroundColor = Color.LightBlue;
 
             /*
             FilterBar.Width.Set(-10, 1);
@@ -56,6 +91,7 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
             ContentGrid.Width.Set(0, 1);
             ContentGrid.Height.Set(0, 1);
             ContentGrid.VAlign = ContentGrid.HAlign = .5f;
+            ContentGrid.ManualSortMethod = (_) => { };
             ContentGrid.Append(Scroller);
             ContentGrid.SetScrollbar(Scroller);
 
@@ -65,11 +101,37 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
             SendButton.Height.Set(0, 1);
             SendButton.VAlign = .5f;
             SendButton.HAlign = .9f;
+            SendButton.OnLeftClick += SearchFunction;
 
             SwitchModes.Width.Set(0, .1f);
             SwitchModes.Height.Set(0, 1f);
             SwitchModes.VAlign = .5f;
             SwitchModes.HAlign = 1;
+            SwitchModes.OnLeftClick += (_, _) =>
+            {
+                switch (_menuSwitch)
+                {
+                    case 0:
+                        _menuSwitch = 1;
+                        break;
+                    case 1:
+                        _menuSwitch = 2;
+                        break;
+                    case 2:
+                        _menuSwitch = 3;
+                        break;
+                    case 3:
+                        _menuSwitch = 4;
+                        break;
+                    case 4: 
+                        _menuSwitch = 5;
+                        break;
+                    case 5:
+                        _menuSwitch = 0;
+                        PopulateItemsAsync();
+                        break;
+                }
+            };
 
             Searchbar.Width.Set(-10, 1);
             Searchbar.Height.Set(-10, 1f);
@@ -116,21 +178,132 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
             GridContainer.SetPadding(0);
             GridContainer.Append(ContentGrid);
 
+            Sidebar.Append(CardTitle);
+            Sidebar.Append(CardContainer);
+
             Backing.Append(MainBar);
             Backing.Append(Sidebar);
 
             Backpanel.Append(Backing);
             Append(Backpanel);
 
-            PopulateWithDummy();
+            //PopulateItems();
             //CreateFilterButtons();
         }
 
-        public override void Draw(SpriteBatch spriteBatch)
+        public void SearchFunction(UIMouseEvent evt, UIElement elem)
         {
-            base.DrawChildren(spriteBatch);
+            ContentGrid.Clear();
+
+            switch ((int)SwitchState)
+            {
+                case 0:
+                    Task.Run(() => 
+                    { 
+                        PopulateItems();
+
+                        lock (ContentGrid)
+                        {
+                            int count = ContentGrid.Children.Count();
+                            List<UIElement> children = [.. ContentGrid.Children];
+
+                            for (int i = 0; i < count; i++)
+                            {
+                                if (children[i] is ItemDisplay d)
+                                {
+                                    if (!ContentIDToString.ItemIdToString(d.AssociatedItem.type).Contains(Searchbar.Text))
+                                    {
+                                        d.Remove();
+                                    }
+                                }
+                            }
+                        }
+                    });
+                    break;
+                case 1:
+                    break;
+                case 2:
+                    break;
+                case 3:
+                    break;
+                case 4: 
+                    break;
+                case 5:
+                    break;
+            }
+
+            Searchbar.SetText(string.Empty);
         }
 
+        private void PopulateItems()
+        {
+            ContentGrid.Clear();
+
+            int count = ItemLoader.ItemCount;
+
+            for (int i = 0; i < count; i++)
+            {
+                try
+                {
+                    ItemDisplay itemDisplay = new(i);
+
+                    itemDisplay.OnRightClick += (_, _) =>
+                    {
+                        try
+                        {
+                            Main.LocalPlayer.QuickSpawnItem(new EntitySource_Misc("HacksBlox"), itemDisplay.AssociatedItem.type, 1);
+                        }
+                        catch
+                        {
+
+                        }
+                    };
+
+                    itemDisplay.OnLeftClick += (_, _) =>
+                    {
+                        try
+                        {
+                            Main.LocalPlayer.QuickSpawnItem(new EntitySource_Misc("HacksBlox"), itemDisplay.AssociatedItem.type, itemDisplay.AssociatedItem.maxStack);
+                        }
+                        catch
+                        {
+
+                        }
+                    };
+
+                    itemDisplay.OnMiddleClick += (_, _) =>
+                    {
+                        CardContainer.RemoveAllChildren();
+
+                        try
+                        {
+                            CardContainer.Append(itemDisplay.CardGen());
+                        }
+                        catch
+                        {
+
+                        }
+                    };
+
+                    ContentGrid.Add(itemDisplay);
+                }
+                catch
+                {
+
+                }
+            }
+        }
+
+        private void PopulateItemsAsync()
+        {
+            Task.Run(() =>
+            {
+                lock (GridContainer)
+                {
+                    PopulateItems();
+                }
+            });
+        }
 
         public void PopulateWithDummy()
         {

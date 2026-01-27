@@ -7,49 +7,98 @@ namespace AlienBloxUtility.Utilities.Core
     {
         public static string ItemIdToString(int ID)
         {
-            if (ModContent.GetModItem(ID) == null)
+            if (ID == -1)
             {
-                return $"Terraria:{ItemID.Search.GetName(ID)}";
+                return "NAN";
             }
-            else
+
+            try
             {
-                return $"{ModContent.GetModItem(ID).Mod.Name}:{ModContent.GetModItem(ID).Name}";
+                if (ModContent.GetModItem(ID) == null)
+                {
+                    return $"Terraria:{ItemID.Search.GetName(ID)}";
+                }
+                else
+                {
+                    return $"{ModContent.GetModItem(ID).Mod.Name}:{ModContent.GetModItem(ID).Name}";
+                }
             }
+            catch
+            {
+                return "NAN";
+            }
+            
         }
 
         public static string ProjectileIdToString(int ID)
         {
-            if (ModContent.GetModProjectile(ID) == null)
+            if (ID == -1)
             {
-                return $"Terraria:{ProjectileID.Search.GetName(ID)}";
+                return "NAN";
             }
-            else
+
+            try
             {
-                return $"{ModContent.GetModProjectile(ID).Mod.Name}:{ModContent.GetModProjectile(ID).Name}";
+                if (ModContent.GetModProjectile(ID) == null)
+                {
+                    return $"Terraria:{ProjectileID.Search.GetName(ID)}";
+                }
+                else
+                {
+                    return $"{ModContent.GetModProjectile(ID).Mod.Name}:{ModContent.GetModProjectile(ID).Name}";
+                }
+            }
+            catch
+            {
+                return "NAN";
             }
         }
 
-        public static string NPCIdToString(int buffID)
+        public static string NPCIdToString(int npcID)
         {
-            if (ModContent.GetModNPC(buffID) == null)
+            if (npcID == -1)
             {
-                return $"Terraria:{NPCID.Search.GetName(buffID)}";
+                return "NAN";
             }
-            else
+
+            try
             {
-                return $"{ModContent.GetModNPC(buffID).Mod.Name}:{ModContent.GetModNPC(buffID).Name}";
+                if (ModContent.GetModNPC(npcID) == null)
+                {
+                    return $"Terraria:{NPCID.Search.GetName(npcID)}";
+                }
+                else
+                {
+                    return $"{ModContent.GetModNPC(npcID).Mod.Name}:{ModContent.GetModNPC(npcID).Name}";
+                }
             }
+            catch
+            {
+                return "NAN";
+            }            
         }
 
         public static string BuffIdToString(int buffID)
         {
-            if (ModContent.GetModBuff(buffID) == null)
+            if (buffID == -1)
             {
-                return $"Terraria:{BuffID.Search.GetName(buffID)}";
+                return "NAN";
             }
-            else
+
+            try
             {
-                return $"{ModContent.GetModBuff(buffID).Mod.Name}:{ModContent.GetModBuff(buffID).Name}";
+                if (ModContent.GetModBuff(buffID) == null)
+                {
+                    return $"Terraria:{BuffID.Search.GetName(buffID)}";
+                }
+                else
+                {
+                    return $"{ModContent.GetModBuff(buffID).Mod.Name}:{ModContent.GetModBuff(buffID).Name}";
+                }
+            }
+            catch
+            {
+                return "NAN";
             }
         }
 
@@ -60,37 +109,68 @@ namespace AlienBloxUtility.Utilities.Core
                 return "Terraria:None";
             }
 
-            if (PrefixLoader.GetPrefix(prefixID) == null)
+            try
             {
-                return $"Terraria:{PrefixID.Search.GetName(prefixID)}";
+                if (PrefixLoader.GetPrefix(prefixID) == null)
+                {
+                    return $"Terraria:{PrefixID.Search.GetName(prefixID)}";
+                }
+                else
+                {
+                    return $"{PrefixLoader.GetPrefix(prefixID).Mod.Name}:{PrefixLoader.GetPrefix(prefixID).Name}";
+                }
             }
-            else
+            catch
             {
-                return $"{PrefixLoader.GetPrefix(prefixID).Mod.Name}:{PrefixLoader.GetPrefix(prefixID).Name}";
+                return "NAN";
             }
         }
 
         public static string TileToString(int tileID)
         {
-            if (ModContent.GetModTile(tileID) == null)
+            if (tileID == -1)
             {
-                return $"Terraria:{TileID.Search.GetName(tileID)}";
+                return "NAN";
             }
-            else
+
+            try
             {
-                return $"{ModContent.GetModTile(tileID).Mod.Name}:{ModContent.GetModTile(tileID).Name}";
+                if (ModContent.GetModTile(tileID) == null)
+                {
+                    return $"Terraria:{TileID.Search.GetName(tileID)}";
+                }
+                else
+                {
+                    return $"{ModContent.GetModTile(tileID).Mod.Name}:{ModContent.GetModTile(tileID).Name}";
+                }
+            }
+            catch
+            {
+                return "NAN";
             }
         }
 
         public static string WallToString(int wallID)
         {
-            if (ModContent.GetModWall(wallID) == null)
+            if (wallID == -1)
             {
-                return $"Terraria:{TileID.Search.GetName(wallID)}";
+                return "NAN";
             }
-            else
+
+            try
             {
-                return $"{ModContent.GetModWall(wallID).Mod.Name}:{ModContent.GetModWall(wallID).Name}";
+                if (ModContent.GetModWall(wallID) == null)
+                {
+                    return $"Terraria:{TileID.Search.GetName(wallID)}";
+                }
+                else
+                {
+                    return $"{ModContent.GetModWall(wallID).Mod.Name}:{ModContent.GetModWall(wallID).Name}";
+                }
+            }
+            catch
+            {
+                return "NAN";
             }
         }
     }

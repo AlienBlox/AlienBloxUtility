@@ -1,12 +1,37 @@
-﻿using Microsoft.Xna.Framework;
+﻿using AlienBloxUtility.Utilities.Core;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System.Collections.Generic;
 using Terraria;
+using Terraria.Localization;
 using Terraria.UI;
 
 namespace AlienBloxUtility.Utilities.UIUtilities
 {
     public static class UIUtilities
     {
+        public static string[] LoadCard(Item i)
+        {
+            List<string> cards = [];
+
+            cards.Add(Language.GetText("Mods.AlienBloxUtility.UI.ItemCard.ItemName").Format(i.Name));
+            cards.Add(Language.GetText("Mods.AlienBloxUtility.UI.ItemCard.ItemSize").Format(i.width, i.height));
+            cards.Add(Language.GetText("Mods.AlienBloxUtility.UI.ItemCard.ItemMaxStack").Format(i.maxStack));
+            cards.Add(Language.GetText("Mods.AlienBloxUtility.UI.ItemCard.ItemValue").Format(Main.ValueToCoins(i.value)));
+            cards.Add(Language.GetText("Mods.AlienBloxUtility.UI.ItemCard.ItemQuickIdentifier").Format(ContentIDToString.ItemIdToString(i.type)));
+            cards.Add(Language.GetText("Mods.AlienBloxUtility.UI.ItemCard.ItemID").Format(i.type));
+            cards.Add(Language.GetText("Mods.AlienBloxUtility.UI.ItemCard.ItemCombat").Format(i.damage, i.knockBack, i.crit, i.DamageType.DisplayName.Value));
+            cards.Add(Language.GetText("Mods.AlienBloxUtility.UI.ItemCard.UseTime").Format(i.useTime, i.useAnimation, i.useStyle));
+            cards.Add(Language.GetText("Mods.AlienBloxUtility.UI.ItemCard.AutoReuse").Format(i.autoReuse));
+            cards.Add(Language.GetText("Mods.AlienBloxUtility.UI.ItemCard.CreateTile").Format(ContentIDToString.TileToString(i.createTile)));
+            cards.Add(Language.GetText("Mods.AlienBloxUtility.UI.ItemCard.CreateWall").Format(ContentIDToString.TileToString(i.createWall)));
+            cards.Add(Language.GetText("Mods.AlienBloxUtility.UI.ItemCard.GivesBuff").Format(ContentIDToString.BuffIdToString(i.buffType), i.buffTime));
+            cards.Add(Language.GetText("Mods.AlienBloxUtility.UI.ItemCard.Projectile").Format(ContentIDToString.ProjectileIdToString(i.shoot), i.shootSpeed));
+            cards.Add(Language.GetText("Mods.AlienBloxUtility.UI.ItemCard.Channel").Format(i.channel, i.pick, i.axe, i.hammer));
+
+            return [.. cards];
+        }
+
         /// <summary>
         /// Quickly draws a 9-slice UI system
         /// </summary>
