@@ -43,6 +43,8 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
 
         public FixedUIScrollbar Scroller;
 
+        public List<ItemDisplay> CachedItems;
+
         private int _menuSwitch;
 
         public MenuSwitch SwitchState { get { return (MenuSwitch)_menuSwitch; } set { _menuSwitch = (int)value; } }
@@ -199,24 +201,13 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
             {
                 case 0:
                     Task.Run(() => 
-                    { 
-                        PopulateItems();
-
+                    {
                         lock (ContentGrid)
                         {
-                            int count = ContentGrid.Children.Count();
-                            List<UIElement> children = [.. ContentGrid.Children];
+                            ContentGrid.Clear();
+                            PopulateItems();
 
-                            for (int i = 0; i < count; i++)
-                            {
-                                if (children[i] is ItemDisplay d)
-                                {
-                                    if (!ContentIDToString.ItemIdToString(d.AssociatedItem.type).Contains(Searchbar.Text))
-                                    {
-                                        d.Remove();
-                                    }
-                                }
-                            }
+                            Searchbar.SetText(string.Empty);
                         }
                     });
                     break;
@@ -231,13 +222,16 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
                 case 5:
                     break;
             }
-
-            Searchbar.SetText(string.Empty);
         }
 
-        private void PopulateItems()
+#pragma warning disable CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
+        private ItemDisplay[] PopulateItems(bool insert = true)
+#pragma warning restore CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
         {
-            ContentGrid.Clear();
+            if (insert)
+                ContentGrid.Clear();
+
+            List<ItemDisplay> items = [];
 
             int count = ItemLoader.ItemCount;
 
@@ -245,60 +239,68 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
             {
                 try
                 {
-                    ItemDisplay itemDisplay = new(i);
-
-                    itemDisplay.OnRightClick += (_, _) =>
+                    if (ContentIDToString.ItemIdToString(i).Contains(Searchbar.Text))
                     {
-                        try
+                        ItemDisplay itemDisplay = new(i);
+
+                        itemDisplay.OnRightClick += (_, _) =>
                         {
-                            Main.LocalPlayer.QuickSpawnItem(new EntitySource_Misc("HacksBlox"), itemDisplay.AssociatedItem.type, 1);
-                        }
-                        catch
+                            try
+                            {
+                                Main.LocalPlayer.QuickSpawnItem(new EntitySource_Misc("HacksBlox"), itemDisplay.AssociatedItem.type, 1);
+                            }
+                            catch
+                            {
+
+                            }
+                        };
+
+                        itemDisplay.OnLeftClick += (_, _) =>
                         {
+                            try
+                            {
+                                Main.LocalPlayer.QuickSpawnItem(new EntitySource_Misc("HacksBlox"), itemDisplay.AssociatedItem.type, itemDisplay.AssociatedItem.maxStack);
+                            }
+                            catch
+                            {
 
-                        }
-                    };
+                            }
+                        };
 
-                    itemDisplay.OnLeftClick += (_, _) =>
-                    {
-                        try
+                        itemDisplay.OnMiddleClick += (_, _) =>
                         {
-                            Main.LocalPlayer.QuickSpawnItem(new EntitySource_Misc("HacksBlox"), itemDisplay.AssociatedItem.type, itemDisplay.AssociatedItem.maxStack);
-                        }
-                        catch
-                        {
+                            CardContainer.RemoveAllChildren();
 
-                        }
-                    };
+                            try
+                            {
+                                CardContainer.Append(itemDisplay.CardGen());
+                            }
+                            catch
+                            {
 
-                    itemDisplay.OnMiddleClick += (_, _) =>
-                    {
-                        CardContainer.RemoveAllChildren();
+                            }
+                        };
 
-                        try
-                        {
-                            CardContainer.Append(itemDisplay.CardGen());
-                        }
-                        catch
-                        {
+                        items.Add(itemDisplay);
 
-                        }
-                    };
-
-                    ContentGrid.Add(itemDisplay);
+                        if (insert)
+                            ContentGrid.Add(itemDisplay);
+                    }
                 }
                 catch
                 {
 
                 }
             }
+
+            return [.. items];
         }
 
         private void PopulateItemsAsync()
         {
             Task.Run(() =>
             {
-                lock (GridContainer)
+                //lock (GridContainer)
                 {
                     PopulateItems();
                 }
