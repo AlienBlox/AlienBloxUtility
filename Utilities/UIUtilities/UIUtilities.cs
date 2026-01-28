@@ -37,6 +37,11 @@ namespace AlienBloxUtility.Utilities.UIUtilities
             return Language.GetText("Mods.AlienBloxUtility.UI.NPCCard").Format(i.GivenOrTypeName, i.lifeMax, i.defense, i.damage, i.aiStyle, i.Hitbox.X, i.Hitbox.Y, i.noGravity, i.noTileCollide, i.boss, i.CountsAsACritter, i.townNPC);
         }
 
+        public static string LoadCard(Projectile p)
+        {
+            return Language.GetText("Mods.AlienBloxUtility.UI.ProjCard").Format(p.Name, p.aiStyle, p.type, p.friendly, p.hostile, p.ignoreWater, p.tileCollide, p.timeLeft, p.netImportant);
+        }
+
         /// <summary>
         /// Quickly draws a 9-slice UI system
         /// </summary>

@@ -10,15 +10,14 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Runtime.ExceptionServices;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Terraria;
-using Terraria.GameContent.UI.Elements;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
-using Terraria.IO;
 using Terraria.ModLoader;
     
 namespace AlienBloxUtility
@@ -79,6 +78,8 @@ namespace AlienBloxUtility
 
         public override void Load()
         {
+            AppDomain.CurrentDomain.FirstChanceException += WriteException;
+
             SharedCPP = new();
             LuaUnifiedEnv = LuaScriptingEnv.Create();
             JavaScriptUnifiedEnv = JavaScriptScriptingEnv.Create();
@@ -195,6 +196,8 @@ namespace AlienBloxUtility
 
         public override void Unload()
         {
+            AppDomain.CurrentDomain.FirstChanceException -= WriteException;
+
             try
             {
                 SharedCPP = null;
@@ -242,6 +245,11 @@ namespace AlienBloxUtility
             {
 
             }
+        }
+
+        public static void WriteException(object o, FirstChanceExceptionEventArgs e)
+        {
+            LuaStdout.WriteLine($"{e.Exception.GetType().Name}: {e.Exception.Message}");
         }
 
         public static void WriteDebugMsg(string msg)

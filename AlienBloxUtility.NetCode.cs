@@ -32,6 +32,8 @@ namespace AlienBloxUtility
             RetrieveWallhackData,
             SyncFlight,
             MsgTest,
+            ButcherProjectile,
+            ReqServerProj,
         }
 
         public override void HandlePacket(BinaryReader reader, int whoAmI)
@@ -59,12 +61,12 @@ namespace AlienBloxUtility
                     case Messages.SpawnNPC:
                         if (Main.netMode == NetmodeID.Server)
                         {
-                            int type = reader.ReadInt32();
+                            int npctype = reader.ReadInt32();
                             int X = reader.ReadInt32();
                             int Y = reader.ReadInt32();
 
-                            NPC.NewNPC(PlrNet.GetSource_Misc("SpawnServer"), X, Y, type);
-                            ChatHelper.BroadcastChatMessage(NetworkText.FromKey("Mods.AlienBloxUtility.Messages.Server.SpawnNPC", PlrNet.name, type, PacketSpyUtility.UnixTime), Colors.CoinSilver);
+                            NPC.NewNPC(PlrNet.GetSource_Misc("SpawnServer"), X, Y, npctype);
+                            ChatHelper.BroadcastChatMessage(NetworkText.FromKey("Mods.AlienBloxUtility.Messages.Server.SpawnNPC", PlrNet.name, npctype, PacketSpyUtility.UnixTime), Colors.CoinSilver);
                         }
                         break;
                     case Messages.ServerLua:
@@ -304,6 +306,39 @@ namespace AlienBloxUtility
                             Main.player[Plr].AlienBloxUtility().noClipHack = Wallhack;
                         }
                         break;
+                    case Messages.ButcherProjectile:
+                        int type = reader.ReadInt32();
+
+                        foreach (Projectile p in Main.ActiveProjectiles)
+                        {
+                            if (p.whoAmI == Main.myPlayer)
+                            {
+                                if ((type != -1 && p.type == type) || type == -1)
+                                    p.Kill();
+
+                                NetMessage.SendData(MessageID.SyncItem, -1, -1, null, p.whoAmI, 0f, 0f, 0f, 0);
+                            }
+                        }
+
+                        if (Main.netMode == NetmodeID.Server)
+                        {
+                            ModPacket pkt = GetPacket();
+
+                            pkt.Write((byte)Messages.ButcherProjectile);
+                            pkt.Write(type);
+                            pkt.Send();
+                        }
+                        
+                        break;
+                    case Messages.ReqServerProj:
+                        if (Main.netMode == NetmodeID.Server)
+                        {
+                            int projtype = reader.ReadInt32();
+                            Vector2 pos = reader.ReadVector2();
+
+                            Projectile.NewProjectile(new EntitySource_Misc("Hackies"), pos, Vector2.Zero, projtype, 0, 0, Main.myPlayer);
+                        }
+                        break;
                 }
             }
             catch (Exception e)
@@ -413,6 +448,48 @@ namespace AlienBloxUtility
                     n.RequestKill();
                 }
             }
+        }
+
+        public static void ButcherProjType(int type)
+        {   
+            if (Main.netMode == NetmodeID.SinglePlayer)
+            {
+                foreach (Projectile p in Main.ActiveProjectiles)
+                {
+                    if (p.whoAmI == Main.myPlayer)
+                    {
+                        if ((type != -1 && p.type == type) || type == -1)
+                            p.Kill();
+
+                        NetMessage.SendData(MessageID.SyncItem, -1, -1, null, p.whoAmI, 0f, 0f, 0f, 0);
+                    }
+                }
+            }
+            else
+            {
+                ModPacket pkt = Instance.GetPacket();
+
+                pkt.Write((byte)Messages.ButcherProjectile);
+                pkt.Write(type);
+                pkt.Send();
+            }
+        }
+
+        public static void ButcherProjType()
+        {
+            ButcherProjType(-1);
+        }
+
+        public static void RequestServerProjectile(int type)
+        {
+            if (Main.netMode == NetmodeID.SinglePlayer)
+                return;
+
+            ModPacket pkt = Instance.GetPacket();
+
+            pkt.Write((byte)Messages.ReqServerProj);
+            pkt.Write(type);
+            pkt.Send();
         }
 
         public static void SendNoclipHack(Vector2 pos, bool Wallhack)

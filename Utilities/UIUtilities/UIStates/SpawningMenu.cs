@@ -1,9 +1,11 @@
 ﻿using AlienBloxUtility.Utilities.Core;
 using AlienBloxUtility.Utilities.UIUtilities.UIElements;
+using AlienBloxUtility.Utilities.UIUtilities.UIRenderers;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Terraria;
 using Terraria.DataStructures;
@@ -53,7 +55,8 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
 
         public override void OnInitialize()
         {
-            Backpanel = new(new(650, 450), Vector2.Zero, new(0, 128, 0, 128), new(0, 0, 0), Language.GetText("Mods.AlienBloxUtility.UI.SpawnMenu").Value, true, false, 650, 450, true);
+            Backpanel = new(new(650, 450), Vector2.Zero, new(0, 128, 0, 128), new(0, 0, 0), Language.GetText("Mods.AlienBloxUtility.UI.SpawnMenu").Value, true, false, 650, 450);
+
             Backing = new();
             Sidebar = new();
             MainBar = new();
@@ -117,9 +120,24 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
                 {
                     case 0:
                         _menuSwitch = 1;
-                        PopulateNPCEasy();
+                        try
+                        {
+                            PopulateNPCEasy();
+                        }
+                        catch
+                        {
+
+                        }
                         break;
                     case 1:
+                        try
+                        {
+                            PopulateProjectileEasy();
+                        }
+                        catch
+                        {
+
+                        }
                         _menuSwitch = 2;
                         break;
                     case 2:
@@ -203,6 +221,32 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
             //CreateFilterButtons();
         }
 
+        public override void OnActivate()
+        {
+            if (Backpanel.Close != null)
+            {
+                Backpanel.Close.OnLeftClick += (_, _) =>
+                {
+                    SpawningMenuRender.SpawnMenuEnabled = false;
+                    DebugSidebarRender.Instance.Element.SpawningTool.Toggle = false;
+                };
+            }
+            else
+            {
+                Backpanel.Close = new();
+                Backpanel.Close.Width.Set(0, .1f);
+                Backpanel.Close.Height.Set(0, 1f);
+                Backpanel.Close.MaxWidth.Set(34, 0);
+                Backpanel.Close.VAlign = 0f;
+                Backpanel.Close.HAlign = 0f;
+                Backpanel.Close.OnLeftClick += (_, _) =>
+                {
+                    SpawningMenuRender.SpawnMenuEnabled = false;
+                    DebugSidebarRender.Instance.Element.SpawningTool.Toggle = false;
+                };
+            }
+        }
+
         public override void Update(GameTime gameTime)
         {
             if (!_fix)
@@ -238,6 +282,7 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
                             ContentGrid.AddRange(populate);
                             break;
                         case 2: //projectile
+                            PopulateProjectileEasy();
                             break;
                         case 3: //buff
                             break;
@@ -250,6 +295,24 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
 
                 Searchbar.SetText(string.Empty);
             });
+        }
+
+        private void PopulateProjectileEasy()
+        {
+            List<SmartProjectileDisplay> items = [];
+            int count = ProjectileLoader.ProjectileCount;
+
+            for (int i = 0; i < count; i++)
+            {
+                SmartProjectileDisplay e = new(i);
+
+                items.Add(e);
+            }
+
+            IEnumerable<SmartProjectileDisplay> clean = items.Where(target => ContentIDToString.ProjectileIdToString(target.ProjType).Contains(Searchbar.Text));
+
+            ContentGrid.Clear();
+            ContentGrid.AddRange(clean);
         }
 
         private SmartNPCDisplay[] PopulateNPC()
@@ -274,9 +337,7 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
             return [.. clean];
         }
 
-#pragma warning disable CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
         private ItemDisplay[] PopulateItems(bool insert = true)
-#pragma warning restore CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
         {
             if (insert)
                 ContentGrid.Clear();
@@ -352,9 +413,10 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
             {
                 lock (ContentGrid)
                 {
-                    ContentGrid.Clear();
+                    SmartNPCDisplay[] displays = PopulateNPC();
 
-                    ContentGrid.AddRange(PopulateNPC());
+                    ContentGrid.Clear();
+                    ContentGrid.AddRange(displays);
                 }
             });
         }

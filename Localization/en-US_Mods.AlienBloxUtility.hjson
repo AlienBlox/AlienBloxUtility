@@ -93,6 +93,18 @@ UI: {
 		Critter: {10}
 		Townie: {11}
 		'''
+	ProjCard:
+		'''
+		Name: {0}
+		AI: {1}
+		Type: {2}
+		Friendly: {3}
+		Hostile: {4}
+		Ignore Water: {5}
+		Tile Collide: {6}
+		Lifespan: {7}
+		Net Important: {8}
+		'''
 
 	Console: {
 		ConWelcome: AlienBlox's Utility V{0} loaded!
