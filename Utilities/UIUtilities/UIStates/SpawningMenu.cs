@@ -115,6 +115,7 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
                 {
                     case 0:
                         _menuSwitch = 1;
+                        PopulateNPCEasy();
                         break;
                     case 1:
                         _menuSwitch = 2;
@@ -202,42 +203,52 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
 
         public void SearchFunction(UIMouseEvent evt, UIElement elem)
         {
-            ContentGrid.Clear();
-
-            switch ((int)SwitchState)
+            Task.Run(() =>
             {
-                case 0: //item
-                    Task.Run(() => 
+                ContentGrid.Clear();
+
+                lock (ContentGrid)
+                {
+                    switch ((int)SwitchState)
                     {
-                        lock (ContentGrid)
-                        {
-                            try
-                            {
-                                var display = PopulateItems(false);
+                        case 0: //item
+                            var display = PopulateItems(false);
 
-                                ContentGrid.Clear();
-                                ContentGrid.AddRange(display);
+                            ContentGrid.Clear();
+                            ContentGrid.AddRange(display);
+                            break;
+                        case 1: //npc
+                            ContentGrid.Clear();
+                            ContentGrid.AddRange(PopulateNPC());
+                            break;
+                        case 2: //projectile
+                            break;
+                        case 3: //buff
+                            break;
+                        case 4: //tile
+                            break;
+                        case 5: //tile entity
+                            break;
+                    }
+                }
 
-                                Searchbar.SetText(string.Empty);
-                            }
-                            catch
-                            {
+                Searchbar.SetText(string.Empty);
+            });
+        }
 
-                            }
-                        }
-                    });
-                    break;
-                case 1: //npc
-                    break;
-                case 2: //projectile
-                    break;
-                case 3: //buff
-                    break;
-                case 4: //tile
-                    break;
-                case 5: //tile entity
-                    break;
+        private SmartNPCDisplay[] PopulateNPC()
+        {
+            List<SmartNPCDisplay> items = [];
+            int count = NPCLoader.NPCCount;
+
+            for (int i = 0; i < count; i++)
+            {
+                items.Add(new(i));
             }
+
+            IEnumerable<SmartNPCDisplay> clean = items.Where(target => ContentIDToString.NPCIdToString(target.NPCType).Contains(Searchbar.Text));
+
+            return [.. clean];
         }
 
 #pragma warning disable CS8632 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context.
@@ -310,6 +321,19 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
             }
 
             return [.. items];
+        }
+
+        private void PopulateNPCEasy()
+        {
+            Task.Run(() =>
+            {
+                lock (ContentGrid)
+                {
+                    ContentGrid.Clear();
+
+                    ContentGrid.AddRange(PopulateNPC());
+                }
+            });
         }
 
         private void PopulateItemsAsync()
