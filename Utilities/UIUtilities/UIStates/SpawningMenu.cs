@@ -47,6 +47,8 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
 
         private int _menuSwitch;
 
+        private bool _fix;
+
         public MenuSwitch SwitchState { get { return (MenuSwitch)_menuSwitch; } set { _menuSwitch = (int)value; } }
 
         public override void OnInitialize()
@@ -201,6 +203,18 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
             //CreateFilterButtons();
         }
 
+        public override void Update(GameTime gameTime)
+        {
+            if (!_fix)
+            {
+                PopulateItemsAsync();
+
+                _fix = true;
+            }
+
+            base.Update(gameTime);
+        }
+
         public void SearchFunction(UIMouseEvent evt, UIElement elem)
         {
             Task.Run(() =>
@@ -245,7 +259,14 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
 
             for (int i = 0; i < count; i++)
             {
-                items.Add(new(i));
+                SmartNPCDisplay e = new(i);
+
+                e.OnMiddleClick += (_, _) =>
+                {
+                    e.GenCard(CardContainer);
+                };
+
+                items.Add(e);
             }
 
             IEnumerable<SmartNPCDisplay> clean = items.Where(target => ContentIDToString.NPCIdToString(target.NPCType).Contains(Searchbar.Text));

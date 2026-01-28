@@ -1,4 +1,6 @@
-﻿using Terraria;
+﻿using AlienBloxUtility.Utilities.Core;
+using Microsoft.Xna.Framework.Graphics;
+using Terraria;
 using Terraria.GameContent.UI.Elements;
 using Terraria.UI;
 using FixedUIScrollbar = Terraria.ModLoader.UI.Elements.FixedUIScrollbar;
@@ -22,6 +24,13 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIElements
             Icon.Height.Set(0, 1);
 
             Append(Icon);
+        }
+
+        protected override void DrawSelf(SpriteBatch spriteBatch)
+        {
+            this.SetUIBase(ContentIDToString.ItemIdToString(AssociatedItem.type));
+
+            base.DrawSelf(spriteBatch);
         }
 
         public UIElement CardGen()

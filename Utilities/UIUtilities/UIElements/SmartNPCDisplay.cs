@@ -1,11 +1,14 @@
-﻿using Microsoft.Xna.Framework;
+﻿using AlienBloxUtility.Utilities.Core;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
 using System;
 using Terraria;
 using Terraria.GameContent;
 using Terraria.GameContent.UI.Elements;
+using Terraria.ID;
 using Terraria.ModLoader;
+using Terraria.UI;
 
 namespace AlienBloxUtility.Utilities.UIUtilities.UIElements
 {
@@ -21,14 +24,8 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIElements
         {
             NPCType = npcID;
 
-            //if (ModContent.GetModNPC(npcID) == null)
-                //Main.instance.LoadNPC(npcID);
-
-
-            if (TextureAssets.Npc[npcID].State == AssetState.NotLoaded)
-            {
+            if (ModContent.GetModNPC(npcID) == null)
                 Main.Assets.Request<Texture2D>(TextureAssets.Npc[npcID].Name);
-            }
 
             NPCTexture = TextureAssets.Npc[npcID];
 
@@ -36,8 +33,37 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIElements
             Height.Set(40, 0);
         }
 
+        public void GenCard(UIElement cardInsertTo)
+        {
+            NPC npc = new();
+
+            npc.SetDefaults(NPCType);
+
+            cardInsertTo.RemoveAllChildren();
+
+            UIText txt = cardInsertTo.InsertText(UIUtilities.LoadCard(npc), .45f);
+
+            txt.IsWrapped = true;
+        }
+
+        public override void LeftClick(UIMouseEvent evt)
+        {
+            AlienBloxUtility.SpawnNPCClient(NPCType, (int)Main.LocalPlayer.position.X - 300, (int)Main.LocalPlayer.position.Y);
+
+            base.LeftClick(evt);
+        }
+
+        public override void RightClick(UIMouseEvent evt)
+        {
+            AlienBloxUtility.ButcherNPCType(NPCType);
+
+            base.RightClick(evt);
+        }
+
         protected override void DrawSelf(SpriteBatch spriteBatch)
         {
+            this.SetUIBase(ContentIDToString.NPCIdToString(NPCType));
+
             base.DrawSelf(spriteBatch);
 
             NPC drawTemplate = new();

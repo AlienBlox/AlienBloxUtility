@@ -404,6 +404,17 @@ namespace AlienBloxUtility
             }
         }
 
+        public static void ButcherNPCType(int type)
+        {
+            foreach (NPC n in Main.ActiveNPCs)
+            {
+                if (n.type == type)
+                {
+                    n.RequestKill();
+                }
+            }
+        }
+
         public static void SendNoclipHack(Vector2 pos, bool Wallhack)
         {
             if (Main.netMode == NetmodeID.MultiplayerClient)
@@ -422,7 +433,8 @@ namespace AlienBloxUtility
         /// Sends a packet to AlienBlox's Packet Handler
         /// </summary>
         /// <param name="packetName">The name of the packet.</param>
-        /// <param name="data">The data to send.</param> 
+        /// <param name="data">The data to send.</param>
+        /// <param name="toPlayer"></param> 
         public static void SendAlienBloxPacket(string packetName, byte[] data, int toPlayer = -1)
         {
             if (Main.netMode != NetmodeID.SinglePlayer)

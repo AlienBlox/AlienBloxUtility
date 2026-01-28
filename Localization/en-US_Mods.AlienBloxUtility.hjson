@@ -79,6 +79,21 @@ UI: {
 		Channel: Channel: {0}, Pickaxe: {1}, Axe: {2}, Hammer: {3}
 	}
 
+	NPCCard:
+		'''
+		Display Name: {0}
+		Life Max: {1}
+		Defense: {2}
+		Damage: {3}
+		AI: {4}
+		Hitbox: (X: {5}, Y: {6})
+		No Gravity: {7}
+		No Tile Collide: {8}
+		Boss: {9}
+		Critter: {10}
+		Townie: {11}
+		'''
+
 	Console: {
 		ConWelcome: AlienBlox's Utility V{0} loaded!
 		ConHelp: Use 'help' to get a list of commands and their uses!
