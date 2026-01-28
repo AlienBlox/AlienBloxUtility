@@ -306,6 +306,11 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
             {
                 SmartProjectileDisplay e = new(i);
 
+                e.OnMiddleClick += (_, _) =>
+                {
+                    e.GenCard(CardContainer);
+                };
+
                 items.Add(e);
             }
 

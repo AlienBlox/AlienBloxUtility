@@ -67,13 +67,6 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIElements
             base.RightClick(evt);
         }
 
-        public override void MiddleClick(UIMouseEvent evt)
-        {
-            GenCard(Parent);
-
-            base.MiddleClick(evt);
-        }
-
         protected override void DrawSelf(SpriteBatch spriteBatch)
         {
             this.SetUIBase(ContentIDToString.ProjectileIdToString(ProjType));
