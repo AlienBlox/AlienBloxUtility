@@ -24,7 +24,13 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIElements
             //if (ModContent.GetModNPC(npcID) == null)
                 //Main.instance.LoadNPC(npcID);
 
-             NPCTexture = TextureAssets.Npc[npcID];
+
+            if (TextureAssets.Npc[npcID].State == AssetState.NotLoaded)
+            {
+                Main.Assets.Request<Texture2D>(TextureAssets.Npc[npcID].Name);
+            }
+
+            NPCTexture = TextureAssets.Npc[npcID];
 
             Width.Set(40, 0);
             Height.Set(40, 0);
@@ -34,32 +40,36 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIElements
         {
             base.DrawSelf(spriteBatch);
 
-            DrawNpc(spriteBatch);
+            NPC drawTemplate = new();
+
+            drawTemplate.SetDefaults(NPCType);
+
+            DrawNpcInUI(spriteBatch, drawTemplate, new((int)GetDimensions().X, (int)GetDimensions().Y, (int)Width.Pixels, (int)Height.Pixels));
         }
 
-        private void DrawNpc(SpriteBatch spriteBatch)
+        private static void DrawNpcInUI(SpriteBatch spriteBatch, NPC npc, Rectangle drawBox)
         {
-            // Calculate frame height based on total sprite sheet height / frame count
-            int frameCount = Main.npcFrameCount[NPCType];
-            int frameHeight = Texture.Height / frameCount;
+            Texture2D texture = TextureAssets.Npc[npc.type].Value;
+            Rectangle frame = npc.frame;
+            Vector2 origin = frame.Size() / 2f;
+            Vector2 drawPos = drawBox.Center.ToVector2();
 
-            // Choose which frame to show (0 is usually idle)
-            Rectangle sourceRect = new(0, 0, Texture.Width, frameHeight);
+            // Bestiary-style scaling
+            float scaleX = (float)drawBox.Width / frame.Width;
+            float scaleY = (float)drawBox.Height / frame.Height;
+            float scale = Math.Min(scaleX, scaleY) * 0.85f; // padding
 
-            // Calculate scale to fit inside the box
-            float scaleX = sourceRect.Width / Width.Pixels;
-            float scaleY = sourceRect.Height / Height.Pixels;
-            float scale = Math.Min(scaleX, scaleY); // Keep aspect ratio
-
-            // Optional: Slight padding (so NPC isn't touching edges)
-            scale *= 0.9f;
-
-            // Get the position of your UI element
-            Vector2 drawPos = GetDimensions().Center();
-
-            // Draw the NPC centered in the element
-            spriteBatch.Draw(Texture, drawPos, sourceRect, Color.White, 0f, sourceRect.Size() / 2f, scale, SpriteEffects.None, 0f);
+            spriteBatch.Draw(
+                texture,
+                drawPos,
+                frame,
+                npc.GetAlpha(Color.White),
+                0f,
+                origin,
+                scale,
+                SpriteEffects.None,
+                0f
+            );
         }
-
     }
 }

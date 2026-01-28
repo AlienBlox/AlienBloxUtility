@@ -218,8 +218,10 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
                             ContentGrid.AddRange(display);
                             break;
                         case 1: //npc
+                            var populate = PopulateNPC();
+
                             ContentGrid.Clear();
-                            ContentGrid.AddRange(PopulateNPC());
+                            ContentGrid.AddRange(populate);
                             break;
                         case 2: //projectile
                             break;
