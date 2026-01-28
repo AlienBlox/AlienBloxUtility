@@ -460,8 +460,6 @@ namespace AlienBloxUtility
                     {
                         if ((type != -1 && p.type == type) || type == -1)
                             p.Kill();
-
-                        NetMessage.SendData(MessageID.SyncItem, -1, -1, null, p.whoAmI, 0f, 0f, 0f, 0);
                     }
                 }
             }
