@@ -14,8 +14,12 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIElements
 
         public Texture2D Texture => NPCTexture.Value;
 
+        public int NPCType;
+
         public SmartNPCDisplay(int npcID)
         {
+            NPCType = npcID;
+
             if (ModContent.GetModNPC(npcID) == null)
                 Main.instance.LoadNPC(npcID);
 
@@ -27,27 +31,25 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIElements
 
         protected override void DrawSelf(SpriteBatch spriteBatch)
         {
-            //DrawNpc(spriteBatch, Texture);
+            DrawNpc(spriteBatch);
 
             base.DrawSelf(spriteBatch);
         }
 
-        private void DrawNpc(SpriteBatch spriteBatch, int npcType)
+        private void DrawNpc(SpriteBatch spriteBatch)
         {
-            Texture2D texture = TextureAssets.Npc[npcType].Value;
-
             // Calculate frame height based on total sprite sheet height / frame count
-            int frameCount = Main.npcFrameCount[npcType];
-            int frameHeight = texture.Height / frameCount;
+            int frameCount = Main.npcFrameCount[NPCType];
+            int frameHeight = Texture.Height / frameCount;
 
             // Choose which frame to show (0 is usually idle)
-            Rectangle sourceRect = new Rectangle(0, 0, texture.Width, frameHeight);
+            Rectangle sourceRect = new Rectangle(0, 0, Texture.Width, frameHeight);
 
             // Get the position of your UI element
             Vector2 drawPos = GetDimensions().Center();
 
             // Draw the NPC centered in the element
-            spriteBatch.Draw(texture, drawPos, sourceRect, Color.White, 0f, sourceRect.Size() / 2f, 1f, SpriteEffects.None, 0f);
+            spriteBatch.Draw(Texture, drawPos, sourceRect, Color.White, 0f, sourceRect.Size() / 2f, 1f, SpriteEffects.None, 0f);
         }
 
     }
