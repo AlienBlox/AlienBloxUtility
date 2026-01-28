@@ -34,7 +34,7 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIElements
             ServerButton.VAlign = 1;
             ServerButton.OnLeftClick += (_, _) =>
             {
-                AlienBloxUtility.RequestServerProjectile(ProjType);
+                AlienBloxUtility.RequestServerProjectile(ProjType, Main.LocalPlayer.Center - new Vector2(0, 100));
             };
 
             Append(ServerButton);

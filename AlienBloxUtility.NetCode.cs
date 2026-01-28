@@ -478,7 +478,7 @@ namespace AlienBloxUtility
             ButcherProjType(-1);
         }
 
-        public static void RequestServerProjectile(int type)
+        public static void RequestServerProjectile(int type, Vector2 position)
         {
             if (Main.netMode == NetmodeID.SinglePlayer)
                 return;
@@ -487,6 +487,7 @@ namespace AlienBloxUtility
 
             pkt.Write((byte)Messages.ReqServerProj);
             pkt.Write(type);
+            pkt.WriteVector2(position);
             pkt.Send();
         }
 
