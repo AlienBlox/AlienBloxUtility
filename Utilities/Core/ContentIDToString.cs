@@ -80,7 +80,7 @@ namespace AlienBloxUtility.Utilities.Core
 
         public static string BuffIdToString(int buffID)
         {
-            if (buffID == -1)
+            if (buffID == -1 || buffID == 0)
             {
                 return "NAN";
             }

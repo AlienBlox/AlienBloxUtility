@@ -130,7 +130,14 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
                         break;
                     case 5:
                         _menuSwitch = 0;
-                        PopulateItemsAsync();
+                        try
+                        {
+                            PopulateItemsAsync();
+                        }
+                        catch
+                        {
+
+                        }
                         break;
                 }
             };
@@ -199,27 +206,36 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
 
             switch ((int)SwitchState)
             {
-                case 0:
+                case 0: //item
                     Task.Run(() => 
                     {
                         lock (ContentGrid)
                         {
-                            ContentGrid.Clear();
-                            PopulateItems();
+                            try
+                            {
+                                var display = PopulateItems(false);
 
-                            Searchbar.SetText(string.Empty);
+                                ContentGrid.Clear();
+                                ContentGrid.AddRange(display);
+
+                                Searchbar.SetText(string.Empty);
+                            }
+                            catch
+                            {
+
+                            }
                         }
                     });
                     break;
-                case 1:
+                case 1: //npc
                     break;
-                case 2:
+                case 2: //projectile
                     break;
-                case 3:
+                case 3: //buff
                     break;
-                case 4: 
+                case 4: //tile
                     break;
-                case 5:
+                case 5: //tile entity
                     break;
             }
         }
@@ -300,9 +316,12 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
         {
             Task.Run(() =>
             {
-                //lock (GridContainer)
+                lock (GridContainer)
                 {
-                    PopulateItems();
+                    var display = PopulateItems(false);
+
+                    ContentGrid.Clear();
+                    ContentGrid.AddRange(display);
                 }
             });
         }

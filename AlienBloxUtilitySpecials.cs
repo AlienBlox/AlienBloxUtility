@@ -19,9 +19,9 @@ namespace AlienBloxUtility
 {
     public static class AlienBloxUtilitySpecials
     {
-        public static UIText AddTextEntry(this UIList list, LocalizedText text)
+        public static UIText AddTextEntry(this UIList list, LocalizedText text, float size = 1f, bool large = false)
         {
-            UIText textcontent = new(text)
+            UIText textcontent = new(text, size, large)
             {
                 TextOriginX = 0
             };
@@ -34,9 +34,9 @@ namespace AlienBloxUtility
             return textcontent;
         }
 
-        public static UIText AddTextEntry(this UIList list, string text)
+        public static UIText AddTextEntry(this UIList list, string text, float size = 1f, bool large = false)
         {
-            UIText textcontent = new(text)
+            UIText textcontent = new(text, size, large)
             {
                 TextOriginX = 0
             };

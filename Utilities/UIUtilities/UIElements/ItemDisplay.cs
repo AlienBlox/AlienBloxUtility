@@ -47,6 +47,7 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIElements
             {
                 UIText t = List.AddTextEntry(s);
 
+                t.IsWrapped = true;
                 t.DynamicallyScaleDownToWidth = true;
             }
 
