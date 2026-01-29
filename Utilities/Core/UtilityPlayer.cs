@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.GameInput;
+using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace AlienBloxUtility.Utilities.Core
@@ -20,6 +21,10 @@ namespace AlienBloxUtility.Utilities.Core
         public bool tileTool;
 
         public int ForceSyncTimer;
+
+        public int ForcePlaceTile = -1;
+
+        public int ForcePlaceWall = -1;
 
         public Vector2 noClipHackPos;
 
@@ -87,6 +92,30 @@ namespace AlienBloxUtility.Utilities.Core
 
         public override void ProcessTriggers(TriggersSet triggersSet)
         {
+            if (triggersSet.MouseLeft && ForcePlaceTile != -1)
+            {
+                if (!AlienBloxUtility.SmartTilePlace(Main.MouseWorld, ForcePlaceTile))
+                {
+                    AlienBloxUtility.SmartTileModify(Main.MouseWorld, ForcePlaceTile);
+                }
+
+                Main.NewText($"Forced tile placement at {(Main.MouseWorld / 16).ToPoint()}");
+
+                ForcePlaceTile = -1;
+            }
+
+            if (triggersSet.MouseLeft && ForcePlaceWall != -1)
+            {
+                Main.QueueMainThreadAction(() =>
+                {
+                    AlienBloxUtility.SmartWallModify(Main.MouseWorld, ForcePlaceTile);
+
+                    Main.NewText($"Forced Wall placement at {(Main.MouseWorld / 16).ToPoint()}, Wall Type: {ForcePlaceWall}");
+
+                    ForcePlaceWall = -1;
+                });
+            }
+
             if (AlienBloxKeybinds.SudoKeybind.JustPressed)
             {
                 toolSudo = !toolSudo;

@@ -161,7 +161,7 @@ namespace AlienBloxUtility.Utilities.Core
             {
                 if (ModContent.GetModWall(wallID) == null)
                 {
-                    return $"Terraria:{TileID.Search.GetName(wallID)}";
+                    return $"Terraria:{WallID.Search.GetName(wallID)}";
                 }
                 else
                 {

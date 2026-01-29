@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 using Terraria;
+using Terraria.ID;
 using Terraria.Localization;
 using Terraria.UI;
 
@@ -40,6 +41,11 @@ namespace AlienBloxUtility.Utilities.UIUtilities
         public static string LoadCard(Projectile p)
         {
             return Language.GetText("Mods.AlienBloxUtility.UI.ProjCard").Format(p.Name, p.aiStyle, p.type, p.friendly, p.hostile, p.ignoreWater, p.tileCollide, p.timeLeft, p.netImportant);
+        }
+
+        public static string LoadCard(int buffID)
+        {
+            return Language.GetText("Mods.AlienBloxUtility.UI.BuffCard").Format(Main.debuff[buffID], Main.buffNoSave[buffID], BuffID.Sets.IsATagBuff[buffID], BuffID.Sets.NurseCannotRemoveDebuff[buffID], BuffID.Sets.TimeLeftDoesNotDecrease[buffID]);
         }
 
         /// <summary>

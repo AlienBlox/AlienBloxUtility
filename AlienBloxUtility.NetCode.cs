@@ -13,6 +13,8 @@ using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
+using Terraria.ObjectData;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace AlienBloxUtility
 {
@@ -503,6 +505,57 @@ namespace AlienBloxUtility
                 pkt.Write(pos.Y);
                 pkt.Send();
             }
+        }
+
+        public static void SmartWallModify(Vector2 pos, int type)
+        {
+            Point posRefined = new((int)pos.X / 16, (int)pos.Y / 16);
+
+            Main.tile[posRefined].WallType = (ushort)type;
+
+            if (Main.netMode == NetmodeID.MultiplayerClient)
+                NetMessage.SendTileSquare(-1, posRefined.X, posRefined.Y);
+        }
+
+        public static void SmartTileModify(Vector2 pos, int type)
+        {
+            Point posRefined = new((int)pos.X / 16, (int)pos.Y / 16);
+
+            Main.tile[posRefined].TileType = (ushort)type;
+            WorldGen.PlaceTile(posRefined.X, posRefined.Y, type);
+
+            if (Main.netMode == NetmodeID.MultiplayerClient)
+                NetMessage.SendTileSquare(-1, posRefined.X, posRefined.Y);
+        }
+
+        public static bool SmartTilePlace(Vector2 pos, int tileToPlace)
+        {
+            bool result = false;
+            Point posRefined = new((int)pos.X / 16, (int)pos.Y / 16);
+            TileObjectData dat = TileObjectData.GetTileData(tileToPlace, 0);
+
+            if (Main.tileSolid[tileToPlace])
+            {
+                SmartTileModify(pos, tileToPlace);
+            }
+
+            if (WorldGen.InWorld(posRefined.X, posRefined.Y))
+            {
+                result = WorldGen.PlaceObject(posRefined.X, posRefined.Y, tileToPlace);
+
+                if (Main.netMode == NetmodeID.MultiplayerClient)
+                    NetMessage.SendTileSquare(-1, posRefined.X, posRefined.Y, dat.Width, dat.Height);
+            }
+
+            return result;
+        }
+
+        public static Tile ParanoidTileRetrieval(int x, int y)
+        {
+            if (!WorldGen.InWorld(x, y))
+                return new Tile();
+
+            return Main.tile[x, y];
         }
 
         /// <summary>

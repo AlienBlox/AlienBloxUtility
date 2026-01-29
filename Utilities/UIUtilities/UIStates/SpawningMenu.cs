@@ -3,6 +3,7 @@ using AlienBloxUtility.Utilities.UIUtilities.UIElements;
 using AlienBloxUtility.Utilities.UIUtilities.UIRenderers;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -29,6 +30,7 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
             Buff,
             Tile,
             TE,
+            Wall
         }
 
         public PanelV2 Backpanel;
@@ -116,51 +118,49 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
             SwitchModes.HAlign = 1;
             SwitchModes.OnLeftClick += (_, _) =>
             {
-                switch (_menuSwitch)
+                Task.Run(() => {
+                try
                 {
-                    case 0:
-                        _menuSwitch = 1;
-                        try
+                    lock (ContentGrid)
+                    {
+                        switch (_menuSwitch)
                         {
-                            PopulateNPCEasy();
+                            case 0:
+                                _menuSwitch = 1;
+                                PopulateNPCEasy();
+                                break;
+                            case 1:
+                                _menuSwitch = 2;
+                                PopulateProjectileEasy();
+                                break;
+                            case 2:
+                                _menuSwitch = 3;
+                                PopulateBuffEasy();
+                                break;
+                            case 3:
+                                _menuSwitch = 4;
+                                PopulateTileEasy();
+                                break;
+                            case 4:
+                                _menuSwitch = 5;
+                                break;
+                            case 5:
+                                _menuSwitch = 6;
+                                PopulateWallEasy();
+                                break;
+                            case 6:
+                                _menuSwitch = 0;
+                                PopulateItemsAsync();
+                                break;
                         }
-                        catch
-                        {
+                    }
 
-                        }
-                        break;
-                    case 1:
-                        try
-                        {
-                            PopulateProjectileEasy();
-                        }
-                        catch
-                        {
-
-                        }
-                        _menuSwitch = 2;
-                        break;
-                    case 2:
-                        _menuSwitch = 3;
-                        break;
-                    case 3:
-                        _menuSwitch = 4;
-                        break;
-                    case 4: 
-                        _menuSwitch = 5;
-                        break;
-                    case 5:
-                        _menuSwitch = 0;
-                        try
-                        {
-                            PopulateItemsAsync();
-                        }
-                        catch
-                        {
-
-                        }
-                        break;
+                    Main.NewText($"Current Mode: {Enum.GetName(SwitchState)}");
                 }
+                catch
+                {
+
+                }});
             };
 
             Searchbar.Width.Set(-10, 1);
@@ -293,16 +293,71 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
                             PopulateProjectileEasy();
                             break;
                         case 3: //buff
+                            PopulateBuffEasy();
                             break;
                         case 4: //tile
+                            PopulateTileEasy();
                             break;
                         case 5: //tile entity
+                            break;
+                        case 6: //walls
+                            PopulateWallEasy();
                             break;
                     }
                 }
 
                 Searchbar.SetText(string.Empty);
             });
+        }
+
+        private void PopulateWallEasy()
+        {
+            List<SmartWallDisplay> items = [];
+            int count = WallLoader.WallCount;
+
+            for (int i = 0; i < count; i++)
+            {
+                SmartWallDisplay e = new(i);
+
+                /*
+                e.OnMiddleClick += (_, _) =>
+                {
+                    e.GenCard(CardContainer);
+                };
+                */
+
+                items.Add(e);
+            }
+
+            IEnumerable<SmartWallDisplay> clean = items.Where(target => ContentIDToString.WallToString(target.WallID).Contains(Searchbar.Text));
+
+            ContentGrid.Clear();
+            ContentGrid.AddRange(clean);
+        }
+
+        private void PopulateTileEasy()
+        {
+            List<SmartTileDisplay> items = [];
+            int count = TileLoader.TileCount;
+
+            for (int i = 0; i < count; i++)
+            {
+                SmartTileDisplay e = new(i);
+
+                /*
+                e.OnMiddleClick += (_, _) =>
+                {
+                    e.GenCard(CardContainer);
+                };
+                */
+
+                items.Add(e);
+            }
+
+            IEnumerable<SmartTileDisplay> clean = items.Where(target => ContentIDToString.TileToString(target.TileID).Contains(Searchbar.Text));
+
+            ContentGrid.Clear();
+            ContentGrid.AddRange(clean);
         }
 
         private void PopulateProjectileEasy()
@@ -323,6 +378,29 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
             }
 
             IEnumerable<SmartProjectileDisplay> clean = items.Where(target => ContentIDToString.ProjectileIdToString(target.ProjType).Contains(Searchbar.Text));
+
+            ContentGrid.Clear();
+            ContentGrid.AddRange(clean);
+        }
+
+        private void PopulateBuffEasy()
+        {
+            List<SmartBuffDisplay> items = [];
+            int count = BuffLoader.BuffCount;
+
+            for (int i = 1; i < count; i++)
+            {
+                SmartBuffDisplay e = new(i);
+
+                e.OnMiddleClick += (_, _) =>
+                {
+                    e.GenCard(CardContainer);
+                };
+
+                items.Add(e);
+            }
+
+            IEnumerable<SmartBuffDisplay> clean = items.Where(target => ContentIDToString.BuffIdToString(target.buffID).Contains(Searchbar.Text));
 
             ContentGrid.Clear();
             ContentGrid.AddRange(clean);
@@ -436,16 +514,16 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
 
         private void PopulateItemsAsync()
         {
-            Task.Run(() =>
+            //Task.Run(() =>
             {
-                lock (GridContainer)
+                //lock (GridContainer)
                 {
                     var display = PopulateItems(false);
 
                     ContentGrid.Clear();
                     ContentGrid.AddRange(display);
                 }
-            });
+            }//);
         }
 
         public void PopulateWithDummy()

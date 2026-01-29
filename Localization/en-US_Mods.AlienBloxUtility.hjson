@@ -80,6 +80,14 @@ UI: {
 		Channel: Channel: {0}, Pickaxe: {1}, Axe: {2}, Hammer: {3}
 	}
 
+	BuffCard:
+		'''
+		Debuff: {0}
+		No Save: {1}
+		Tag: {2}
+		Nurse Can't Remove Buff: {3}
+		Infinite: {4}
+		'''
 	NPCCard:
 		'''
 		Display Name: {0}
