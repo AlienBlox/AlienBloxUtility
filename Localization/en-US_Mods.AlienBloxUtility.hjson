@@ -9,6 +9,7 @@ Buttons: {
 }
 
 UI: {
+	ServerSpawn: Spawn Projectile on Server
 	Cards: Data Card
 	SwitchSpawnMode: Switch Spawn Modes
 	GeneralSend: Send

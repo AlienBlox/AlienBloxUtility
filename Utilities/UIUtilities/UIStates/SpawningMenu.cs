@@ -223,6 +223,7 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
 
         public override void OnActivate()
         {
+            /*
             if (Backpanel.Close != null)
             {
                 Backpanel.Close.OnLeftClick += (_, _) =>
@@ -245,6 +246,7 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
                     DebugSidebarRender.Instance.Element.SpawningTool.Toggle = false;
                 };
             }
+            */
         }
 
         public override void Update(GameTime gameTime)
@@ -252,6 +254,12 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
             if (!_fix)
             {
                 PopulateItemsAsync();
+
+                Backpanel.Close.OnLeftClick += (_, _) =>
+                {
+                    SpawningMenuRender.SpawnMenuEnabled = false;
+                    DebugSidebarRender.Instance.Element.SpawningTool.Toggle = false;
+                };
 
                 _fix = true;
             }

@@ -3,10 +3,12 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using Terraria;
+using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.GameContent.UI.Elements;
 using Terraria.ID;
+using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.UI;
 
@@ -25,6 +27,7 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIElements
             if (ModContent.GetModProjectile(projID) == null)
                 Main.Assets.Request<Texture2D>(TextureAssets.Projectile[projID].Name);
 
+            SetPadding(5);
             Width.Set(40, 0);
             Height.Set(40, 0);
 
@@ -32,9 +35,17 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIElements
             ServerButton.Width.Set(0, .25f);
             ServerButton.Height.Set(0, .25f);
             ServerButton.VAlign = 1;
+            ServerButton.IgnoresMouseInteraction = false;
             ServerButton.OnLeftClick += (_, _) =>
             {
+                SoundEngine.PlaySound(SoundID.MenuTick);
+
                 AlienBloxUtility.RequestServerProjectile(ProjType, Main.LocalPlayer.Center - new Vector2(0, 100));
+            };
+
+            ServerButton.OnDraw += (batch) =>
+            {
+                this.SetUIBase(Language.GetText("Mods.AlienBloxUtility.UI.ServerSpawn").Value, false, true);
             };
 
             Append(ServerButton);
@@ -55,7 +66,8 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIElements
 
         public override void LeftClick(UIMouseEvent evt)
         {
-            Projectile.NewProjectile(new EntitySource_Misc("ProjectileHacker"), Main.LocalPlayer.Center, Vector2.Zero, ProjType, 0, 0, Main.myPlayer);
+            if (!ServerButton.ContainsPoint(Main.MouseScreen))
+                Projectile.NewProjectile(new EntitySource_Misc("ProjectileHacker"), Main.LocalPlayer.Center, Vector2.Zero, ProjType, 0, 0, Main.myPlayer);
 
             base.LeftClick(evt);
         }

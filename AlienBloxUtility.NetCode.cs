@@ -311,7 +311,7 @@ namespace AlienBloxUtility
 
                         foreach (Projectile p in Main.ActiveProjectiles)
                         {
-                            if (p.whoAmI == Main.myPlayer)
+                            if (p.owner == Main.myPlayer)
                             {
                                 if ((type != -1 && p.type == type) || type == -1)
                                     p.Kill();
@@ -456,7 +456,7 @@ namespace AlienBloxUtility
             {
                 foreach (Projectile p in Main.ActiveProjectiles)
                 {
-                    if (p.whoAmI == Main.myPlayer)
+                    if (p.owner == Main.myPlayer)
                     {
                         if ((type != -1 && p.type == type) || type == -1)
                             p.Kill();
