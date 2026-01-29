@@ -1,4 +1,6 @@
-﻿using Terraria.ID;
+﻿using System.Linq;
+using Terraria.DataStructures;
+using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace AlienBloxUtility.Utilities.Core
@@ -9,7 +11,7 @@ namespace AlienBloxUtility.Utilities.Core
         {
             if (ID == -1)
             {
-                return "NAN";
+                return "ERROR:NAN";
             }
 
             try
@@ -25,7 +27,7 @@ namespace AlienBloxUtility.Utilities.Core
             }
             catch
             {
-                return "NAN";
+                return "ERROR:NAN";
             }
             
         }
@@ -34,7 +36,7 @@ namespace AlienBloxUtility.Utilities.Core
         {
             if (ID == -1)
             {
-                return "NAN";
+                return "ERROR:NAN";
             }
 
             try
@@ -50,7 +52,7 @@ namespace AlienBloxUtility.Utilities.Core
             }
             catch
             {
-                return "NAN";
+                return "ERROR:NAN";
             }
         }
 
@@ -58,7 +60,7 @@ namespace AlienBloxUtility.Utilities.Core
         {
             if (npcID == -1)
             {
-                return "NAN";
+                return "ERROR:NAN";
             }
 
             try
@@ -74,7 +76,7 @@ namespace AlienBloxUtility.Utilities.Core
             }
             catch
             {
-                return "NAN";
+                return "ERROR:NAN";
             }            
         }
 
@@ -82,7 +84,7 @@ namespace AlienBloxUtility.Utilities.Core
         {
             if (buffID == -1 || buffID == 0)
             {
-                return "NAN";
+                return "ERROR:NAN";
             }
 
             try
@@ -98,7 +100,7 @@ namespace AlienBloxUtility.Utilities.Core
             }
             catch
             {
-                return "NAN";
+                return "ERROR:NAN";
             }
         }
 
@@ -122,7 +124,7 @@ namespace AlienBloxUtility.Utilities.Core
             }
             catch
             {
-                return "NAN";
+                return "ERROR:NAN";
             }
         }
 
@@ -130,7 +132,7 @@ namespace AlienBloxUtility.Utilities.Core
         {
             if (tileID == -1)
             {
-                return "NAN";
+                return "ERROR:NAN";
             }
 
             try
@@ -146,7 +148,7 @@ namespace AlienBloxUtility.Utilities.Core
             }
             catch
             {
-                return "NAN";
+                return "ERROR:NAN";
             }
         }
 
@@ -154,7 +156,7 @@ namespace AlienBloxUtility.Utilities.Core
         {
             if (wallID == -1)
             {
-                return "NAN";
+                return "ERROR:NAN";
             }
 
             try
@@ -170,7 +172,26 @@ namespace AlienBloxUtility.Utilities.Core
             }
             catch
             {
-                return "NAN";
+                return "ERROR:NAN";
+            }
+        }
+
+        public static string TEToString(int TEID)
+        {
+            if (TEID == -1)
+            {
+                return "ERROR:NAN";
+            }
+
+            TileEntity TE = TEUtilities.GetTEObjects().FirstOrDefault(obj => obj.type == TEID);
+
+            if (TE is ModTileEntity MTE)
+            {
+                return $"{MTE.Mod.Name}:{MTE.Name}";
+            }
+            else
+            {
+                return $"Terraria:{TE.GetType().Name}";
             }
         }
     }

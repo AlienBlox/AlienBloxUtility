@@ -1,15 +1,18 @@
-﻿using AlienBloxUtility.Utilities.Abstracts;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
+using System;
+using System.Collections;
+using System.Collections.Concurrent;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.GameInput;
-using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace AlienBloxUtility.Utilities.Core
 {
     public class UtilityPlayer : ModPlayer
     {
+        private ConcurrentQueue<Action> threadQueue;
+
         public bool noClipHack;
 
         public bool Immortal;
@@ -28,8 +31,21 @@ namespace AlienBloxUtility.Utilities.Core
 
         public Vector2 noClipHackPos;
 
+        public override void Initialize()
+        {
+            threadQueue = [];
+        }
+
         public override void PreUpdate()
         {
+            if (Main.myPlayer == Player.whoAmI)
+            {
+                while (threadQueue.TryDequeue(out Action a))
+                {
+                    a();
+                }
+            }
+
             if (!noClipHack)
             {
                 noClipHackPos = Player.position;
@@ -106,14 +122,11 @@ namespace AlienBloxUtility.Utilities.Core
 
             if (triggersSet.MouseLeft && ForcePlaceWall != -1)
             {
-                Main.QueueMainThreadAction(() =>
-                {
-                    AlienBloxUtility.SmartWallModify(Main.MouseWorld, ForcePlaceTile);
+                AlienBloxUtility.SmartWallModify(Main.MouseWorld, ForcePlaceWall);
 
-                    Main.NewText($"Forced Wall placement at {(Main.MouseWorld / 16).ToPoint()}, Wall Type: {ForcePlaceWall}");
+                Main.NewText($"Forced Wall placement at {(Main.MouseWorld / 16).ToPoint()}, Wall Type: {(ushort)ForcePlaceWall}");
 
-                    ForcePlaceWall = -1;
-                });
+                ForcePlaceWall = -1;
             }
 
             if (AlienBloxKeybinds.SudoKeybind.JustPressed)

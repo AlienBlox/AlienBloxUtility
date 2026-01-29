@@ -257,8 +257,15 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
 
                 Backpanel.Close.OnLeftClick += (_, _) =>
                 {
-                    SpawningMenuRender.SpawnMenuEnabled = false;
-                    DebugSidebarRender.Instance.Element.SpawningTool.Toggle = false;
+                    try
+                    {
+                        SpawningMenuRender.SpawnMenuEnabled = false;
+                        DebugSidebarRender.Instance.Element.SpawningTool.Toggle = false;
+                    }
+                    catch
+                    {
+
+                    }
                 };
 
                 _fix = true;

@@ -78,7 +78,7 @@ namespace AlienBloxUtility
 
         public override void Load()
         {
-            AppDomain.CurrentDomain.FirstChanceException += WriteException;
+            //AppDomain.CurrentDomain.FirstChanceException += WriteException;
 
             SharedCPP = new();
             LuaUnifiedEnv = LuaScriptingEnv.Create();
@@ -196,7 +196,7 @@ namespace AlienBloxUtility
 
         public override void Unload()
         {
-            AppDomain.CurrentDomain.FirstChanceException -= WriteException;
+            //AppDomain.CurrentDomain.FirstChanceException -= WriteException;
 
             try
             {

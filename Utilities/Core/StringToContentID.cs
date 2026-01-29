@@ -1,4 +1,7 @@
-﻿using Terraria.ID;
+﻿using AlienBloxUtility.Utilities.Reflector.Engine;
+using System.Linq;
+using Terraria.DataStructures;
+using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace AlienBloxUtility.Utilities.Core
@@ -135,6 +138,31 @@ namespace AlienBloxUtility.Utilities.Core
             if (ModLoader.TryGetMod(strSplit[0], out var M))
             {
                 if (M.TryFind<ModTile>(strSplit[1], out var I))
+                {
+                    return I.Type;
+                }
+            }
+
+            return -1;
+        }
+
+        public static int TEFromString(string TEName)
+        {
+            if (TEName == null)
+                return -1;
+
+            string[] strSplit = TEName.Split(':');
+
+            if (strSplit[0] == "Terraria")
+            {
+                TileEntity TE = TEUtilities.GetTEObjects().FirstOrDefault(te => te.GetTypeWithCache().Name == strSplit[1]);
+
+                return TE.ID;
+            }
+
+            if (ModLoader.TryGetMod(strSplit[0], out var M))
+            {
+                if (M.TryFind<ModTileEntity>(strSplit[1], out var I))
                 {
                     return I.Type;
                 }
