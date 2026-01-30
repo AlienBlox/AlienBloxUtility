@@ -1,6 +1,8 @@
 ﻿using AlienBloxUtility.Utilities.Core;
 using AlienBloxUtility.Utilities.DataStructures;
 using AlienBloxUtility.Utilities.Helpers;
+using Microsoft.Xna.Framework.Graphics;
+using ReLogic.Content;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -19,6 +21,11 @@ namespace AlienBloxUtility
 {
     public static class AlienBloxUtilitySpecials
     {
+        public static CommonAsset<Texture2D> Derive(this Asset<Texture2D> asset)
+        {
+            return new(asset);
+        }
+
         public static UIText AddTextEntry(this UIList list, LocalizedText text, float size = 1f, bool large = false)
         {
             UIText textcontent = new(text, size, large)

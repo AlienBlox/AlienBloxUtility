@@ -1,4 +1,5 @@
-﻿using Terraria.DataStructures;
+﻿using System.Linq;
+using Terraria.DataStructures;
 
 namespace AlienBloxUtility.Utilities.Core
 {
@@ -19,6 +20,11 @@ namespace AlienBloxUtility.Utilities.Core
         public static TileEntity[] GetTEObjects()
         {
             return [.. TileEntity.manager.EnumerateEntities().Values];
+        }
+
+        public static TileEntity FromID(int id)
+        {
+            return GetTEObjects().FirstOrDefault(x => x.ID == id);
         }
     }
 }

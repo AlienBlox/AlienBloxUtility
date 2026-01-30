@@ -143,6 +143,7 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
                                 break;
                             case 4:
                                 _menuSwitch = 5;
+                                PopulateTEEasy();
                                 break;
                             case 5:
                                 _menuSwitch = 6;
@@ -306,6 +307,7 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
                             PopulateTileEasy();
                             break;
                         case 5: //tile entity
+                            PopulateTEEasy();
                             break;
                         case 6: //walls
                             PopulateWallEasy();
@@ -315,6 +317,31 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
 
                 Searchbar.SetText(string.Empty);
             });
+        }
+
+        private void PopulateTEEasy()
+        {
+            List<SmartTEDisplay> items = [];
+            int count = TileEntity.manager.EnumerateEntities().Count;
+
+            for (int i = 0; i < count; i++)
+            {
+                SmartTEDisplay e = new(i);
+
+                /*
+                e.OnMiddleClick += (_, _) =>
+                {
+                    e.GenCard(CardContainer);
+                };
+                */
+
+                items.Add(e);
+            }
+
+            IEnumerable<SmartTEDisplay> clean = items.Where(target => ContentIDToString.TEToString(target.TEID).Contains(Searchbar.Text));
+
+            ContentGrid.Clear();
+            ContentGrid.AddRange(clean);
         }
 
         private void PopulateWallEasy()

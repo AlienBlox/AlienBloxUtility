@@ -29,6 +29,8 @@ namespace AlienBloxUtility.Utilities.Core
 
         public int ForcePlaceWall = -1;
 
+        public int ForcePlaceTE = -1;
+
         public Vector2 noClipHackPos;
 
         public override void Initialize()
@@ -128,6 +130,14 @@ namespace AlienBloxUtility.Utilities.Core
 
                 ForcePlaceWall = -1;
             }
+            /*
+            if (triggersSet.MouseLeft && ForcePlaceTE != -1)
+            {
+                AlienBloxUtility.SmartEditTE(Main.MouseWorld, ForcePlaceTE);
+
+                ForcePlaceTE = -1;
+            }
+            */
 
             if (AlienBloxKeybinds.SudoKeybind.JustPressed)
             {

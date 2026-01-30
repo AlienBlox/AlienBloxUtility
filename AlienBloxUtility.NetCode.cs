@@ -1,10 +1,12 @@
-﻿using AlienBloxUtility.Utilities.Helpers;
+﻿using AlienBloxUtility.Utilities.Core;
+using AlienBloxUtility.Utilities.Helpers;
 using AlienBloxUtility.Utilities.NetCode.AlienBloxPacketSystem;
 using AlienBloxUtility.Utilities.UIUtilities.UIRenderers;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Reflection;
 using System.Threading.Tasks;
 using Terraria;
 using Terraria.Chat;
@@ -14,7 +16,6 @@ using Terraria.Localization;
 using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 using Terraria.ObjectData;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace AlienBloxUtility
 {
@@ -36,6 +37,7 @@ namespace AlienBloxUtility
             MsgTest,
             ButcherProjectile,
             ReqServerProj,
+            TEDestruction,
         }
 
         public override void HandlePacket(BinaryReader reader, int whoAmI)
@@ -341,6 +343,26 @@ namespace AlienBloxUtility
                             Projectile.NewProjectile(new EntitySource_Misc("Hackies"), pos, Vector2.Zero, projtype, 0, 0, Main.myPlayer);
                         }
                         break;
+                    case Messages.TEDestruction:
+                        if (Main.netMode == NetmodeID.Server)
+                        {
+                            int x = reader.ReadInt32();
+                            int y = reader.ReadInt32();
+
+                            if (TileEntity.ByPosition.TryGetValue(new(x, y), out TileEntity TE))
+                            {
+                                if (TE.ID != -1)
+                                {
+                                    TileEntity.ByID.Remove(TE.ID);
+                                    TileEntity.ByPosition.Remove(new Point16(x, y));
+
+                                    // 2. Broadcast the removal to all clients (including the sender)
+                                    // Sending -1 as the entityID tells clients to "Clear at this position"
+                                    NetMessage.SendData(MessageID.TileEntitySharing, -1, -1, null, -1, x, y);
+                                }
+                            }
+                        }
+                        break;
                 }
             }
             catch (Exception e)
@@ -504,6 +526,58 @@ namespace AlienBloxUtility
                 pkt.Write(pos.X);
                 pkt.Write(pos.Y);
                 pkt.Send();
+            }
+        }
+
+        public static void SmartDestroyTE(Vector2 pos)
+        {
+            Point16 Refine = pos.ToTileCoordinates16();
+
+            if (Main.netMode != NetmodeID.MultiplayerClient)
+            {
+                if (TileEntity.ByPosition.TryGetValue(Refine, out TileEntity TE))
+                {
+                    TileEntity.ByPosition.Remove(Refine);
+                    TileEntity.ByID.Remove(TE.ID);
+                }
+                else
+                {
+                    ModPacket pkt = Instance.GetPacket();
+
+                    pkt.Write((byte)Messages.TEDestruction);
+                    pkt.Write((int)Refine.X);
+                    pkt.Write((int)Refine.Y);
+                    pkt.Send();
+                }
+            }
+        }
+
+        public static void SmartEditTE(Vector2 pos, int type)
+        {
+            Point16 Refine = pos.ToTileCoordinates16();
+
+            if (type == -1)
+            {
+                SmartDestroyTE(pos);
+
+                return;
+            }
+
+            TileEntity TE = TEUtilities.FromID(type);
+
+            if (TE is ModTileEntity MTE)
+            {
+                MTE.Hook_AfterPlacement(Refine.X, Refine.Y, 0, 0, 0, 0);
+            }
+            else
+            {
+                MethodInfo TEPlace = TE.GetType().GetMethod("Place", BindingFlags.Static, [typeof(int), typeof(int)]);
+                TEPlace?.Invoke(null, [(int)Refine.X, (int)Refine.Y]);
+            }
+
+            if (type != -1 && Main.netMode == NetmodeID.MultiplayerClient)
+            {
+                NetMessage.SendData(MessageID.TileEntityPlacement, -1, -1, null, Refine.X, Refine.Y, type);
             }
         }
 

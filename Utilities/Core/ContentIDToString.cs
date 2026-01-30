@@ -185,13 +185,20 @@ namespace AlienBloxUtility.Utilities.Core
 
             TileEntity TE = TEUtilities.GetTEObjects().FirstOrDefault(obj => obj.type == TEID);
 
-            if (TE is ModTileEntity MTE)
+            if (TE != null && TE.GetType() != null)
             {
-                return $"{MTE.Mod.Name}:{MTE.Name}";
+                if (TE is ModTileEntity MTE)
+                {
+                    return $"{MTE.Mod.Name}:{MTE.Name}";
+                }
+                else
+                {
+                    return $"Terraria:{TE.GetType().Name}";
+                }    
             }
             else
             {
-                return $"Terraria:{TE.GetType().Name}";
+                return "ERROR:NAN";
             }
         }
     }
