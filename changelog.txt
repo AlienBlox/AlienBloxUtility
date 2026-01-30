@@ -1,4 +1,4 @@
-AlienBlox's Utility v0.1.5.2 released!
-==API UPDATE!==
- * [FOR CROSSMODDING] Added the AlienBloxTModFile Class
- * [UNFINISHED] Adding a tMod patching system to AlienBlox's Utility
+AlienBlox's Utility v0.1.5.3 released!
+ * Added the Spawning Menu (TE option broken for now)
+ * It can spawn itmes, NPCs, give buffs, place tiles and place walls
+ * It is accessed from the Debug Sidebar
