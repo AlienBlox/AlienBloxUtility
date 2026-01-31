@@ -16,6 +16,7 @@ Features includes these abilities:
  * A toolbar that grants features like immortality, super flight, town NPC immortality, hitbox seeing, black hole and scripting
  * The ability to quick butcher entities
  * The ability to summon projectiles, NPCs and give buffs (a command.)
+ * A Spawning Menu that allows you to spawn Items, NPCs, give Buffs, place Tiles, Tile Entities and Walls
 [h1]Upcoming Features[/h1]
  * A console chat feature that allows you to chat directly from the debug console
  * A feature that allows you to grab and move NPCs
