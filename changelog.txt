@@ -1,4 +1,2 @@
-AlienBlox's Utility v0.1.5.3 released!
- * Added the Spawning Menu (TE option broken for now)
- * It can spawn itmes, NPCs, give buffs, place tiles and place walls
- * It is accessed from the Debug Sidebar
+AlienBlox's Utility v0.1.5.4 released!
+ * Fixed the TE menu of the Spawning Menu being broken

@@ -541,7 +541,6 @@ namespace AlienBloxUtility
                     TileEntity.ByPosition.Remove(Refine);
                     TileEntity.ByID.Remove(TE.ID);
                 }
-                
             }
             else
             {
