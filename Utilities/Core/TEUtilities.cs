@@ -24,7 +24,7 @@ namespace AlienBloxUtility.Utilities.Core
 
         public static TileEntity FromID(int id)
         {
-            return GetTEObjects().FirstOrDefault(x => x.ID == id);
+            return GetTEObjects()[id];//GetTEObjects().FirstOrDefault(x => x.ID == id);
         }
     }
 }

@@ -23,6 +23,8 @@ namespace AlienBloxUtility.Utilities.Core
 
         public bool tileTool;
 
+        public bool ForceDelTE;
+
         public int ForceSyncTimer;
 
         public int ForcePlaceTile = -1;
@@ -130,14 +132,39 @@ namespace AlienBloxUtility.Utilities.Core
 
                 ForcePlaceWall = -1;
             }
-            /*
+            
             if (triggersSet.MouseLeft && ForcePlaceTE != -1)
             {
-                AlienBloxUtility.SmartEditTE(Main.MouseWorld, ForcePlaceTE);
+                try
+                {
+                    AlienBloxUtility.SmartEditTE(Main.MouseWorld, ForcePlaceTE);
+                }
+                catch
+                {
+
+                }
+
+                Main.NewText($"Forced TE placement at {(Main.MouseWorld / 16).ToPoint()}, TE Type: {(ushort)ForcePlaceTE}");
 
                 ForcePlaceTE = -1;
             }
-            */
+
+            if (triggersSet.MouseLeft && ForceDelTE)
+            {
+                try
+                {
+                    AlienBloxUtility.SmartEditTE(Main.MouseWorld, -1);
+                }
+                catch
+                {
+
+                }
+
+                Main.NewText($"Forced TE destruction at {(Main.MouseWorld / 16).ToPoint()}");
+
+                ForceDelTE = false;
+            }
+            
 
             if (AlienBloxKeybinds.SudoKeybind.JustPressed)
             {

@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using Terraria;
 using Terraria.Chat;
 using Terraria.DataStructures;
+using Terraria.GameContent.Tile_Entities;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader;
@@ -563,16 +564,41 @@ namespace AlienBloxUtility
                 return;
             }
 
-            TileEntity TE = TEUtilities.FromID(type);
+            TileEntity TE = TEUtilities.GetTEObjects()[type];//TEUtilities.FromID(type);
 
             if (TE is ModTileEntity MTE)
             {
-                MTE.Hook_AfterPlacement(Refine.X, Refine.Y, 0, 0, 0, 0);
+                //MTE.Hook_AfterPlacement(Refine.X, Refine.Y, 0, 0, 0, 0);
+                MTE.Place(Refine.X, Refine.Y);
             }
             else
             {
-                MethodInfo TEPlace = TE.GetType().GetMethod("Place", BindingFlags.Static, [typeof(int), typeof(int)]);
-                TEPlace?.Invoke(null, [(int)Refine.X, (int)Refine.Y]);
+                switch (type)
+                {
+                    case 0:
+                        TETrainingDummy.Place(Refine.X, Refine.Y);
+                        break;
+                    case 1:
+                        TEItemFrame.Place(Refine.X, Refine.Y);
+                        break;
+                    case 2:
+                        TELogicSensor.Place(Refine.X, Refine.Y);
+                        break;
+                    case 3:
+                        TEDisplayDoll.Place(Refine.X, Refine.Y);
+                        break;
+                    case 4:
+                        TEWeaponsRack.Place(Refine.X, Refine.Y);
+                        break;
+                    case 5:
+                        TEHatRack.Place(Refine.X, Refine.Y);
+                        break;
+                    case 6:
+                        TETeleportationPylon.Place(Refine.X, Refine.Y);
+                        break;
+                }
+                //MethodInfo TEPlace = TE.GetType().GetMethod("Place", BindingFlags.Static, [typeof(int), typeof(int)]);
+                //TEPlace?.Invoke(null, [(int)Refine.X, (int)Refine.Y]);
             }
 
             if (type != -1 && Main.netMode == NetmodeID.MultiplayerClient)

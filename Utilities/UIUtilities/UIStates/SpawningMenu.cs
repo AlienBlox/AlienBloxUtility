@@ -340,6 +340,12 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
 
             IEnumerable<SmartTEDisplay> clean = items.Where(target => ContentIDToString.TEToString(target.TEID).Contains(Searchbar.Text));
 
+            var temp = clean.ToList();
+
+            temp.Add(new(-1));
+
+            clean = temp;
+
             ContentGrid.Clear();
             ContentGrid.AddRange(clean);
         }

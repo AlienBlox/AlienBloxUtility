@@ -20,16 +20,26 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIElements
             Height.Set(40, 0);
         }
 
-        public override void LeftClick(UIMouseEvent evt)
+        public override void RightClick(UIMouseEvent evt)
         {
-            Main.LocalPlayer.AlienBloxUtility().ForcePlaceTE = TEID;
+            if (TEID != -1)
+            {
+                Main.LocalPlayer.AlienBloxUtility().ForcePlaceTE = TEID;
+            }
+            else
+            {
+                Main.LocalPlayer.AlienBloxUtility().ForceDelTE = true;
+            }
 
-            base.LeftClick(evt);
+            base.RightClick(evt);
         }
 
         protected override void DrawSelf(SpriteBatch spriteBatch)
         {
-            this.SetUIBase(ContentIDToString.TEToString(TEID));
+            if (TEID != -1)
+                this.SetUIBase(ContentIDToString.TEToString(TEID));
+            else
+                this.SetUIBase("Delete Tile Entity");
 
             base.DrawSelf(spriteBatch);
 

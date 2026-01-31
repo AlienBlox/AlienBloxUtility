@@ -183,7 +183,7 @@ namespace AlienBloxUtility.Utilities.Core
                 return "ERROR:NAN";
             }
 
-            TileEntity TE = TEUtilities.GetTEObjects().FirstOrDefault(obj => obj.type == TEID);
+            TileEntity TE = TEUtilities.GetTEObjects()[TEID];//TEUtilities.GetTEObjects().FirstOrDefault(obj => obj.type == TEID);
 
             if (TE != null && TE.GetType() != null)
             {
