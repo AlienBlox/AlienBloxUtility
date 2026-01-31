@@ -541,15 +541,16 @@ namespace AlienBloxUtility
                     TileEntity.ByPosition.Remove(Refine);
                     TileEntity.ByID.Remove(TE.ID);
                 }
-                else
-                {
-                    ModPacket pkt = Instance.GetPacket();
+                
+            }
+            else
+            {
+                ModPacket pkt = Instance.GetPacket();
 
-                    pkt.Write((byte)Messages.TEDestruction);
-                    pkt.Write((int)Refine.X);
-                    pkt.Write((int)Refine.Y);
-                    pkt.Send();
-                }
+                pkt.Write((byte)Messages.TEDestruction);
+                pkt.Write((int)Refine.X);
+                pkt.Write((int)Refine.Y);
+                pkt.Send();
             }
         }
 
