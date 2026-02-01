@@ -1,7 +1,10 @@
 ﻿using AlienBloxUtility.Utilities.Core;
 using AlienBloxUtility.Utilities.Reflector.Engine;
+using Steamworks;
 using System;
+using System.IO;
 using System.Reflection;
+using Terraria;
 using Terraria.Localization;
 using Terraria.ModLoader.Core;
 
@@ -83,6 +86,30 @@ namespace AlienBloxUtility.Utilities.Reflector.InternalHooks
             var method = t.GetMethod("Build", BindingFlags.Static | BindingFlags.NonPublic, [typeof(string)]);
 
             method?.Invoke(null, [path]);
+        }
+
+        /// <summary>
+        /// Creates a new Tilemap
+        /// </summary>
+        /// <param name="width">The width of the Tilemap</param>
+        /// <param name="height">The height of the Tilemap</param>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
+        public static Tilemap CreateTilemap(int width, int height)
+        {
+            // 1) Get the Type
+            Type TilemapType = typeof(Tilemap);
+
+            // 2) Find the constructor
+            ConstructorInfo ctor = TilemapType.GetConstructor(
+                BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public,
+                binder: null,
+                types: [typeof(ushort), typeof(ushort)],
+                modifiers: null
+            ) ?? throw new Exception("Constructor not found on Tilemap");
+
+            // 3) Invoke it
+            return (Tilemap)ctor.Invoke([(ushort)width, (ushort)height]);
         }
     }
 }

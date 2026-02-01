@@ -14,6 +14,7 @@ using Terraria.GameInput;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader.Core;
+using Terraria.ModLoader.IO;
 using Terraria.UI;
 using static AlienBloxUtility.AlienBloxUtility;
 
@@ -21,6 +22,39 @@ namespace AlienBloxUtility
 {
     public static class AlienBloxUtilitySpecials
     {
+        public static TagCompound Save(this Tilemap tMap)
+        {
+            TagCompound tag = [];
+
+            for (int i = 0; i < tMap.Width; i++)
+            {
+                for (int j = 0; j < tMap.Height; j++)
+                {
+                    tag[$"Tile_{i}_{j}_Type"] = tMap[i, j].TileType;
+                    tag[$"Tile_{i}_{j}_BlockType"] = (byte)tMap[i, j].BlockType;
+                    tag[$"Tile_{i}_{j}_LiquidType"] = tMap[i, j].LiquidType;
+                    tag[$"Tile_{i}_{j}_LiquidAmount"] = tMap[i, j].LiquidAmount;
+                    tag[$"Tile_{i}_{j}_Slope"] = (byte)tMap[i, j].Slope;
+                    tag[$"Tile_{i}_{j}_Wall"] = tMap[i, j].WallType;
+                    tag[$"Tile_{i}_{j}_Paint"] = tMap[i, j].TileColor;
+                    tag[$"Tile_{i}_{j}_Coating"] = tMap[i, j].WallColor;
+                    tag[$"Tile_{i}_{j}_TileInvis"] = tMap[i, j].IsTileInvisible;
+                    tag[$"Tile_{i}_{j}_WallInvis"] = tMap[i, j].IsWallInvisible;
+                    tag[$"Tile_{i}_{j}_Half"] = tMap[i, j].IsHalfBlock;
+                    tag[$"Tile_{i}_{j}_Actuator"] = tMap[i, j].HasActuator;
+                    tag[$"Tile_{i}_{j}_Tile"] = tMap[i, j].HasTile;
+                    tag[$"Tile_{i}_{j}_WireData"] = new WireData(tMap[i, j]).Save();
+                }
+            }
+
+            return tag;
+        }
+
+        public static Tilemap LoadTileMap(this TagCompound tag, int width, int height)
+        {
+            throw new NotImplementedException();
+        }
+
         public static CommonAsset<Texture2D> Derive(this Asset<Texture2D> asset)
         {
             return new(asset);
