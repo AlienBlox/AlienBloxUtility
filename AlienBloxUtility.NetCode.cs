@@ -1,4 +1,5 @@
 ﻿using AlienBloxUtility.Utilities.Core;
+using AlienBloxUtility.Utilities.EntityManipulation.Freezes;
 using AlienBloxUtility.Utilities.Helpers;
 using AlienBloxUtility.Utilities.NetCode.AlienBloxPacketSystem;
 using AlienBloxUtility.Utilities.UIUtilities.UIRenderers;
@@ -39,6 +40,8 @@ namespace AlienBloxUtility
             ButcherProjectile,
             ReqServerProj,
             TEDestruction,
+            TimeFreeze,
+            ReceiveProjectileFreeze,
         }
 
         public override void HandlePacket(BinaryReader reader, int whoAmI)
@@ -364,6 +367,62 @@ namespace AlienBloxUtility
                             }
                         }
                         break;
+                    case Messages.TimeFreeze:
+                        byte FreezeType = reader.ReadByte();
+                        bool Freeze = reader.ReadBoolean();
+
+                        switch (FreezeType)
+                        {
+                            case 0:
+                                if (Main.netMode == NetmodeID.Server)
+                                {
+                                    GlobalNPCFreeze.GlobalFrozen = Freeze;
+
+                                    foreach (NPC npc in Main.ActiveNPCs)
+                                    {
+                                        npc.GetGlobalNPC<GlobalNPCFreeze>().Frozen = Freeze;
+                                        npc.netUpdate = true;
+                                    }
+                                }
+                                break;
+                            case 1:
+                                GlobalProjectileFreeze.GlobalFrozen = Freeze;
+
+                                foreach (Projectile p in Main.ActiveProjectiles)
+                                {
+                                    if (p.owner == Main.myPlayer)
+                                    {
+                                        p.GetGlobalProjectile<GlobalProjectileFreeze>().Frozen = Freeze;
+                                        p.netUpdate = true;
+                                    }
+                                }
+
+                                if (Main.netMode == NetmodeID.Server)
+                                {
+                                    ModPacket pkt = GetPacket();
+
+                                    pkt.Write((byte)Messages.TimeFreeze);
+                                    pkt.Write((byte)1);
+                                    pkt.Write(Freeze);
+                                    pkt.Send();
+                                }
+                                break;
+                        }
+                        break;
+                    case Messages.ReceiveProjectileFreeze:
+                        if (Main.netMode == NetmodeID.Server)
+                        {
+                            ModPacket pkt = GetPacket();
+
+                            pkt.Write((byte)Messages.ReceiveProjectileFreeze);
+                            pkt.Write(GlobalProjectileFreeze.GlobalFrozen);
+                            pkt.Send(whoAmI);
+                        }
+                        else
+                        {
+                            GlobalProjectileFreeze.GlobalFrozen = reader.ReadBoolean();
+                        }
+                        break;
                 }
             }
             catch (Exception e)
@@ -403,6 +462,17 @@ namespace AlienBloxUtility
                 ModPacket pkt = Instance.GetPacket();
 
                 pkt.Write((byte)Messages.RetrieveWallhackData);
+                pkt.Send();
+            }
+        }
+
+        public static void RetrieveProjectileFreeze()
+        {
+            if (Main.netMode == NetmodeID.MultiplayerClient)
+            {
+                ModPacket pkt = Instance.GetPacket();
+
+                pkt.Write((byte)Messages.ReceiveProjectileFreeze);
                 pkt.Send();
             }
         }

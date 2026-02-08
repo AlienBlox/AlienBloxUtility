@@ -228,6 +228,7 @@ namespace AlienBloxUtility.Utilities.Core
             AlienBloxUtility.SendSteamID(Player);
             AlienBloxUtility.RetrieveWallhackData();
             AlienBloxUtility.RetrieveSteamID();
+            AlienBloxUtility.RetrieveProjectileFreeze();
         }
 
         public override bool CanBeHitByNPC(NPC npc, ref int cooldownSlot)
