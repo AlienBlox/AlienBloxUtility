@@ -42,6 +42,7 @@ namespace AlienBloxUtility
             TEDestruction,
             TimeFreeze,
             ReceiveProjectileFreeze,
+            GrabNPC,
         }
 
         public override void HandlePacket(BinaryReader reader, int whoAmI)
@@ -421,6 +422,24 @@ namespace AlienBloxUtility
                         else
                         {
                             GlobalProjectileFreeze.GlobalFrozen = reader.ReadBoolean();
+                        }
+                        break;
+                    case Messages.GrabNPC:
+                        if (Main.netMode == NetmodeID.Server)
+                        {
+                            int WhoAmI = reader.ReadInt32();
+                            bool Grab = reader.ReadBoolean();
+                            Vector2 GrabPos = reader.ReadVector2();
+
+                            if (Main.npc[whoAmI].active)
+                            {
+                                GlobalNPCFreeze freezer = Main.npc[whoAmI].GetGlobalNPC<GlobalNPCFreeze>();
+
+                                freezer.Grabbed = Grab;
+                                freezer.GrabPosition = GrabPos;
+
+                                Main.npc[whoAmI].netUpdate = true;
+                            }
                         }
                         break;
                 }

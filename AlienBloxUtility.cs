@@ -4,6 +4,7 @@ using AlienBloxUtility.Utilities.Helpers;
 using AlienBloxUtility.Utilities.UIUtilities.UIRenderers;
 using Jint;
 using log4net;
+using Microsoft.Xna.Framework;
 using Neo.IronLua;
 using System;
 using System.Collections.Generic;
@@ -410,6 +411,22 @@ namespace AlienBloxUtility
 
             // Return the combined array
             return combined;
+        }
+
+        public static NPC GetNPCAtMouse()
+        {
+            // Main.MouseWorld translates screen coordinates to world coordinates automatically
+            Vector2 mousePos = Main.MouseWorld;
+
+            foreach (NPC npc in Main.npc)
+            {
+                // Only check NPCs that are currently active in the world
+                if (npc.active && npc.Hitbox.Contains(mousePos.ToPoint()))
+                {
+                    return npc;
+                }
+            }
+            return null; // No NPC found at this position
         }
     }
 }

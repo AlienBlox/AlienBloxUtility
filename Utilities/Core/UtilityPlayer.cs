@@ -1,4 +1,6 @@
-﻿using Microsoft.Xna.Framework;
+﻿using AlienBloxUtility.Utilities.EntityManipulation;
+using AlienBloxUtility.Utilities.UIUtilities.UIRenderers;
+using Microsoft.Xna.Framework;
 using System;
 using System.Collections;
 using System.Collections.Concurrent;
@@ -25,6 +27,8 @@ namespace AlienBloxUtility.Utilities.Core
 
         public bool ForceDelTE;
 
+        public bool GrabMode;
+
         public int ForceSyncTimer;
 
         public int ForcePlaceTile = -1;
@@ -32,6 +36,10 @@ namespace AlienBloxUtility.Utilities.Core
         public int ForcePlaceWall = -1;
 
         public int ForcePlaceTE = -1;
+
+        public int mouseIcon;
+
+        public int GrabNPC;
 
         public Vector2 noClipHackPos;
 
@@ -48,6 +56,8 @@ namespace AlienBloxUtility.Utilities.Core
                 {
                     a();
                 }
+
+                AlienBloxIconRender.SetIcon(mouseIcon);
             }
 
             if (!noClipHack)
@@ -112,6 +122,23 @@ namespace AlienBloxUtility.Utilities.Core
 
         public override void ProcessTriggers(TriggersSet triggersSet)
         {
+            if (Main.mouseLeft && GrabMode)
+            {
+                GrabNPC = (int)AlienBloxUtility.GetNPCAtMouse()?.whoAmI;
+            }
+
+            if (!Main.mouseLeft)
+            {
+                EntityHelper.GrabNPC(GrabNPC, false, Main.MouseWorld);
+
+                GrabNPC = -1;
+            }
+
+            if (AlienBloxKeybinds.GrabNPC.JustReleased)
+            {
+                GrabMode = !GrabMode;
+            }
+
             if (triggersSet.MouseLeft && ForcePlaceTile != -1)
             {
                 if (!AlienBloxUtility.SmartTilePlace(Main.MouseWorld, ForcePlaceTile))
@@ -210,6 +237,12 @@ namespace AlienBloxUtility.Utilities.Core
                 {
                     AlienBloxUtility.SendNoclipHack(noClipHackPos, noClipHack);
                 }
+            }
+
+            if (GrabNPC != -1)
+            {
+                if (Main.npc[GrabNPC].position != Main.MouseWorld)
+                    EntityHelper.GrabNPC(GrabNPC, true, Main.MouseWorld);
             }
         }
 

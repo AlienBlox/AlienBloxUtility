@@ -9,12 +9,15 @@ namespace AlienBloxUtility.Utilities.Core
 
         public static ModKeybind ToggleAdvancedDebugging { get; private set; }
 
+        public static ModKeybind GrabNPC { get; private set; }
+
         //public static ModKeybind UseTileTool { get; private set; }
 
         public override void Load()
         {
             SudoKeybind = KeybindLoader.RegisterKeybind(Mod, "Sudo", Keys.NumPad1);
             ToggleAdvancedDebugging = KeybindLoader.RegisterKeybind(Mod, "ToggleAdvancedDebugging", Keys.NumPad2);
+            GrabNPC = KeybindLoader.RegisterKeybind(Mod, "GrabNPC", Keys.L);
             //UseTileTool = KeybindLoader.RegisterKeybind(Mod, "UseTileTool", Keys.NumPad3);
         }
     }

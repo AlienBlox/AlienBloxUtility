@@ -15,6 +15,10 @@ namespace AlienBloxUtility.Utilities.EntityManipulation.Freezes
 
         public bool Frozen;
 
+        public bool Grabbed;
+
+        public Vector2 GrabPosition;
+
         public override void OnSpawn(NPC npc, IEntitySource source)
         {
             Frozen = GlobalFrozen;
@@ -23,6 +27,13 @@ namespace AlienBloxUtility.Utilities.EntityManipulation.Freezes
 
         public override bool PreAI(NPC npc)
         {
+            if (Grabbed)
+            {
+                npc.position = GrabPosition;
+
+                return false;
+            }
+
             if (Frozen)
             {
                 npc.velocity = Vector2.Zero;
