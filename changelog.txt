@@ -1,2 +1,4 @@
-AlienBlox's Utility v0.1.5.5 released!
- * Version bump
+AlienBlox's Utility v0.1.5.6 released!
+ * Added the Freeze NPC / Projectiles Utility to the debug sidebar
+ * Added the ability to drag NPCs
+ * Added a changelog icon to the Mod Icon

@@ -17,9 +17,10 @@ Features includes these abilities:
  * The ability to quick butcher entities
  * The ability to summon projectiles, NPCs and give buffs (a command.)
  * A Spawning Menu that allows you to spawn Items, NPCs, give Buffs, place Tiles, Tile Entities and Walls
+ * A feature that allows you to grab and move NPCs
+ * A freeze utility that allows you to freeze NPCs / Projectiles in place
 [h1]Upcoming Features[/h1]
  * A console chat feature that allows you to chat directly from the debug console
- * A feature that allows you to grab and move NPCs
 [h1]Legals[/h1]
  * I am not responsible for any piracy when using this mod to decompile other mods since this is only a tool
  * Mod is licensed under GPL-3.0

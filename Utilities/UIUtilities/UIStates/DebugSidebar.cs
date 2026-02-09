@@ -1,4 +1,6 @@
 ﻿using AlienBloxUtility.Utilities.Core;
+using AlienBloxUtility.Utilities.EntityManipulation;
+using AlienBloxUtility.Utilities.EntityManipulation.Freezes;
 using AlienBloxUtility.Utilities.Helpers;
 using AlienBloxUtility.Utilities.NetCode.Packets;
 using AlienBloxUtility.Utilities.UIUtilities.UIElements;
@@ -27,7 +29,7 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
 
         //public UIList SidebarList;
 
-        public ButtonIcon NoclipTool, HitboxTool, BlackHoleTool, ScriptingTool, NPCImmortalityTool, PlayerImmortalityTool, SpawningTool, ButcherTool, SlimeGame, SendLua, SendJS, SendNative;
+        public ButtonIcon NoclipTool, HitboxTool, BlackHoleTool, ScriptingTool, NPCImmortalityTool, PlayerImmortalityTool, SpawningTool, ButcherTool, SlimeGame, SendLua, SendJS, SendNative, FreezeUtility;
 
         public List<ButtonIcon> Buttons;
 
@@ -161,6 +163,7 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
             SpawningTool = new("Mods.AlienBloxUtility.UI.SidebarTools.SpawnEntity", ItemID.SuspiciousLookingEye, Colors.RarityOrange, true);
             ButcherTool = new("Mods.AlienBloxUtility.UI.SidebarTools.ButcherEntity", ItemID.BloodyMachete, Color.DarkRed, true);
             SlimeGame = new("Mods.AlienBloxUtility.UI.SidebarTools.SlimeGame", ItemID.PinkGel, Color.LightPink);
+            FreezeUtility = new("Mods.AlienBloxUtility.UI.SidebarTools.FreezeUtility", ItemID.Stopwatch, Color.Gold, true);
 
             NoclipTool.Width.Set(0, 1);
             NoclipTool.Height.Set(60, 0);
@@ -189,6 +192,19 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
             SlimeGame.Width.Set(0, 1);
             SlimeGame.Height.Set(60, 0);
 
+            FreezeUtility.Width.Set(0, 1);
+            FreezeUtility.Height.Set(60, 0);
+
+            FreezeUtility.OnLeftClick += (_, _) =>
+            {
+                EntityHelper.FreezeNPCs(FreezeUtility.Toggle);
+            };
+
+            FreezeUtility.OnRightClick += (_, _) =>
+            {
+                EntityHelper.FreezeProjectiles(!GlobalProjectileFreeze.GlobalFrozen);
+            };
+
             NoclipTool.HAlign = HitboxTool.HAlign = BlackHoleTool.HAlign = ScriptingTool.HAlign = SlimeGame.HAlign = .5f; //Noice
 
             //SidebarList.ManualSortMethod = (_) => { };
@@ -214,6 +230,7 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
             AddToSidebar(PlayerImmortalityTool);
             AddToSidebar(SpawningTool);
             //AddToSidebar(ButcherTool);
+            AddToSidebar(FreezeUtility);
             AddToSidebar(SlimeGame);
 
             NoclipTool.OnLeftClick += WallClip;

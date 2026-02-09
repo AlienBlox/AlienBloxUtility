@@ -47,11 +47,15 @@ namespace AlienBloxUtility.Utilities.EntityManipulation.Freezes
         public override void SendExtraAI(NPC npc, BitWriter bitWriter, BinaryWriter binaryWriter)
         {
             bitWriter.WriteBit(Frozen);
+            bitWriter.WriteBit(Grabbed);
+            binaryWriter.WriteVector2(GrabPosition);
         }
 
         public override void ReceiveExtraAI(NPC npc, BitReader bitReader, BinaryReader binaryReader)
         {
             Frozen = bitReader.ReadBit();
+            Grabbed = bitReader.ReadBit();
+            GrabPosition = binaryReader.ReadVector2();
         }
     }
 }

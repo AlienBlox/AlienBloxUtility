@@ -165,7 +165,7 @@ namespace AlienBloxUtility.Utilities.Core
 
                 ForcePlaceWall = -1;
             }
-            
+
             if (triggersSet.MouseLeft && ForcePlaceTE != -1)
             {
                 try
@@ -197,7 +197,7 @@ namespace AlienBloxUtility.Utilities.Core
 
                 ForceDelTE = false;
             }
-            
+
 
             if (AlienBloxKeybinds.SudoKeybind.JustPressed)
             {
@@ -249,6 +249,11 @@ namespace AlienBloxUtility.Utilities.Core
             {
                 if (Main.npc[GrabNPC].position != Main.MouseWorld)
                     EntityHelper.GrabNPC(GrabNPC, true, Main.MouseWorld);
+            }
+
+            if (Main.mouseRight && GrabNPC != -1)
+            {
+                Main.npc[GrabNPC].RequestKill();
             }
         }
 

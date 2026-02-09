@@ -168,7 +168,8 @@ UI: {
 		JSSend: Send JavaScript (Right-click to send to server.)
 		LuaSend: Send Lua (Right-click to send to server.)
 		NativeSend: Send C/C++ (Right-click to send to server.)
-		ButcherEntity: Mods.AlienBloxUtility.UI.SidebarTools.ButcherEntity
+		ButcherEntity: Butcher Entities
+		FreezeUtility: Freeze NPCs (Right click to freeze Projectiles)
 	}
 }
 

@@ -1,4 +1,5 @@
-﻿using AlienBloxUtility.Utilities.EntityManipulation.Freezes;
+﻿using AlienBloxUtility.Utilities.Core;
+using AlienBloxUtility.Utilities.EntityManipulation.Freezes;
 using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ID;
@@ -57,17 +58,15 @@ namespace AlienBloxUtility.Utilities.EntityManipulation
             if (WhoAmI == -1 || WhoAmI > Main.maxNPCs)
                 return;
 
-            if (Main.netMode != NetmodeID.MultiplayerClient)
+            if (Main.npc[WhoAmI].active)
             {
-                if (Main.npc[WhoAmI].active)
-                {
-                    GlobalNPCFreeze freezer = Main.npc[WhoAmI].GetGlobalNPC<GlobalNPCFreeze>();
+                GlobalNPCFreeze freezer = Main.npc[WhoAmI].GetGlobalNPC<GlobalNPCFreeze>();
 
-                    freezer.Grabbed = Grab;
-                    freezer.GrabPosition = GrabPos;
-                }
+                freezer.Grabbed = Grab;
+                freezer.GrabPosition = GrabPos;
             }
-            else
+
+            if (Main.netMode == NetmodeID.MultiplayerClient)
             {
                 ModPacket pkt = AlienBloxUtility.PacketRetrieve;
 
