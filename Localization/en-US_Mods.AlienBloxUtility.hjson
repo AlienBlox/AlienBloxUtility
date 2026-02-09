@@ -403,6 +403,7 @@ Keybinds: {
 	Sudo.DisplayName: Use Sudo
 	ToggleAdvancedDebugging.DisplayName: Toggle Sudo Debugging UI (Unused)
 	UseTileTool.DisplayName: Use Tile Tool
+	GrabNPC.DisplayName: Grab NPC
 }
 
 Commands: {

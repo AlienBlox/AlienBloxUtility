@@ -54,6 +54,9 @@ namespace AlienBloxUtility.Utilities.EntityManipulation
 
         public static void GrabNPC(int WhoAmI, bool Grab, Vector2 GrabPos)
         {
+            if (WhoAmI == -1 || WhoAmI > Main.maxNPCs)
+                return;
+
             if (Main.netMode != NetmodeID.MultiplayerClient)
             {
                 if (Main.npc[WhoAmI].active)
@@ -62,8 +65,6 @@ namespace AlienBloxUtility.Utilities.EntityManipulation
 
                     freezer.Grabbed = Grab;
                     freezer.GrabPosition = GrabPos;
-
-                    Main.npc[WhoAmI].netUpdate = true;
                 }
             }
             else

@@ -124,7 +124,12 @@ namespace AlienBloxUtility.Utilities.Core
         {
             if (Main.mouseLeft && GrabMode)
             {
-                GrabNPC = (int)AlienBloxUtility.GetNPCAtMouse()?.whoAmI;
+                NPC npc = AlienBloxUtility.GetNPCAtMouse();
+
+                if (npc != null && GrabNPC == -1)
+                {
+                    GrabNPC = npc.whoAmI;
+                }
             }
 
             if (!Main.mouseLeft)
@@ -137,6 +142,7 @@ namespace AlienBloxUtility.Utilities.Core
             if (AlienBloxKeybinds.GrabNPC.JustReleased)
             {
                 GrabMode = !GrabMode;
+                Main.NewText("Grab Mode: " + GrabMode);
             }
 
             if (triggersSet.MouseLeft && ForcePlaceTile != -1)
