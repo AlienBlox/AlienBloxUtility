@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 18
-VisualStudioVersion = 18.0.11222.15
+VisualStudioVersion = 18.2.11415.280 d18.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AlienBloxUtility", "AlienBloxUtility.csproj", "{347C0431-1F95-7C2A-1096-51AF239FDE89}"
 EndProject
@@ -26,6 +26,6 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {359AEBE2-EB29-4A10-A008-EF4235F0561A}
+		SolutionGuid = {E3417A5C-5210-4026-8DB6-077FF7F4820F}
 	EndGlobalSection
 EndGlobal
