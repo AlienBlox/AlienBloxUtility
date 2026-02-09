@@ -1,152 +1,436 @@
-Configs: {
-	AlienBloxUtilityServerConfig: {
-		JavaScriptMaxCount: {
-			Tooltip: ""
-			Label: Java Script Max Count
-		}
+Buttons: {
+	ConsoleButton: AlienBlox's Utility Interactive Console
+	StatsButton: Toggle Stats Bar
+	DecompilerButton: Toggle Decompiler
+	PacketSpyButton: Toggle Packet Spy Utility
+	MilkerButton: Toggle Debug Stats Menu
+	ExtrasButton: Toggle Extra Utilities Selector Menu
+	CloseButton: Close Menu
+}
 
-		Headers: {
-			JavaScript: Java Script Header
-			Lua: Lua Header
-			Debugger: Debugger Header
-		}
+UI: {
+	ServerSpawn: Spawn Projectile on Server
+	Cards: Data Card
+	SwitchSpawnMode: Switch Spawn Modes
+	GeneralSend: Send
+	SpawnMenu: Spawn Entities
+	ToggleUtilityBar: Toggle Utility Bar (right-click for documentation, middle-click for Sidebar)
+	DecompUI: Decompiler
+	Conhost: Console Menu
+	ConTypeLine: Command Input...
+	PerfBar: Working RAM Usage: {0} MB | Private RAM Usage: {1} MB | CPU: {2}% | GC: {3} MB
+	ClearConsole: Clear Console
+	SaveLogs: Save Console Logs
+	SendCmd: Send Command
+	LockUI: Lock UI adjustments
+	CloseUI: Close menu
+	AboutTab: About AlienBlox's Utility
+	ExtrasTab: Extra Utilities
+	PacketSuppressor: Activate Packet Suppressor
+	Lua: Open Lua Injector
+	ModSpecificToggle: Toggle Mod-Specific Options
+	LuaDisplay: Lua Script Manager
+	DownloadLua: Download Scripts
+	RefreshLua: Refresh Scripts
+	DownloadingScript: Download a script...
+	OpenLuaFolder: Open Lua Folder
+	EmergencyStop: Stop Lua Scripts
+	ScriptStart: Lua script started.
+	ScriptEnd: Lua script ended.
+	ModSpecificUtilities: Mod Specific Tools
+	ExecLua: Execute Lua Script (Right-click for info)
+	CommandList: Command List
+	SearchBar: Search...
+	AssetInspector: Open Asset Tool
+	AssetTool: Asset Tool
+	ModalNotice: Double left click modal anywhere to exit!
+	SlimeGameText: Slime Score: {0} (Double right-click to exit!)
+	PatchMenu: Open Mod Patcher
+	AssetExtractorInfo:
+		'''
+		Right-click to decompile mod.
+		Left-click to inspect mod.
+		Middle-click for mod info.
+		'''
+	EntitySummon: Summon Menu
+	TileInfoHover:
+		'''
+		Has TE: {0}
+		TE Type: {1}
+		Tile Type: {2}
+		Tile Frame: {3}
+		Wall Type: {4}
+		Slope Type: {5}
+		'''
 
-		LuaMaxCount: {
-			Tooltip: ""
-			Label: Lua Max Count
-		}
-
-		Sandboxed: {
-			Tooltip: ""
-			Label: Sandboxed
-		}
-
-		ClearCache: {
-			Tooltip: ""
-			Label: Clear Cache
-		}
-
-		DisplayName: Alien Blox Utility Server Config
+	ItemCard: {
+		ItemSize: Item Size = Width: {0}, Height: {1}
+		ItemName: Item Name: {0}
+		ItemMaxStack: Item Max Stack: {0}
+		ItemValue: Item Value: {0}
+		ItemQuickIdentifier: Item Fullname: {0}
+		ItemID: ItemID: {0}
+		ItemCombat: DMG: {0}, KB: {1}, CRIT: {2}, CLASS: {3}
+		UseTime: Use Time: {0}, Use Anim: {1}, Use Style: {2}
+		AutoReuse: Autoswing: {0}
+		CreateTile: Creates Tile: {0}
+		CreateWall: Creates Wall: {0}
+		GivesBuff: Gives Buff: {0}, Buff Time: {1}
+		Projectile: Shoots Projectile: {0}, Shoot Speed: {1}
+		Channel: Channel: {0}, Pickaxe: {1}, Axe: {2}, Hammer: {3}
 	}
 
+	BuffCard:
+		'''
+		Debuff: {0}
+		No Save: {1}
+		Tag: {2}
+		Nurse Can't Remove Buff: {3}
+		Infinite: {4}
+		'''
+	NPCCard:
+		'''
+		Display Name: {0}
+		Life Max: {1}
+		Defense: {2}
+		Damage: {3}
+		AI: {4}
+		Hitbox: (X: {5}, Y: {6})
+		No Gravity: {7}
+		No Tile Collide: {8}
+		Boss: {9}
+		Critter: {10}
+		Townie: {11}
+		'''
+	ProjCard:
+		'''
+		Name: {0}
+		AI: {1}
+		Type: {2}
+		Friendly: {3}
+		Hostile: {4}
+		Ignore Water: {5}
+		Tile Collide: {6}
+		Lifespan: {7}
+		Net Important: {8}
+		'''
+
+	Console: {
+		ConWelcome: AlienBlox's Utility V{0} loaded!
+		ConHelp: Use 'help' to get a list of commands and their uses!
+	}
+
+	StatsBar: {
+		PrimaryStats: Melee Damage Modifier: {0}x | Magic Damage Modifier: {1}x | Ranged Damage Modifier: {2}x | Summon Damage Modifier: {3}x | Generic Damage Modifier: {4}x
+		SecondaryStats: Luck: {0} Pts | PVP Deaths: {1} | PVE Deaths: {2}
+	}
+
+	Documentation: {
+		Lua: Filter Lua
+		JavaScript: Filter JavaScript
+		Core: Filter AlienBlox's Utility Mod Functions
+		CSharp: Filter C#
+		Search: Search Documentation
+		SearchBar: Search a documentation entry...
+	}
+
+	SocialMedia: {
+		GitHub: GitHub
+		YouTube: YouTube
+		Steam: Steam
+		Reddit: Reddit
+		Discord: Discord
+		Roblox: Roblox
+	}
+
+	AboutMod:
+		'''
+		AlienBlox's Utility is a general purpose modder utility used for things like interop testing,
+		decompilation of mods and general debugging, the mod is open source and its info can be found
+		in the links below.
+		'''
+
+	SidebarTools: {
+		Scripting: Toggle Scripting Tool
+		BlackHole:
+			'''
+			Toggle Black Hole Tool
+			Left-click for Item Black Hole
+			Right-click for NPC Black Hole
+			Middle-click for Projectile Black Hole
+			'''
+		Hitbox: Toggle Hitbox Tool
+		Noclip: Toggle Wallclip Tool
+		SlimeGame: Start Slime Game
+		NPCImmortality: Toggle Town NPC Immortality
+		PlayerImmortality: Toggle Player Immortality
+		SpawnEntity: Toggle Spawn Menu
+		JSSend: Send JavaScript (Right-click to send to server.)
+		LuaSend: Send Lua (Right-click to send to server.)
+		NativeSend: Send C/C++ (Right-click to send to server.)
+		ButcherEntity: Mods.AlienBloxUtility.UI.SidebarTools.ButcherEntity
+	}
+}
+
+Messages: {
+	Server: {
+		SpawnNPC: "{0} spawned NPC with type of {1} at {2}"
+		DoLua: "{0} ran a lua script at {1} (Unix Time)!"
+		DoJS: "{0} ran a JavaScript at {1} (Unix Time)!"
+		DoCPP: "{0} ran a C/C++ script at {1} (Unix Time)!"
+	}
+
+	OneShotPlayer: "{0} was brutally murdered by a Scripting Environment"
+	SlimeGame: Slime Game activated!
+	SlimeGameAnnouncement: "{0} completed the Slime Game at score: {1}"
+
+	PacketSpy: {
+		NotOnMP: Not on multiplayer, Packet Spy disabled
+		MsgBegin: ===PACKET SPY BEGIN===
+		PacketDataReceived: Packet Data Received: MessageType: {0}, Size: {1} Bytes, Time Received: {2} (Unix Time)
+		MsgEnd: ===PACKET SPY END===
+	}
+
+	Decompiler: {
+		DecompilerStart: ===DECOMPILER BEGIN===
+		DecompilerFile: File Decompiled: File Name: {0}, At: {1}
+		DecompilerEnd: ===DECOMPILER END===
+	}
+
+	LuaInfo: {
+		Description: Description: {0}
+		Author: Author: {0}
+		Origin: Origin: {0}
+		Version: Version: {0}
+	}
+
+	ConsoleCredits: {
+		AlienBloxCredit: Made by alienblox1234 on Steam
+		Testers: Testers: AwesomeSavage777
+		Libraries: Libraries: Neo.Lua, Jint, Acornima, ICSharpCode.Decompiler
+	}
+
+	PacketSuppression: Packet Suppressed: {0}
+}
+
+Configs: {
 	AlienBloxUtilityConfig: {
-		ReworkedIcon: {
-			Tooltip: ""
-			Label: Reworked Icon
-		}
+		DisplayName: AlienBlox's Utility Config
 
 		Headers: {
-			Other: Other Header
-			JavaScript: Java Script Header
-			Lua: Lua Header
-			Debugger: Debugger Header
-		}
-
-		JavaScriptMaxCount: {
-			Tooltip: ""
-			Label: Java Script Max Count
-		}
-
-		LuaMaxCount: {
-			Tooltip: ""
-			Label: Lua Max Count
-		}
-
-		Noisy: {
-			Tooltip: ""
-			Label: Noisy
-		}
-
-		Sandboxed: {
-			Tooltip: ""
-			Label: Sandboxed
-		}
-
-		DeveloperMode: {
-			Tooltip: ""
-			Label: Developer Mode
-		}
-
-		DumpErrorLogs: {
-			Tooltip: ""
-			Label: Dump Error Logs
-		}
-
-		GeneralDebugMessages: {
-			Tooltip: ""
-			Label: General Debug Messages
+			Debugger: Debugger Configs
+			Lua: Lua
+			JavaScript: JavaScript
+			Other: Other
 		}
 
 		DecompilerMessages: {
-			Tooltip: ""
 			Label: Decompiler Messages
+			Tooltip: Should the decompilation of a mod also generate a message trail in the chat
 		}
 
-		DisplayName: Alien Blox Utility Config
+		GeneralDebugMessages: {
+			Label: General Debug Messages
+			Tooltip: ""
+		}
+
+		Sandboxed: {
+			Tooltip: Is the Lua system sandboxed or not
+			Label: Lua Sandboxed
+		}
+
+		Noisy: {
+			Label: Noisy
+			Tooltip: Should the chat be allowed to be filled with debug messages.
+		}
+
+		LuaMaxCount: {
+			Label: Lua Max Count
+			Tooltip: The max amount of JavaScript engines allowed.
+		}
+
+		JavaScriptMaxCount: {
+			Label: JavaScript Max Count
+			Tooltip: The max amount of Lua engines allowed.
+		}
+
+		ReworkedIcon: {
+			Tooltip: Should the mod icon of AlienBlox's Utility be changed to a more advanced one.
+			Label: Reworked icon
+		}
+
+		DumpErrorLogs: {
+			Label: Dump Error Logs
+			Tooltip: ""
+		}
+
+		DeveloperMode: {
+			Tooltip:
+				'''
+				[c/FF0000:USE ONLY IF YOU KNOW WHAT YOU ARE DOING]
+				Developer mode allows you to access tModLoader internals
+				that are normally off-limits, it is useful for debugging
+				edge cases and other situations.
+				'''
+			Label: Developer Mode
+		}
+	}
+
+	AlienBloxUtilityServerConfig: {
+		DisplayName: AlienBlox's Utility Server Config
+
+		Headers: {
+			Debugger: Debugger Configs
+			Lua: Lua
+			JavaScript: JavaScript
+		}
+
+		ClearCache: {
+			Label: Clear Cache
+			Tooltip: Should AlienBlox's Utility clear the cache folder it makes
+		}
+
+		Sandboxed: {
+			Tooltip: Is the Lua system sandboxed or not
+			Label: Lua Sandboxed
+		}
+
+		LuaMaxCount: {
+			Label: Lua Max Count
+			Tooltip: The max amount of JavaScript engines allowed.
+		}
+
+		JavaScriptMaxCount: {
+			Label: JavaScript Max Count
+			Tooltip: The max amount of Lua engines allowed.
+		}
+	}
+}
+
+Exceptions: {
+	CommandConflictException: Can't add command: Command name conflict
+	LuaHaltException: Lua operation halted.
+}
+
+Documents: {
+	Test: {
+		Title: Test Document
+		Description: little pig
+	}
+
+	Lua: {
+		Title: Lua
+		Description:
+			'''
+			Lua in AlienBlox's Utility is a scripting language used
+			to modify the behavior of tModLoader, it is useful for debugging.
+			AlienBlox's Utility uses NeoLua for Lua
+			'''
+	}
+
+	AlieBloxUtilityDoc: {
+		Title: AlienBlox's Utility
+		Description:
+			'''
+			AlienBlox's Utility is a tModLoader mod used for debugging
+			It has many features like a decompiler, interactive console
+			and JavaScript + Lua scripting support!
+			'''
+	}
+
+	Console: {
+		Title: Interactive Console
+		Description:
+			'''
+			The Interactive Console is an utility in AlienBlox's Utility
+			Used for running commands, Lua and JavaScript code, things also
+			print to the interactive console like Lua or JavaScript output.
+			'''
+	}
+
+	Decompiler: {
+		Title: Decompiler
+		Description:
+			'''
+			The Decompiler in AlienBlox's Utility is used
+			for decompiling mods and extracting assets, it
+			is async'd so it is thread safe and won't crash tModLoader
+			from heavy computation on its main thread
+			'''
+	}
+
+	StatsBar: {
+		Title: Stats Bar
+		Description:
+			'''
+			The Stats Bar in AlienBlox's Utility is
+			used for seeing vanilla stats, it is useful
+			for tracking damage modifiers
+			'''
+	}
+
+	JavaScript: {
+		Title: JavaScript
+		Description:
+			'''
+			JavaScript in AlienBlox's Utility is a scripting language used
+			to modify the behavior of tModLoader, it is useful for debugging.
+			AlienBlox's Utility uses Jint + Acornima for JavaScript
+			'''
+	}
+
+	ButcherCommand: {
+		Title: Butcher Command
+		Description:
+			'''
+			The Butcher Command in AlienBlox's Utility is a command used for one shotting things
+			It has these different options: item, npc, npcfriendly and proj
+			'''
+	}
+
+	TModLoaderRunCommand: {
+		Title: tModLoader Command
+		Description: Runs an extra instance of tModLoader
+	}
+
+	DMCommand: {
+		Title: DM Command
+		Description: Allows the direct messaging of users.
 	}
 }
 
 Keybinds: {
-	Sudo.DisplayName: Sudo
-	ToggleAdvancedDebugging.DisplayName: Toggle Advanced Debugging
-	GrabNPC.DisplayName: Grab N P C
+	Sudo.DisplayName: Use Sudo
+	ToggleAdvancedDebugging.DisplayName: Toggle Sudo Debugging UI (Unused)
+	UseTileTool.DisplayName: Use Tile Tool
 }
 
 Commands: {
-	ButcherCommand: Mods.AlienBloxUtility.Commands.ButcherCommand
-	CPPCommand: Mods.AlienBloxUtility.Commands.CPPCommand
-	CPPFileCommand: Mods.AlienBloxUtility.Commands.CPPFileCommand
-	DMCommand: Mods.AlienBloxUtility.Commands.DMCommand
-	DumpModCommand: Mods.AlienBloxUtility.Commands.DumpModCommand
-	DVDCommand: Mods.AlienBloxUtility.Commands.DVDCommand
-	GetLoadedModCount: Mods.AlienBloxUtility.Commands.GetLoadedModCount
-	GetLuaCommand: Mods.AlienBloxUtility.Commands.GetLuaCommand
-	GetModInfoCommand: Mods.AlienBloxUtility.Commands.GetModInfoCommand
-	HelpCommand: Mods.AlienBloxUtility.Commands.HelpCommand
-	JavaFileCommand: Mods.AlienBloxUtility.Commands.JavaFileCommand
-	JavaScriptCommand: Mods.AlienBloxUtility.Commands.JavaScriptCommand
-	JavaScriptGet: Mods.AlienBloxUtility.Commands.JavaScriptGet
-	LoadFileTest: Mods.AlienBloxUtility.Commands.LoadFileTest
-	LuaCancel: Mods.AlienBloxUtility.Commands.LuaCancel
-	LuaCommand: Mods.AlienBloxUtility.Commands.LuaCommand
-	ModCommandHelper: Mods.AlienBloxUtility.Commands.ModCommandHelper
-	ModImpersonateCommand: Mods.AlienBloxUtility.Commands.ModImpersonateCommand
-	MovieCreditsCommand: Mods.AlienBloxUtility.Commands.MovieCreditsCommand
-	NetTest: Mods.AlienBloxUtility.Commands.NetTest
-	ScareMeCommand: Mods.AlienBloxUtility.Commands.ScareMeCommand
-	ServerLuaCommand: Mods.AlienBloxUtility.Commands.ServerLuaCommand
-	SlimeCommand: Mods.AlienBloxUtility.Commands.SlimeCommand
-	SummoningCommand: Mods.AlienBloxUtility.Commands.SummoningCommand
-	TModFilePeekerCommand: Mods.AlienBloxUtility.Commands.TModFilePeekerCommand
-	TModLoaderRunCommand: Mods.AlienBloxUtility.Commands.TModLoaderRunCommand
-}
-
-Buttons.ConsoleButton: Mods.AlienBloxUtility.Buttons.ConsoleButton
-
-UI: {
-	SidebarTools: {
-		JSSend: Mods.AlienBloxUtility.UI.SidebarTools.JSSend
-		LuaSend: Mods.AlienBloxUtility.UI.SidebarTools.LuaSend
-		NativeSend: Mods.AlienBloxUtility.UI.SidebarTools.NativeSend
-		Noclip: Mods.AlienBloxUtility.UI.SidebarTools.Noclip
-		Hitbox: Mods.AlienBloxUtility.UI.SidebarTools.Hitbox
-		BlackHole: Mods.AlienBloxUtility.UI.SidebarTools.BlackHole
-		Scripting: Mods.AlienBloxUtility.UI.SidebarTools.Scripting
-		NPCImmortality: Mods.AlienBloxUtility.UI.SidebarTools.NPCImmortality
-		PlayerImmortality: Mods.AlienBloxUtility.UI.SidebarTools.PlayerImmortality
-		SpawnEntity: Mods.AlienBloxUtility.UI.SidebarTools.SpawnEntity
-		ButcherEntity: Mods.AlienBloxUtility.UI.SidebarTools.ButcherEntity
-		SlimeGame: Mods.AlienBloxUtility.UI.SidebarTools.SlimeGame
-	}
-
-	Documentation: {
-		Core: Mods.AlienBloxUtility.UI.Documentation.Core
-		Lua: Mods.AlienBloxUtility.UI.Documentation.Lua
-		JavaScript: Mods.AlienBloxUtility.UI.Documentation.JavaScript
-		CSharp: Mods.AlienBloxUtility.UI.Documentation.CSharp
-		Search: Mods.AlienBloxUtility.UI.Documentation.Search
-	}
-
-	GeneralSend: Mods.AlienBloxUtility.UI.GeneralSend
-	SwitchSpawnMode: Mods.AlienBloxUtility.UI.SwitchSpawnMode
+	TModFilePeekerCommand: Peek inside tMod Files (Usage: Mod name)
+	SummoningCommand: Summons an entity like an NPC, Projectile or even gives a buff. (See documentation for usage.)
+	SlimeCommand: Runs the slime game.
+	ServerLuaCommand: Does lua on the server (Usage: lua code after command)
+	NetTest: Tests are packets working
+	MovieCreditsCommand: The credits for the mod.
+	ModImpersonateCommand: Impersonates another mod's output
+	ModCommandHelper: A command implemented by other mods (refer to the other mod's documentation)
+	LuaCommand: Does lua on the client (Usage: lua code after command)
+	LuaCancel: Cancel all lua tasks safely
+	LoadFileTest: Tests is the load tMod file system working.
+	JavaScriptCommand: Runs a JavaScript script (Usage: see documentation)
+	JavaFileCommand: Runs a JavaScript file (Usage: see documentation)
+	HelpCommand: Help
+	GetLuaCommand: Gets a list of Lua objects in the Lua env
+	GetLoadedModCount: See how many mods are loaded at once
+	DVDCommand: DVD!
+	DumpModCommand: Dumps a mod's content (only PDB, tMod and DLL)
+	DMCommand: DMs another user (Usage: Name of player, message after that)
+	ButcherCommand: Butchers an entity (you can choose to butcher NPC, Projectiles or townies)
+	GetModInfoCommand: Gets a Mod's build info like is the mod's resources visible
+	TModLoaderRunCommand: Runs an extra copy of tModLoader
+	JavaScriptGet: Gets a list of JavaScript objects
+	CPPCommand: Run a C/C++ action
+	CPPFileCommand: Run a C/C++ file
+	ScareMeCommand: Gives you free Robux (100% real!, not a jumpscare!)
+	QuickPatchCommand: Quickly patches a tMod file (Usage: ModName, FileName, FileToOverrideWith and Save)
 }
