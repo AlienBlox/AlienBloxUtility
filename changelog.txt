@@ -1,2 +1,2 @@
-AlienBlox's Utility v0.1.5.4 released!
- * Fixed the TE menu of the Spawning Menu being broken
+AlienBlox's Utility v0.1.5.5 released!
+ * Version bump/
