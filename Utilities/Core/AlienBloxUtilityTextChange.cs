@@ -1,4 +1,5 @@
-﻿using AlienBloxUtility.Utilities.UIUtilities.UIElements;
+﻿using AlienBloxUtility.Utilities.Helpers;
+using AlienBloxUtility.Utilities.UIUtilities.UIElements;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoMod.RuntimeDetour;
@@ -77,14 +78,28 @@ namespace AlienBloxUtility.Utilities.Core
     {
         public UIText ModName;
 
+        public UIImageButton InfoButton;
+
         public bool Test = false;
 
         public CustomNameBar(UIText nameUI)
         {
+            InfoButton = new(ModContent.Request<Texture2D>("AlienBloxUtility/Common/Assets/InfoButton"));
+            InfoButton.Width.Set(22, 0);
+            InfoButton.Height.Set(22, 0);
+            InfoButton.VAlign = 1;
+            InfoButton.HAlign = 0;
+            InfoButton.OnLeftClick += (_, _) =>
+            {
+                UrlEngine.OpenURL("https://steamcommunity.com/sharedfiles/filedetails/changelog/3628522075");
+            };
+
             Width.Set(80, 0f);
             Height.Set(80, 0f);
 
             ModName = nameUI;
+
+            Append(InfoButton);
         }
 
         public static Asset<Texture2D> ModIcon;

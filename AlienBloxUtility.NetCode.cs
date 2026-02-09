@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Reflection;
+//using System.Reflection;
 using System.Threading.Tasks;
 using Terraria;
 using Terraria.Chat;
