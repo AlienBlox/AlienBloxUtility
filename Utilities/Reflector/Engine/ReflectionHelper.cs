@@ -14,6 +14,11 @@ namespace AlienBloxUtility.Utilities.Reflector.Engine
         /// <returns>The Type</returns>
         public static Type GetTypeWithCache(this object obj)
         {
+            if (obj == null)
+            {
+                return typeof(object);
+            }
+
             ReflectionCache.Cache ??= [];
 
             if (!ReflectionCache.Cache.Contains(obj.GetType()))

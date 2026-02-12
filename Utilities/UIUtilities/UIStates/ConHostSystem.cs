@@ -1,5 +1,6 @@
 ﻿using AlienBloxUtility.Utilities.Core;
 using AlienBloxUtility.Utilities.Helpers;
+using AlienBloxUtility.Utilities.Reflector.Engine;
 using AlienBloxUtility.Utilities.UIUtilities.UIElements;
 using AlienBloxUtility.Utilities.UIUtilities.UIRenderers;
 using Microsoft.Xna.Framework;
@@ -28,12 +29,12 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
 
         public UIPanel AssetInspectorMenu, MainPanel, SidePanel, CommandPanel, ClearConsole, ExportConsole, StopLuaExecution, CommandListPanel, CommandScrollBacking, ModalMask, AssetInspector, PatchMenuButton;
 
-        public SpriteButton SendCommand, CommandList, SearchButton;
+        public SpriteButton SendCommand, CommandList, SearchButton, SearchAssetsButton;
 
         public UIScrollbar PanelScroll, ConSysScroll, CommandsMenuScroll;
         public UIList BackingList, BackingConSysUI, CommandsScroll, AssetInspectorBacker, AssetInspectorMenuThingy;
 
-        public UITextBoxImproved CommandBox, SearchBar;
+        public UITextBoxImproved CommandBox, SearchBar, SearchAssets;
 
         public List<UIText> ConsoleText;
 
@@ -46,6 +47,8 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
         private bool _canDoubleClickDisable;
 
         private bool _hasModal;
+
+        private string _currentMod;
 
         public override void OnInitialize()
         {
@@ -400,6 +403,63 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
 
         public void SetAssetTool()
         {
+            SearchAssetsButton = new($"Terraria/Images/Item_{ItemID.PaperAirplaneA}", Language.GetText("Mods.AlienBloxUtility.UI.SearchBar"))
+            {
+                VAlign = .5f,
+                HAlign = 1
+            };
+
+            SearchAssetsButton.Left.Set(-10, 0);
+            SearchAssetsButton.Width.Set(0, .1f);
+            SearchAssetsButton.Height.Set(0, 1);
+            SearchAssetsButton.OnLeftClick += (_, menu) =>
+            {
+                if (_currentMod != string.Empty)
+                {
+                    try
+                    {
+                        TmodFile Dile = ExternalTModInspection.GetAllModsLoaded().FirstOrDefault(file => file.Name == _currentMod);
+
+                        var files = new List<TmodFile.FileEntry>();
+
+                        files.Clear();
+
+                        if (Dile != null)
+                        {
+                            foreach (var content in Dile)
+                            {
+                                files.Add(content);
+                            }
+
+                            files = [.. files.Where(thing => thing.Name.Contains(SearchBar.Text))];
+
+                            var suitableThings = AssetInspectorBacker.Children.Where(elem => elem.Children.FirstOrDefault().GetTypeWithCache() == typeof(UIText));
+                    
+                            foreach (var things in suitableThings)
+                            {
+                                if (things.Children.FirstOrDefault() is UIText text && !files.Select(e => e.Name).Contains(text.Text))
+                                {
+                                    text.Parent.Remove();
+                                }
+                            }
+
+                            SearchBar.SetText(string.Empty);
+                        }
+                    }
+                    catch
+                    {
+
+                    }
+                }
+            };
+
+            SearchAssets = new("Search Assets...");
+            SearchAssets.Width.Set(-30, 1);
+            SearchAssets.Height.Set(0, .1f);
+            SearchAssets.Left.Set(15, 0);
+            SearchAssets.HAlign = .5f;
+            //SearchAssets.Append(SearchAssetsButton);
+
             AssetInspectorMenu = new();
             AssetInspectorMenu.Width.Set(0, .75f);
             AssetInspectorMenu.Height.Set(0, .75f);
@@ -473,6 +533,8 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
             SidePanel.Append(BackerScroll);
             SidePanel.SetPadding(10);
 
+            //SidePanel.Append(SearchAssets);
+
             AssetInspectorMenuThingy = PanelBacking;
             //AssetInspectorMenuThingy.ManualSortMethod = (_) => { };
 
@@ -539,10 +601,12 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
 
                             if (E.TryGetValue((UIPanel)menu, out var file))
                             {
-                                var UIs = file.EnumerateToMenu();
+                                var UIs = file.EnumerateToMenu().ToList();
                                 var FESet = TModInspector.GetFESet(file);
 
-                                for (int i = 0; i < UIs.Length; i++)
+                                _currentMod = file.Name;
+
+                                for (int i = 0; i < UIs.Count; i++)
                                 {
                                     var txt = UIs[i].InsertText(FESet[i].Name);
 
@@ -576,9 +640,14 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
                                             }   
                                         }
                                     };
+
+                                    if (!txt.Text.Contains(SearchBar.Text))
+                                    {
+                                        UIs.Remove(UIs[i]);
+                                    }
                                 }
 
-                                AlienBloxUtility.AlienBloxLogger.Info(UIs.Length.ToString());
+                                AlienBloxUtility.AlienBloxLogger.Info(UIs.Count.ToString());
                                 AssetInspectorMenuThingy.AddRange(UIs);
                             } 
                         }
