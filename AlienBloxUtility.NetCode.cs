@@ -279,9 +279,12 @@ namespace AlienBloxUtility
 
                             foreach (Player plr in Main.ActivePlayers)
                             {
-                                pkt.Write(plr.position.X);
-                                pkt.Write(plr.position.Y);
-                                pkt.Write(plr.AlienBloxUtility().noClipHack);
+                                if (plr.whoAmI != whoAmI)
+                                {
+                                    pkt.Write(plr.position.X);
+                                    pkt.Write(plr.position.Y);
+                                    pkt.Write(plr.AlienBloxUtility().noClipHack);
+                                }
                             }
 
                             pkt.Send(whoAmI);

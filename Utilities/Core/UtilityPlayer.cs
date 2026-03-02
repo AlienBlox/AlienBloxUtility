@@ -260,19 +260,21 @@ namespace AlienBloxUtility.Utilities.Core
         public override void SyncPlayer(int toWho, int fromWho, bool newPlayer)
         {
             if (!newPlayer)
-                AlienBloxUtility.SendNoclipHack(noClipHackPos, noClipHack);
+                AlienBloxUtility.SendNoclipHack(noClipHackPos, false);
         }
 
         public override void OnEnterWorld()
         {
-            noClipHack = false;
-            AlienBloxUtility.SendNoclipHack(Player.position, noClipHack);
-
             //DebugSidebarRender.Instance.RegenUI();
             AlienBloxUtility.SendSteamID(Player);
             AlienBloxUtility.RetrieveWallhackData();
             AlienBloxUtility.RetrieveSteamID();
             AlienBloxUtility.RetrieveProjectileFreeze();
+
+            noClipHackPos = Player.position;
+            noClipHack = true;
+
+            AlienBloxUtility.SendNoclipHack(Player.position, noClipHack);
         }
 
         public override bool CanBeHitByNPC(NPC npc, ref int cooldownSlot)
