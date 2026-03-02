@@ -1,2 +1,2 @@
-AlienBlox's Utility v0.1.5.7 released!
- * Fixed a bug that causes the player to fly when they are not supposed to be flying.
+AlienBlox's Utility v0.1.5.8 released!
+ * Fixed once another bug relating to desynced movement + floatation

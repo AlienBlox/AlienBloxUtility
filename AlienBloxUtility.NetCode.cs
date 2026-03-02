@@ -300,7 +300,7 @@ namespace AlienBloxUtility
                                     bool Wallhack = reader.ReadBoolean();
 
                                     p.position = p.AlienBloxUtility().noClipHackPos = new(X, Y);
-                                    p.AlienBloxUtility().noClipHack = true;
+                                    p.AlienBloxUtility().noClipHack = Wallhack;
 
                                     Logger.Warn("Received Sync! Position is: " + p.position);
                                     Logger.Warn("Received Sync! Noclip hack status is: " + p.AlienBloxUtility().noClipHack);
