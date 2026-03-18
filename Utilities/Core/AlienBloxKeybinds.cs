@@ -11,6 +11,8 @@ namespace AlienBloxUtility.Utilities.Core
 
         public static ModKeybind GrabNPC { get; private set; }
 
+        public static ModKeybind ActivateClipboardCopy { get; private set; }
+
         //public static ModKeybind UseTileTool { get; private set; }
 
         public override void Load()
@@ -18,6 +20,7 @@ namespace AlienBloxUtility.Utilities.Core
             SudoKeybind = KeybindLoader.RegisterKeybind(Mod, "Sudo", Keys.NumPad1);
             ToggleAdvancedDebugging = KeybindLoader.RegisterKeybind(Mod, "ToggleAdvancedDebugging", Keys.NumPad2);
             GrabNPC = KeybindLoader.RegisterKeybind(Mod, "GrabNPC", Keys.L);
+            ActivateClipboardCopy = KeybindLoader.RegisterKeybind(Mod, "ActivateClipboardCopy", Keys.F6);
             //UseTileTool = KeybindLoader.RegisterKeybind(Mod, "UseTileTool", Keys.NumPad3);
         }
     }

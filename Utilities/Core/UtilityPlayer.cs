@@ -1,4 +1,5 @@
 ﻿using AlienBloxUtility.Utilities.EntityManipulation;
+using AlienBloxUtility.Utilities.Helpers;
 using AlienBloxUtility.Utilities.UIUtilities.UIRenderers;
 using Microsoft.Xna.Framework;
 using System;
@@ -7,6 +8,7 @@ using System.Collections.Concurrent;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.GameInput;
+using Terraria.Localization;
 using Terraria.ModLoader;
 
 namespace AlienBloxUtility.Utilities.Core
@@ -28,6 +30,8 @@ namespace AlienBloxUtility.Utilities.Core
         public bool ForceDelTE;
 
         public bool GrabMode;
+
+        public bool ClipboardColorSelector;
 
         public int ForceSyncTimer;
 
@@ -68,6 +72,13 @@ namespace AlienBloxUtility.Utilities.Core
 
         public override void PostUpdate()
         {
+            if (ClipboardColorSelector)
+            {
+                ClipboardTool.CopyZoomCorrectedColor(out string hex, false);
+
+                Main.instance.MouseText($"[C/{hex.Replace("#", string.Empty)}:{hex}]");
+            }
+
             if (noClipHack)
             {
                 Player.position = noClipHackPos;
@@ -122,6 +133,18 @@ namespace AlienBloxUtility.Utilities.Core
 
         public override void ProcessTriggers(TriggersSet triggersSet)
         {
+            if (AlienBloxKeybinds.ActivateClipboardCopy.JustPressed)
+            {
+                ClipboardColorSelector = !ClipboardColorSelector;
+                Main.NewText(Language.GetTextValue("Mods.AlienBloxUtility.Messages.ClipboardUtility"));
+            }
+
+            if (Main.mouseMiddle && ClipboardColorSelector)
+            {
+                ClipboardTool.CopyZoomCorrectedColor(out _);
+                ClipboardColorSelector = false;
+            }
+
             if (Main.mouseLeft && GrabMode)
             {
                 NPC npc = AlienBloxUtility.GetNPCAtMouse();

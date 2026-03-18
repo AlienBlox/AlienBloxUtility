@@ -1,2 +1,2 @@
-AlienBlox's Utility v0.1.5.8 released!
- * Fixed once another bug relating to desynced movement + floatation
+AlienBlox's Utility v0.1.5.9 released!
+ * Added the color picker utility to AlienBlox's Utility

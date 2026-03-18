@@ -81,6 +81,7 @@ namespace AlienBloxUtility
         public override void Load()
         {
             //AppDomain.CurrentDomain.FirstChanceException += WriteException;
+            //Main.QueueMainThreadAction(ClipboardTool.CopyZoomCorrectedColor);
 
             SharedCPP = new();
             LuaUnifiedEnv = LuaScriptingEnv.Create();

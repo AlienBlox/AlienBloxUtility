@@ -184,6 +184,7 @@ Messages: {
 	OneShotPlayer: "{0} was brutally murdered by a Scripting Environment"
 	SlimeGame: Slime Game activated!
 	SlimeGameAnnouncement: "{0} completed the Slime Game at score: {1}"
+	ClipboardUtility: Clipboard utility activated / deactivated. (Middle Click to copy color when activated.)
 
 	PacketSpy: {
 		NotOnMP: Not on multiplayer, Packet Spy disabled
@@ -405,6 +406,7 @@ Keybinds: {
 	ToggleAdvancedDebugging.DisplayName: Toggle Sudo Debugging UI (Unused)
 	UseTileTool.DisplayName: Use Tile Tool
 	GrabNPC.DisplayName: Grab NPC
+	ActivateClipboardCopy.DisplayName: Activate Clipboard Copy
 }
 
 Commands: {
