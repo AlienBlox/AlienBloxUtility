@@ -72,6 +72,10 @@ namespace AlienBloxUtility
         [BackgroundColor(25, 50, 25)]
         public bool ClearCache;
 
+        [DefaultValue(true)]
+        [BackgroundColor(25, 50, 25)]
+        public bool EnableBrokenItems;
+
         [Header("Lua")]
         [DefaultValue(true)]
         [ReloadRequired]

@@ -285,6 +285,11 @@
             Explicit resource management feature as specified by this <seealso href="https://github.com/tc39/proposal-explicit-resource-management">proposal</seealso>. Available only when <see cref="P:Acornima.ParserOptions.EcmaVersion"/> >= ES2017.
             </summary>
         </member>
+        <member name="F:Acornima.ExperimentalESFeatures.RegExpModifiers">
+            <summary>
+            Regular expression modifiers feature as specified by this <seealso href="https://github.com/tc39/proposal-regexp-modifiers">proposal</seealso>.
+            </summary>
+        </member>
         <member name="T:Acornima.Helpers.ArrayList`1">
              <summary>
              This structure is like <see cref="T:System.Collections.Generic.List`1"/> from the BCL except the only allocation
@@ -442,12 +447,12 @@
         </member>
         <member name="P:Acornima.ParseError.Index">
             <summary>
-            Zero-based index within the parsed code string. (Can be negative if location information is available.)
+            Zero-based index within the parsed code string. (A negative value is also possible, indicating that index is not available.)
             </summary>
         </member>
         <member name="P:Acornima.ParseError.LineNumber">
             <summary>
-            One-based line number. (Can be zero if location information is not available.)
+            One-based line number. (A non-positive value is also possible, indicating that position is not available.)
             </summary>
         </member>
         <member name="P:Acornima.ParseError.Column">
@@ -877,11 +882,6 @@
               Looks up a localized string similar to Duplicate export of &apos;{0}&apos;.
             </summary>
         </member>
-        <member name="P:Acornima.SyntaxErrorMessages.DuplicateImportAttribute">
-            <summary>
-              Looks up a localized string similar to Import attributes has duplicate key &apos;{0}&apos;.
-            </summary>
-        </member>
         <member name="P:Acornima.SyntaxErrorMessages.DuplicateProto">
             <summary>
               Looks up a localized string similar to Duplicate __proto__ fields are not allowed in object literals.
@@ -935,6 +935,11 @@
         <member name="P:Acornima.SyntaxErrorMessages.IllegalReturn">
             <summary>
               Looks up a localized string similar to Illegal return statement.
+            </summary>
+        </member>
+        <member name="P:Acornima.SyntaxErrorMessages.ImportAttributesDuplicateKey">
+            <summary>
+              Looks up a localized string similar to Import attributes has duplicate key &apos;{0}&apos;.
             </summary>
         </member>
         <member name="P:Acornima.SyntaxErrorMessages.ImportMetaOutsideModule">
@@ -1117,11 +1122,6 @@
               Looks up a localized string similar to Invalid regular expression: /{0}/{1}: Invalid character class.
             </summary>
         </member>
-        <member name="P:Acornima.SyntaxErrorMessages.RegExpInvalidClassEscape">
-            <summary>
-              Looks up a localized string similar to Invalid regular expression: /{0}/{1}: Invalid class escape.
-            </summary>
-        </member>
         <member name="P:Acornima.SyntaxErrorMessages.RegExpInvalidClassPropertyName">
             <summary>
               Looks up a localized string similar to Invalid regular expression: /{0}/{1}: Invalid property name in character class.
@@ -1135,6 +1135,11 @@
         <member name="P:Acornima.SyntaxErrorMessages.RegExpInvalidEscape">
             <summary>
               Looks up a localized string similar to Invalid regular expression: /{0}/{1}: Invalid escape.
+            </summary>
+        </member>
+        <member name="P:Acornima.SyntaxErrorMessages.RegExpInvalidFlagGroup">
+            <summary>
+              Looks up a localized string similar to Invalid regular expression: /{0}/{1}: Invalid flag group.
             </summary>
         </member>
         <member name="P:Acornima.SyntaxErrorMessages.RegExpInvalidGroup">
@@ -1172,6 +1177,11 @@
               Looks up a localized string similar to Invalid regular expression: /{0}/{1}: Lone quantifier brackets.
             </summary>
         </member>
+        <member name="P:Acornima.SyntaxErrorMessages.RegExpMultipleFlagDashes">
+            <summary>
+              Looks up a localized string similar to Invalid regular expression: /{0}/{1}: Multiple dashes in flag group.
+            </summary>
+        </member>
         <member name="P:Acornima.SyntaxErrorMessages.RegExpNothingToRepeat">
             <summary>
               Looks up a localized string similar to Invalid regular expression: /{0}/{1}: Nothing to repeat.
@@ -1185,6 +1195,11 @@
         <member name="P:Acornima.SyntaxErrorMessages.RegExpRangeOutOfOrderCharacterClass">
             <summary>
               Looks up a localized string similar to Invalid regular expression: /{0}/{1}: Range out of order in character class.
+            </summary>
+        </member>
+        <member name="P:Acornima.SyntaxErrorMessages.RegExpRepeatedFlag">
+            <summary>
+              Looks up a localized string similar to Invalid regular expression: /{0}/{1}: Repeated flag in flag group.
             </summary>
         </member>
         <member name="P:Acornima.SyntaxErrorMessages.RegExpUnmatchedParen">

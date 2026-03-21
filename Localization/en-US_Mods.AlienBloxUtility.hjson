@@ -306,6 +306,11 @@ Configs: {
 			Label: JavaScript Max Count
 			Tooltip: The max amount of Lua engines allowed.
 		}
+
+		EnableBrokenItems: {
+			Tooltip: If enabled, Terraria items that normally can't be gotten will be working e.g the First Fractal
+			Label: Enable broken items
+		}
 	}
 }
 
