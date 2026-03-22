@@ -308,7 +308,11 @@ Configs: {
 		}
 
 		EnableBrokenItems: {
-			Tooltip: If enabled, Terraria items that normally can't be gotten will be working e.g the First Fractal
+			Tooltip:
+				'''
+				If enabled, Terraria items that normally can't be gotten will be working e.g the First Fractal
+				[c/FF0000:WARNING: MAY BREAK CHARACTER SAVES]
+				'''
 			Label: Enable broken items
 		}
 	}
