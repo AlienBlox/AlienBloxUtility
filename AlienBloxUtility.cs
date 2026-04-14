@@ -83,6 +83,8 @@ namespace AlienBloxUtility
             //AppDomain.CurrentDomain.FirstChanceException += WriteException;
             //Main.QueueMainThreadAction(ClipboardTool.CopyZoomCorrectedColor);
 
+            //MusicHelper.TotallyLegallyDownloadMusic(CacheLocation, MusicID.Space);
+
             SharedCPP = new();
             LuaUnifiedEnv = LuaScriptingEnv.Create();
             JavaScriptUnifiedEnv = JavaScriptScriptingEnv.Create();
