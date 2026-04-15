@@ -19,7 +19,11 @@ namespace AlienBloxUtility.Utilities.Helpers
         public static string GetPath(int music)
         {
             if (MusicID.Search.TryGetName(music, out var name))
+            {
+                Main.NewText(name);
+
                 return name;
+            }
 
             return AudioSystem.TrackNamesByIndex.TryGetValue(music, out var value) ? value : string.Empty;
         }
@@ -27,6 +31,8 @@ namespace AlienBloxUtility.Utilities.Helpers
         public static void DownloadCurrentMusic(string pathToDown)
         {
             TotallyLegallyDownloadMusic(pathToDown, CurrentMusic);
+
+            Main.NewText(GetPath(CurrentMusic));
         }
 
         public static bool TotallyLegallyDownloadMusic(string pathToDown, int musicID)
@@ -35,6 +41,8 @@ namespace AlienBloxUtility.Utilities.Helpers
             {
                 string music = GetPath(musicID);
                 string modName = music.Split('/')[0];
+
+                Main.NewText(music, null);
 
                 if (ModLoader.TryGetMod(modName, out var mod))
                 {
