@@ -7,12 +7,14 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Threading;
 using Terraria;
 using Terraria.GameContent.UI.Elements;
 using Terraria.GameInput;
 using Terraria.ID;
 using Terraria.Localization;
+using Terraria.ModLoader;
 using Terraria.ModLoader.Core;
 using Terraria.ModLoader.IO;
 using Terraria.UI;
@@ -22,6 +24,39 @@ namespace AlienBloxUtility
 {
     public static class AlienBloxUtilitySpecials
     {
+        public static string GetCleanPath(this Mod mod, string fullPath)
+        {
+            string prefix = mod.Name + "/";
+            return fullPath.StartsWith(prefix) ? fullPath[prefix.Length..] : fullPath;
+        }
+
+        public static TmodFile GetTModFile(this Mod mod)
+        {
+            try
+            {
+                Type ModType = mod.GetType();
+                PropertyInfo Info = ModType.GetProperty("File", BindingFlags.Instance | BindingFlags.NonPublic);
+
+                if (Info != null)
+                {
+                    object Output = Info.GetValue(mod);
+
+                    if (Output is TmodFile file)
+                    {
+                        return file;
+                    }
+                }
+
+                return null;
+            }
+            catch (Exception ex)
+            {
+                Instance.Logger.Error($"Can't set mod named '{mod.Name}':" + ex.Message);
+
+                return null;
+            }
+        }
+
         public static TagCompound Save(this Tilemap tMap)
         {
             TagCompound tag = [];

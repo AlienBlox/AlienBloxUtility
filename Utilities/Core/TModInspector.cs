@@ -91,7 +91,7 @@ namespace AlienBloxUtility.Utilities.Core
 
         static string[] GetFilesWithExtension(string path, string fileExtension)
         {
-            List<string> fileList = new List<string>();  // List to store the file paths
+            List<string> fileList = [];  // List to store the file paths
 
             try
             {
@@ -151,6 +151,8 @@ namespace AlienBloxUtility.Utilities.Core
         /// Loads a new tMod file from the path
         /// </summary>
         /// <param name="path">The file path to load</param>
+        /// <param name="name"></param>
+        /// <param name="version"></param>
         /// <returns>The tMod File</returns>
         public static TmodFile LoadFile(string path, string name = null, Version version = null)
         {
@@ -182,6 +184,8 @@ namespace AlienBloxUtility.Utilities.Core
         /// Decompiles an assembly of the selected mod
         /// </summary>
         /// <param name="ModName">The mod name to try to find</param>
+        /// <param name="unpackAssets"></param>
+        /// <param name="usingVal"></param>
         public static async Task DecompileAssembly(string ModName, bool unpackAssets = true, bool usingVal = false)
         {
             if (!Directory.Exists(AlienBloxUtility.ModDumpLocation + $"\\{ModName}") || !ModFileData.TryGetValue(ModName, out var ModContents))
