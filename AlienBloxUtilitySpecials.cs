@@ -24,6 +24,42 @@ namespace AlienBloxUtility
 {
     public static class AlienBloxUtilitySpecials
     {
+        public static FieldInfo GetField(this object obj, string fieldName, bool exceptionOnFailure, BindingFlags flags = BindingFlags.Public | BindingFlags.NonPublic)
+        {
+            FieldInfo thing = obj.GetType().GetField(fieldName, flags);
+
+            if (thing == null && exceptionOnFailure)
+            {
+                throw new($"Method '{fieldName}' not found on object of type '{obj.GetType().Name}'.");
+            }
+
+            return thing;
+        }
+
+        public static MethodInfo GetMethod(this object obj, string funcName, bool exceptionOnFailure, BindingFlags flags = BindingFlags.Public | BindingFlags.NonPublic)
+        {
+            MethodInfo thing = obj.GetType().GetMethod(funcName, flags);
+
+            if (thing == null && exceptionOnFailure)
+            {
+                throw new($"Method '{funcName}' not found on object of type '{obj.GetType().Name}'.");
+            }
+
+            return thing;
+        }
+
+        public static PropertyInfo GetProperty(this object obj, string propName, bool exceptionOnFailure, BindingFlags flags = BindingFlags.Public | BindingFlags.NonPublic)
+        {
+            PropertyInfo thing = obj.GetType().GetProperty(propName, flags);
+
+            if (thing == null && exceptionOnFailure)
+            {
+                throw new($"Property '{propName}' not found on object of type '{obj.GetType().Name}'.");
+            }
+
+            return thing;
+        }
+
         public static string GetCleanPath(this Mod mod, string fullPath)
         {
             string prefix = mod.Name + "/";

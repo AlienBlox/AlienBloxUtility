@@ -1,10 +1,13 @@
 ﻿using log4net;
+using Microsoft.Xna.Framework;
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Terraria;
 using Terraria.Audio;
-using Terraria.ID;
 using Terraria.ModLoader;
+using Terraria.ModLoader.Core;
 
 namespace AlienBloxUtility.Utilities.Helpers
 {
@@ -18,14 +21,18 @@ namespace AlienBloxUtility.Utilities.Helpers
 
         public static string GetPath(int music)
         {
-            if (MusicID.Search.TryGetName(music, out var name))
-            {
-                Main.NewText(name);
+            Type t = typeof(MusicLoader);
 
-                return name;
+            if (t.GetField("musicByPath", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static).GetValue(null) is Dictionary<string, int> musicByPath)
+            {
+                var key = musicByPath.FirstOrDefault(x => x.Value == music).Key;
+
+                Main.NewText(key);
+
+                return key;
             }
 
-            return AudioSystem.TrackNamesByIndex.TryGetValue(music, out var value) ? value : string.Empty;
+            return string.Empty;
         }
 
         public static void DownloadCurrentMusic(string pathToDown)
@@ -46,13 +53,30 @@ namespace AlienBloxUtility.Utilities.Helpers
 
                 if (ModLoader.TryGetMod(modName, out var mod))
                 {
+                    music = mod.GetCleanPath(music);
+
+                    Main.NewText(music, null);
+
                     byte[] file = null;
+                    string detectedExtension = ".ogg";
+                    TmodFile tmod = mod.GetTModFile();
 
-                    file ??= mod.GetTModFile().GetBytes(mod.GetCleanPath(music) + ".ogg");
+                    using (tmod.Open())
+                    {
+                        if (file == null)
+                        {
+                            file = mod.GetFileBytes(music + ".ogg");
+                            detectedExtension = ".ogg";
+                        }
+                    
+                        if (file == null)
+                        {
+                            file = mod.GetFileBytes(music + ".mp3");
+                            detectedExtension = ".mp3";
+                        }
+                    }
 
-                    file ??= mod.GetTModFile().GetBytes(mod.GetCleanPath(music) + ".mp3");
-
-                    using FileStream fs = File.Create(Path.Combine(pathToDown + @"\" + Path.GetFileName(music)));
+                    using FileStream fs = File.Create(Path.Combine(pathToDown + @"\" + Path.GetFileName(music)) + detectedExtension);
 
                     fs.Write(file);
 
@@ -60,7 +84,7 @@ namespace AlienBloxUtility.Utilities.Helpers
                 }
                 else
                 {
-                    Main.NewText($"Failed to download music. Mod {modName} not found.", Microsoft.Xna.Framework.Color.Red);
+                    Main.NewText($"Failed to download music. Mod {modName} not found.", Color.Red);
                 }
 
                 return true;
