@@ -62,17 +62,9 @@ namespace AlienBloxUtility.Utilities.Helpers
 
                 if (modName == "Terraria")
                 {
-                    string musicCleanName = "Terraria".GetCleanPath(music);
-                   
-                    using var stream = TitleContainer.OpenStream(music + ".xnb");
-                    // Read stream into byte array
-                    byte[] XNBBytes = new AlienBloxXNB(stream).PackageAsWav(44100, 2, 16);
+                    Main.NewText("Vanilla music isn't supported at this time.");
 
-                    using FileStream fs = File.Create(Path.Combine(pathToDown + @"\" + Path.GetFileName(music)) + ".wav");
-
-                    fs.Write(XNBBytes);
-
-                    return true;
+                    return false;
                 }
 
                 if (ModLoader.TryGetMod(modName, out var mod))
