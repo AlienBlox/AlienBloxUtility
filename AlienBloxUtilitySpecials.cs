@@ -24,7 +24,7 @@ namespace AlienBloxUtility
 {
     public static class AlienBloxUtilitySpecials
     {
-        public static FieldInfo GetField(this object obj, string fieldName, bool exceptionOnFailure, BindingFlags flags = BindingFlags.Public | BindingFlags.NonPublic)
+        public static FieldInfo GetField(this object obj, string fieldName, bool exceptionOnFailure = false, BindingFlags flags = BindingFlags.Public | BindingFlags.NonPublic)
         {
             FieldInfo thing = obj.GetType().GetField(fieldName, flags);
 
@@ -36,7 +36,7 @@ namespace AlienBloxUtility
             return thing;
         }
 
-        public static MethodInfo GetMethod(this object obj, string funcName, bool exceptionOnFailure, BindingFlags flags = BindingFlags.Public | BindingFlags.NonPublic)
+        public static MethodInfo GetMethod(this object obj, string funcName, bool exceptionOnFailure = false, BindingFlags flags = BindingFlags.Public | BindingFlags.NonPublic)
         {
             MethodInfo thing = obj.GetType().GetMethod(funcName, flags);
 
@@ -48,7 +48,7 @@ namespace AlienBloxUtility
             return thing;
         }
 
-        public static PropertyInfo GetProperty(this object obj, string propName, bool exceptionOnFailure, BindingFlags flags = BindingFlags.Public | BindingFlags.NonPublic)
+        public static PropertyInfo GetProperty(this object obj, string propName, bool exceptionOnFailure = false, BindingFlags flags = BindingFlags.Public | BindingFlags.NonPublic)
         {
             PropertyInfo thing = obj.GetType().GetProperty(propName, flags);
 
@@ -63,6 +63,12 @@ namespace AlienBloxUtility
         public static string GetCleanPath(this Mod mod, string fullPath)
         {
             string prefix = mod.Name + "/";
+            return fullPath.StartsWith(prefix) ? fullPath[prefix.Length..] : fullPath;
+        }
+
+        public static string GetCleanPath(this string target, string fullPath)
+        {
+            string prefix = target + "/";
             return fullPath.StartsWith(prefix) ? fullPath[prefix.Length..] : fullPath;
         }
 

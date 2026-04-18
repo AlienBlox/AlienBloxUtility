@@ -1,11 +1,14 @@
 ﻿using log4net;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using Terraria;
 using Terraria.Audio;
+using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ModLoader.Core;
 
@@ -25,11 +28,18 @@ namespace AlienBloxUtility.Utilities.Helpers
 
             if (t.GetField("musicByPath", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static).GetValue(null) is Dictionary<string, int> musicByPath)
             {
-                var key = musicByPath.FirstOrDefault(x => x.Value == music).Key;
+                try
+                {
+                    var key = musicByPath.FirstOrDefault(x => x.Value == music).Key;
 
-                Main.NewText(key);
+                    Main.NewText(key);
 
-                return key;
+                    return key;
+                }
+                catch 
+                {
+                    return $"Terraria/Content/Music/Music_{music}";
+                }
             }
 
             return string.Empty;
@@ -50,6 +60,22 @@ namespace AlienBloxUtility.Utilities.Helpers
                 string modName = music.Split('/')[0];
 
                 Main.NewText(music, null);
+
+                if (modName == "Terraria")
+                {
+                    music = "Terraria".GetCleanPath(music);
+
+                    FieldInfo musicField = typeof(LegacyAudioSystem).GetField("_music", BindingFlags.NonPublic | BindingFlags.Instance);
+                    IAudioTrack[] musicTracks = (IAudioTrack[])musicField.GetValue(AudioSystem);
+                    IAudioTrack track = musicTracks[musicID]; //Main.Assets.Request<byte[]>(music).Value;
+
+                    if (track is ASoundEffectBasedAudioTrack soundTrack)
+                    {
+                        
+                    }
+
+                    return true;
+                }
 
                 if (ModLoader.TryGetMod(modName, out var mod))
                 {
@@ -81,6 +107,7 @@ namespace AlienBloxUtility.Utilities.Helpers
                     fs.Write(file);
 
                     LogManager.GetLogger("AlienBloxUtility").Info($"Successfully downloaded music to {pathToDown}");
+                
                 }
                 else
                 {
