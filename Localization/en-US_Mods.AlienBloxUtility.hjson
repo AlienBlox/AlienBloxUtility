@@ -9,6 +9,8 @@ Buttons: {
 }
 
 UI: {
+	MusicPlaying: Music Playing: {0} (Right click to download.)
+	MusicTool: Music Tool
 	ServerSpawn: Spawn Projectile on Server
 	Cards: Data Card
 	SwitchSpawnMode: Switch Spawn Modes

@@ -11,10 +11,14 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
     {
         internal AlienBloxUtilityButton _UI;
 
+        internal MusicIndicator IndicateMusic;
+
         public static ShowUtilityMenuButton Instance { get; private set; }
 
         public override void OnInitialize()
         {
+            IndicateMusic = new();
+
             _UI = new();
             _UI.Width.Set(50f, 0f);
             _UI.Height.Set(50f, 0f);
@@ -27,6 +31,7 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIStates
             _UI.OnRightClick += ToggleDocumentationUI;
             _UI.OnMiddleClick += ToggleDebugSidebar;
 
+            _UI.Append(IndicateMusic);
             Append(_UI);
 
             Instance = this;

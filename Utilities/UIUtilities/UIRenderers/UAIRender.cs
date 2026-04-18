@@ -1,7 +1,7 @@
 ﻿using AlienBloxUtility.Utilities.UIUtilities.UIStates;
 using Microsoft.Xna.Framework;
 using System.Collections.Generic;
-//using System.IO;
+using System.IO;
 using Terraria;
 using Terraria.ModLoader;
 using Terraria.UI;
@@ -9,11 +9,11 @@ using Terraria.UI;
 namespace AlienBloxUtility.Utilities.UIUtilities.UIRenderers
 {
     [Autoload(Side = ModSide.Client)]
-    public class AboutPageRender : ModSystem
+    public class UAIRender : ModSystem
     {
-        public static bool ShowAboutPage = false;
+        public static bool ShowUAI = false;
 
-        internal AboutTab Element;
+        internal UltimateAudioInterface Element;
 
         private UserInterface _element;
 
@@ -27,7 +27,7 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIRenderers
 
         public override void UpdateUI(GameTime gameTime)
         {
-            if (ShowAboutPage)
+            if (ShowUAI)
             {
                 if (_element?.CurrentState == null)
                 {
@@ -48,7 +48,7 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIRenderers
             if (mouseTextIndex != -1)
             {
                 layers.Insert(mouseTextIndex, new LegacyGameInterfaceLayer(
-                    "AlienBloxUtility: About AlienBloxUtility",
+                    "AlienBloxUtility: UAI Interface",
                     delegate
                     {
                         _element.Draw(Main.spriteBatch, new GameTime());

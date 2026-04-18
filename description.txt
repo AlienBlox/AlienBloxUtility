@@ -19,6 +19,7 @@ Features includes these abilities:
  * A Spawning Menu that allows you to spawn Items, NPCs, give Buffs, place Tiles, Tile Entities and Walls
  * A feature that allows you to grab and move NPCs
  * A freeze utility that allows you to freeze NPCs / Projectiles in place
+ * A music helper utility used for downloading music from mods
 Upcoming Features:
  * A console chat feature that allows you to chat directly from the debug console (With groupchat, anon and more!)
 Legals:

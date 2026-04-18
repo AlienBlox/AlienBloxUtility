@@ -8,6 +8,7 @@ using System.Linq;
 using System.Reflection;
 using Terraria;
 using Terraria.Audio;
+using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ModLoader.Core;
 
@@ -29,9 +30,14 @@ namespace AlienBloxUtility.Utilities.Helpers
             {
                 try
                 {
+                    if (music < MusicID.Count)
+                    {
+                        return "Terraria/Content/Music/Music_" + music;
+                    }
+
                     var key = musicByPath.FirstOrDefault(x => x.Value == music).Key;
 
-                    Main.NewText(key);
+                    //Main.NewText(key);
 
                     return key;
                 }
