@@ -1,6 +1,6 @@
-﻿using log4net;
+﻿using AlienBloxUtility.Utilities.XNBEngine;
+using log4net;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Audio;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -8,7 +8,6 @@ using System.Linq;
 using System.Reflection;
 using Terraria;
 using Terraria.Audio;
-using Terraria.ID;
 using Terraria.ModLoader;
 using Terraria.ModLoader.Core;
 
@@ -26,7 +25,7 @@ namespace AlienBloxUtility.Utilities.Helpers
         {
             Type t = typeof(MusicLoader);
 
-            if (t.GetField("musicByPath", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static).GetValue(null) is Dictionary<string, int> musicByPath)
+            if (t.GetField("musicByPath", BindingFlags.NonPublic | BindingFlags.Static).GetValue(null) is Dictionary<string, int> musicByPath)
             {
                 try
                 {
@@ -63,16 +62,15 @@ namespace AlienBloxUtility.Utilities.Helpers
 
                 if (modName == "Terraria")
                 {
-                    music = "Terraria".GetCleanPath(music);
+                    string musicCleanName = "Terraria".GetCleanPath(music);
+                   
+                    using var stream = TitleContainer.OpenStream(music + ".xnb");
+                    // Read stream into byte array
+                    byte[] XNBBytes = new AlienBloxXNB(stream).PackageAsWav(44100, 2, 16);
 
-                    FieldInfo musicField = typeof(LegacyAudioSystem).GetField("_music", BindingFlags.NonPublic | BindingFlags.Instance);
-                    IAudioTrack[] musicTracks = (IAudioTrack[])musicField.GetValue(AudioSystem);
-                    IAudioTrack track = musicTracks[musicID]; //Main.Assets.Request<byte[]>(music).Value;
+                    using FileStream fs = File.Create(Path.Combine(pathToDown + @"\" + Path.GetFileName(music)) + ".wav");
 
-                    if (track is ASoundEffectBasedAudioTrack soundTrack)
-                    {
-                        
-                    }
+                    fs.Write(XNBBytes);
 
                     return true;
                 }
