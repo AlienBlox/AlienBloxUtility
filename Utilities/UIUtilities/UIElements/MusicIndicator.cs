@@ -38,6 +38,7 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIElements
         public override void RightClick(UIMouseEvent evt)
         {
             MusicHelper.DownloadCurrentMusic(AlienBloxUtility.CacheLocation);
+            UrlEngine.OpenURL(AlienBloxUtility.CacheLocation);
         }
     }
 }
