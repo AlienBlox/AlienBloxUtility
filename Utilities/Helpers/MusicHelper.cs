@@ -57,6 +57,16 @@ namespace AlienBloxUtility.Utilities.Helpers
             Main.NewText(GetPath(CurrentMusic));
         }
 
+        public static string GetMusicName(int musicID)
+        {
+            string path = GetPath(musicID);
+            string fileName = Path.GetFileNameWithoutExtension(path);
+
+            return fileName;
+        }
+
+        public static string GetCurrentMusicName() => GetMusicName(CurrentMusic);
+
         public static bool TotallyLegallyDownloadMusic(string pathToDown, int musicID)
         {
             try

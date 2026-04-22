@@ -8,8 +8,16 @@ Buttons: {
 	CloseButton: Close Menu
 }
 
+Common: {
+	Unknown: Unknown
+	Music: Music
+	Mod: Mod
+}
+
 UI: {
+	DownloadButtons: Download {0}
 	MusicPlaying: Music Playing: {0} (Right click to download.)
+	MusicPlaying2: Music Playing: {0}
 	MusicTool: Music Tool
 	ServerSpawn: Spawn Projectile on Server
 	Cards: Data Card

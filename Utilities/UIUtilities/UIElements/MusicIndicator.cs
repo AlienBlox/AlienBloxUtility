@@ -1,4 +1,5 @@
 ﻿using AlienBloxUtility.Utilities.Helpers;
+using AlienBloxUtility.Utilities.UIUtilities.UIRenderers;
 using Microsoft.Xna.Framework.Graphics;
 using System.IO;
 using Terraria.ID;
@@ -14,10 +15,7 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIElements
 
         public MusicIndicator()
         {
-            if (MusicIcon == null)
-            {
-                MusicIcon = ModContent.Request<Texture2D>("Terraria/Images/Item_" + ItemID.MusicBox).Value;
-            }
+            MusicIcon ??= ModContent.Request<Texture2D>("Terraria/Images/Item_" + ItemID.MusicBox).Value;
 
             Width.Set(0, .5f);
             Height.Set(0, .5f);
@@ -39,6 +37,15 @@ namespace AlienBloxUtility.Utilities.UIUtilities.UIElements
         {
             MusicHelper.DownloadCurrentMusic(AlienBloxUtility.CacheLocation);
             UrlEngine.OpenURL(AlienBloxUtility.CacheLocation);
+
+            base.RightClick(evt);
+        }
+
+        public override void LeftClick(UIMouseEvent evt)
+        {
+            UAIRender.ShowUAI = !UAIRender.ShowUAI;
+
+            base.LeftClick(evt);
         }
     }
 }
